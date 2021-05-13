@@ -1,0 +1,195 @@
+﻿@using DoAnDiemDanh.Models
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Layout/_LayoutAdmin.cshtml";
+    IEnumerable<MONHOC> MONHOC = (IEnumerable<MONHOC>)ViewBag.MonHoc;
+}
+
+<div class="row">
+    <div class="form-horizontal shadow p-3 mb-2 card col-4" style="margin-left: 13px;">
+        <div class="form-group">
+            <div class="h3 mb-2 ml-2 text-gray-800" style="font-size: 20px; font-weight: 600;">Chọn Môn Học</div>
+            <div class="col-md-12">
+                <select class="form-control" id="MaMH" name="MaMH" required="">
+                    @foreach (var item in MONHOC)
+                    {
+                        <option value="@item.MaMH">@item.TenMH</option>
+                    }
+                </select>
+            </div>
+        </div>
+    </div>
+</div>
+
+<a class="btn btn-success btn-icon-split shadow" style="position: absolute; top: 3px; right: 614px" id="export1" href="">
+    <span class="icon text-white-50">
+        <i class="fas fa-file-excel"></i>
+    </span>
+    <span class="text">Danh Sách Điểm Danh</span>
+</a>
+
+<a class="btn btn-success btn-icon-split shadow" style="position: absolute; top: 55px; right: 614px; padding-right: 23px;" id="export1" href="">
+    <span class="icon text-white-50">
+        <i class="fas fa-file-excel"></i>
+    </span>
+    <span class="text">Danh sách Cấm Thi</span>
+</a>
+
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">THÔNG TIN MÔN HỌC</h6>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>Mã Môn Học</th>
+                        <th>Tên Môn Học</th>
+                        <th>Giảng viên dạy</th>
+                        <th>Sĩ Số</th>
+                        <th>Số TC</th>
+                        <th>Ngày BĐ</th>
+                        <th>Ngày KT</th>
+                        <th>Thời gian BĐ</th>
+                        <th>Thời gian KT</th>
+                    </tr>
+                </thead>
+                <tbody id="data">
+                    
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="card shadow mb-4">
+    <div>
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">DANH SÁCH SINH VIÊN</h6>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th style=" width: 15px;">STT</th>
+                        <th style=" width: 24px;">MSSV</th>
+                        <th style=" width: 188px;">Tên Sinh Viên</th>
+                        <th style=" width: 264px;">Tên Khoa</th>
+                        <th style=" width: 101px;">Tên Lớp</th>
+                        <th style=" width: 188px;">Số buổi tham gia</th>
+                        <th style=" width: 200px;">Chi Tiết</th>
+                    </tr>
+                </thead>
+                <tbody id="data1">
+                    
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        var table = $('#dataTable').DataTable();
+        $('#export1').attr("href", `/ThongKe/XuatBaoCaoDiemDanhFull?MaMH=${$("#MaMH").val()}`)
+        var mamh = $("#MaMH").val()
+        $.get("/ThongKe/GetMonHoc", { MaMH: $("#MaMH").val() }, function (data) {
+            table.clear();
+            $("#data").empty();
+            var rows = `<tr>
+                                <td>${data.MaMH}</td>
+                                <td>${data.TenMH}</td>
+                                <td>${data.TenGV}</td>
+                                <td>${data.SiSo}</td>
+                                <td>${data.SoTC}</td>
+                                <td>${data.NgayBD}</td>
+                                <td>${data.NgayKT}</td>
+                                <td>${data.ThoiGianBD}</td>
+                                <td>${data.ThoiGianKT}</td>
+                            </tr>`;
+            $("#data").append(rows)
+
+            $.each(data.DSSV, function (index, row) {
+                
+                $.get("/ThongKe/GetSinhVien", { MaSV: row.MaSV, MaMH: $("#MaMH").val() }, function (data) {
+                    $('#dataTable').DataTable().row.add([
+                        index+1,
+                        row.MaSV,
+                        row.TenSV,
+                        data.tenkhoa,
+                        data.tenlop,
+                        `${data.sobuoithamgia}/${data.tongsobuoi}`,
+                        `<a class="btn btn-success btn-icon-split shadow" href="/ThongKe/XuatChiTietDiemDanh?MaMH=${mamh}&MaSV=${row.MaSV}">
+                                <span class="icon text-white-50">
+                                    <i class="fas fa-file-excel"></i>
+                                </span>
+                                <span class="text">Xuất Chi Tiết</span>
+                            </a>`  
+                    ]).draw(false)
+                })
+            })
+        })
+
+        $("#MaMH").change(function () {
+            $('#export1').attr("href", `/ThongKe/XuatBaoCaoDiemDanhFull?MaMH=${$(this).val()}`)
+            var mamh = $(this).val();
+            $.get("/ThongKe/GetMonHoc", { MaMH: $(this).val() }, function (data) {
+                table.clear();
+                $("#data").empty();
+                var rows = `<tr>
+                                <td>${data.MaMH}</td>
+                                <td>${data.TenMH}</td>
+                                <td>${data.TenGV}</td>
+                                <td>${data.SiSo}</td>
+                                <td>${data.SoTC}</td>
+                                <td>${data.NgayBD}</td>
+                                <td>${data.NgayKT}</td>
+                                <td>${data.ThoiGianBD}</td>
+                                <td>${data.ThoiGianKT}</td>
+                            </tr>`;
+                $("#data").append(rows)
+
+                $.each(data.DSSV, function (index, row) {
+                    $.get("/ThongKe/GetSinhVien", { MaSV: row.MaSV, MaMH: $("#MaMH").val() }, function (data) {
+                        
+                        $('#dataTable').DataTable().row.add([
+                            index + 1,
+                            row.MaSV,
+                            row.TenSV,
+                            data.tenkhoa,
+                            data.tenlop,
+                            `${data.sobuoithamgia}/${data.tongsobuoi}`,
+                            `<a class="btn btn-success btn-icon-split shadow" href="/ThongKe/XuatChiTietDiemDanh?MaMH=${mamh}&MaSV=${row.MaSV}">
+                                <span class="icon text-white-50">
+                                    <i class="fas fa-file-excel"></i>
+                                </span>
+                                <span class="text">Xuất Chi Tiết</span>
+                            </a>`        
+                        ]).draw(false)
+                        stt += 1;
+                    })
+
+                })
+
+            })
+        })
+
+        function alertSuccess() {
+            $('.alert').addClass("show");
+            $('.alert').removeClass("hide");
+            $('.alert').addClass("showAlert");
+            setTimeout(function () {
+                $('.alert').removeClass("show");
+                $('.alert').addClass("hide");
+            }, 5000);
+            $('.close-btn').click(function () {
+                $('.alert').removeClass("show");
+                $('.alert').addClass("hide");
+            });
+        }
+    });
+</script>
+

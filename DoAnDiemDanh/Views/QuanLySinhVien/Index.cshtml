@@ -1,0 +1,167 @@
+﻿@using DoAnDiemDanh.Models
+@model IEnumerable<SINHVIEN>
+
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Layout/_LayoutAdmin.cshtml";
+    var list = (List<HinhAnhCount>)ViewBag.danhsach;
+}
+
+
+<div class="modal fade" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content" style="width: 568px;">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Import File Excel</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            @using (Ajax.BeginForm("ImportFileExcel", "QuanLySinhVien", new AjaxOptions { HttpMethod = "POST", OnSuccess = "FnSuccessImport" }, new { enctype = "multipart/form-data" }))
+            {
+                <div class="form-horizontal p-3 mb-2">
+                    <div class="form-group">
+                        <label class="control-label col-md-4" for="TenMH">Upload file</label>
+                        <div class="col-md-12">
+                            <input class="form-control text-box single-line" id="excel" name="excel" type="file" value="" required style="padding: 3px;" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-offset-2 col-md-12 text-left d-flex justify-content-lg-end">
+                            <button type="button" class="btn btn-secondary mr-2" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-success btn-icon-split p-2 border">Import</button>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<p>
+    <h1 class="h3 mb-4 text-gray-800">Quản lí Sinh Viên</h1>
+    <a href="@Url.Action("Create", "QuanLySinhVien")" class="btn btn-success btn-icon-split shadow" style="position: absolute; top: 0px; right: 25px">
+        <span class="icon text-white-50">
+            <i class="fas fa-plus"></i>
+        </span>
+        <span class="text">Thêm Sinh Viên Mới</span>
+    </a>
+    <button class="btn btn-success btn-icon-split shadow" style="position: absolute; top: 0px; right: 475px" id="train_model">
+        <span class="icon text-white-50">
+            <i class="fas fa-cloud-upload-alt"></i>
+        </span>
+        <span class="text">Train Model</span>
+    </button>
+    <button class="btn btn-success btn-icon-split shadow" style="position: absolute; top: 0px; right: 260px" data-toggle="modal" data-target="#exampleModalLong">
+        <span class="icon text-white-50">
+            <i class="fas fa-file-excel"></i>
+        </span>
+        <span class="text">Import File Excel</span>
+    </button>
+</p>
+
+<!-- DataTales Example -->
+<div class="card shadow mb-4">
+    <div>
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">DANH SÁCH TẤT CẢ SINH VIÊN</h6>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th style=" width: 188px;">Tên Sinh Viên</th>
+                        <th style=" width: 264px;">Tên Khoa</th>
+                        <th style=" width: 101px;">Tên Lớp</th>
+                        <th style=" width: 237px;">Số lượng Avatar Train</th>
+                        <th style=" width: 201px;">Chức năng</th>
+                    </tr>
+                </thead>
+                <tbody id="data_table">
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.TenSV)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.KHOA.TenKhoa)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.LOP.TenLop)
+                            </td>
+                            <td>
+                                <a href="@Url.Action("Details_SinhVien_HinhAnh","QuanLyHinhAnh", new{id = item.MaSV})" class="btn btn-primary btn-icon-split">
+                                    <span class="icon text-white-50">
+                                        @{
+                                            HinhAnhCount hac = (HinhAnhCount)list.Find(s => s.masv == item.MaSV);
+                                            if (hac == null)
+                                            {
+                                                <span>0</span>
+                                            }
+                                            else
+                                            {
+                                                <span>@hac.soluong</span>
+                                            }
+
+                                        }
+                                    </span>
+
+                                    <span class="text">Hình ảnh</span>
+                                </a>
+                            </td>
+                            <td>
+                                @Html.ActionLink("Edit", "Edit", new { id = item.MaSV }) |
+                                @Html.ActionLink("Details", "Details", new { id = item.MaSV }) |
+                                @Html.ActionLink("Delete", "Delete", new { id = item.MaSV })
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<script>
+    function FnSuccessImport(data) {
+        $('.close').click();
+        console.log(data);
+
+        alertSuccess();
+        window.location = document.URL
+    }
+
+
+    function alertSuccess() {
+        $('.alert').addClass("show");
+        $('.alert').removeClass("hide");
+        $('.alert').addClass("showAlert");
+        setTimeout(function () {
+            $('.alert').removeClass("show");
+            $('.alert').addClass("hide");
+        }, 5000);
+        $('.close-btn').click(function () {
+            $('.alert').removeClass("show");
+            $('.alert').addClass("hide");
+        });
+    }
+
+    $('#train_model').click(function () {
+        $.post("http://127.0.0.1:6868/train", function (data) {
+            $(".close").click();
+            $('#hinhanh_cam').empty();
+            alertSuccess();
+        })
+    });
+</script>
+
+@section datatable{
+    <script>
+        $(document).ready(function () {
+            $('#dataTable').DataTable();
+        });
+    </script>
+}

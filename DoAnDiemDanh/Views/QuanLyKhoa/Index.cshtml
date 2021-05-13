@@ -1,0 +1,128 @@
+﻿@model IEnumerable<DoAnDiemDanh.Models.KHOA>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Layout/_LayoutAdmin.cshtml";
+}
+@*<div class="alert show">
+        <span class="fas fa-exclamation-circle"></span>
+        <span class="msg">Success: Thêm thành công Khoa</span>
+        <div class="close-btn">
+            <span class="fas fa-times"></span>
+        </div>
+    </div>*@
+
+<div>
+    @using (Ajax.BeginForm("Create", "QuanLyKhoa", new AjaxOptions { HttpMethod = "POST", OnSuccess = "FnSuccess" }))
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="form-horizontal shadow p-3 mb-2 card">
+            <div class="form-group">
+                <label class="h3 mb-2 ml-2 text-gray-800" for="TenKhoa" style="font-size: 20px; font-weight: 600;">Tên Khoa</label>
+                <div class="col-md-10">
+                    <input class="form-control text-box single-line" id="TenKhoa" name="TenKhoa" type="text" value="" required minlength="7" data-error-msg="Must enter your name?">
+                    <span class="field-validation-valid text-danger" data-valmsg-for="TenKhoa" data-valmsg-replace="true"></span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" value="Thêm mới" class="btn btn-success btn-icon-split p-2 border">
+                </div>
+            </div>
+        </div>
+    }
+
+    <!-- DataTales Example -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">DANH SÁCH TẤT CẢ KHOA</h6>
+        </div>
+        <div class="card-body" id="data">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th style="width: 66px;">Mã Khoa</th>
+                            <th>Tên Khoa</th>
+                            <th>Chức năng</th>
+                        </tr>
+                    </thead>
+                    <tbody id="data_table">
+                        @foreach (var item in Model)
+                        {
+                            <tr id="row_@item.MaKhoa">
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.MaKhoa)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.TenKhoa)
+                                </td>
+                                <td>
+                                    @Html.ActionLink("Chỉnh sửa", "Edit", new { id = item.MaKhoa }) |
+
+                                    @Ajax.ActionLink("Xóa", "Delete", new { id = item.MaKhoa }, new AjaxOptions { HttpMethod = "POST", OnSuccess = "deleteSuccess", Confirm = "Bạn có muốn xóa bản ghi này ?" })
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    function FnSuccess(data) {
+        if (data != false) {
+
+            var row = `<tr id="row_${data.MaKhoa}" role="row" class="odd">
+                                <td class="sorting_1">
+                                    ${data.MaKhoa}
+                                </td>
+                                <td>
+                                    ${data.TenKhoa}
+                                </td>
+                                <td>
+                                    <a href="/QuanLyKhoa/Edit/1">Chỉnh sửa</a> |
+                                    <a data-ajax="true" data-ajax-confirm="Bạn có muốn xóa bản ghi này ?" data-ajax-method="POST" data-ajax-success="deleteSuccess" href="/QuanLyKhoa/Delete/${data.MaKhoa}">Xóa</a>
+                                </td>
+                            </tr>`;
+            $('#data_table tr:first').before(row)
+
+            alertSuccess();
+        }
+        $('#TenKhoa').val('');
+    }
+
+    function deleteSuccess(data) {
+        console.log(data)
+        $(`#row_${data}`).remove()
+        alertSuccess();
+
+    }
+
+    function alertSuccess() {
+        $('.alert').addClass("show");
+        $('.alert').removeClass("hide");
+        $('.alert').addClass("showAlert");
+        setTimeout(function () {
+            $('.alert').removeClass("show");
+            $('.alert').addClass("hide");
+        }, 5000);
+        $('.close-btn').click(function () {
+            $('.alert').removeClass("show");
+            $('.alert').addClass("hide");
+        });
+    }
+</script>
+
+@section datatable{
+    <script>
+        $(document).ready(function () {
+            $('#dataTable').DataTable();
+        });
+    </script>
+}

@@ -1,0 +1,229 @@
+﻿@model IEnumerable<DoAnDiemDanh.Models.MONHOC>
+
+@{
+    var GiangVien = (IEnumerable<DoAnDiemDanh.Models.GIANGVIEN>)ViewBag.MaGV;
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Layout/_LayoutAdmin.cshtml";
+}
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content" style="width: 568px;">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Thêm Môn Học</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            @using (Ajax.BeginForm("Create", "QuanLyMonHoc", new AjaxOptions { HttpMethod = "POST", OnSuccess = "FnSuccess" }))
+            {
+                @Html.AntiForgeryToken()
+
+                <div class="form-horizontal p-3 mb-2">
+                    <div class="form-group">
+                        <label class="control-label col-md-4" for="TenMH">Tên Môn Học</label>
+                        <div class="col-md-12">
+                            <input class="form-control text-box single-line" id="TenMH" name="TenMH" type="text" value="" required>
+                            <span class="field-validation-valid text-danger" data-valmsg-for="TenMH" data-valmsg-replace="true"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label col-md-4" for="SoTC">Số Tín Chỉ</label>
+                        <div class="col-md-12">
+                            <input class="form-control text-box single-line" data-val="true" data-val-number="The field SoTC must be a number." id="SoTC" name="SoTC" type="number" value="1" min="1" required>
+                            <span class="field-validation-valid text-danger" data-valmsg-for="SoTC" data-valmsg-replace="true"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label col-md-4" for="NgayBD">Ngày Bắt Đầu</label>
+                        <div class="col-md-12">
+                            <input class="form-control text-box single-line" data-val="true" data-val-date="The field NgayBD must be a date." id="NgayBD" name="NgayBD" type="date" value="@DateTime.Now.ToString("yyyy-MM-dd")" min="@DateTime.Now.ToString("yyyy-MM-dd")" required>
+                            <span class="field-validation-valid text-danger" data-valmsg-for="NgayBD" data-valmsg-replace="true"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label col-md-4" for="NgayKT">Ngày Kết Thúc</label>
+                        <div class="col-md-12">
+                            <input class="form-control text-box single-line" data-val="true" data-val-date="The field NgayKT must be a date." id="NgayKT" name="NgayKT" type="date" value="" min="@DateTime.Now.ToString("yyyy-MM-dd")" required>
+                            <span class="field-validation-valid text-danger" data-valmsg-for="NgayKT" data-valmsg-replace="true"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label col-md-4" for="ThoiGianBDGD">Thời Gian Bắt Đầu</label>
+                        <div class="col-md-12">
+                            <input class="form-control text-box single-line" id="ThoiGianBDGD" name="ThoiGianBDGD" type="time" value="" required>
+                            <span class="field-validation-valid text-danger" data-valmsg-for="ThoiGianBDGD" data-valmsg-replace="true"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label col-md-4" for="ThoiGianKTGD">Thời Gian Kết Thúc</label>
+                        <div class="col-md-12">
+                            <input class="form-control text-box single-line" id="ThoiGianKTGD" name="ThoiGianKTGD" type="time" value="" required>
+                            <span class="field-validation-valid text-danger" data-valmsg-for="ThoiGianKTGD" data-valmsg-replace="true"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <input class="form-control text-box single-line" id="TenGV" name="TenGV" type="text" value="" style="display: none;">
+                        <label class="control-label col-md-4" for="MaGV">Giảng Viên Dạy</label>
+                        <div class="col-md-12">
+                            <select class="form-control" id="MaGV" name="MaGV" required>
+                                <option value="">Mời bạn chọn Giảng Viên</option>
+                                @foreach (var item in GiangVien)
+                                {
+                                    <option value="@item.MaGV">@item.TenGV</option>
+                                }
+                            </select>
+                            <span class="field-validation-valid text-danger" data-valmsg-for="MaGV" data-valmsg-replace="true"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-md-offset-2 col-md-12 text-left d-flex justify-content-lg-end">
+                            <button type="button" class="btn btn-secondary mr-2" data-dismiss="modal">Đóng</button>
+                            <button type="submit" class="btn btn-success btn-icon-split p-2 border">Thêm mới</button>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+<p>
+    <h1 class="h3 mb-4 text-gray-800">Quản lí Môn Học</h1>
+    <Button class="btn btn-success btn-icon-split shadow" style="position: absolute; top: 0px; right: 25px" data-toggle="modal" data-target="#exampleModalLong">
+        <span class="icon text-white-50">
+            <i class="fas fa-plus"></i>
+        </span>
+        <span class="text">Thêm Môn Học Mới</span>
+    </Button>
+</p>
+
+
+
+<div class="card shadow mb-4">
+    <div>
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">DANH SÁCH TẤT CẢ MÔN HỌC</h6>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>Tên Môn Học</th>
+                        <th>Số Tín Chỉ</th>
+                        <th>Ngày Bắt Đầu</th>
+                        <th>Ngày Kết Thúc</th>
+                        <th>Thời gian giảng dạy</th>
+                        <th>Giảng Viên Dạy</th>
+                        <th>Số Sinh Viên</th>
+                        <th>Chức năng</th>
+                    </tr>
+                </thead>
+                <tbody id="data_table">
+                    @foreach (var item in Model)
+                    {
+                        <tr id="row_@item.MaMH">
+                            <td>
+                                @Html.DisplayFor(modelItem => item.TenMH)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.SoTC)
+                            </td>
+                            <td>
+                                @Convert.ToDateTime(item.NgayBD).ToString("dd/MM/yyyy")
+                            </td>
+                            <td>
+                                @Convert.ToDateTime(item.NgayKT).ToString("dd/MM/yyyy")
+                            </td>
+                            <td>
+                                @{
+                                    TimeSpan a = (TimeSpan)item.ThoiGianKTGD - (TimeSpan)@item.ThoiGianBDGD;
+                                    var s = a.Hours + " Giờ " + a.Minutes + " Phút";
+                                }
+                                @s
+                            </td>
+
+                            <td>
+                                @Html.DisplayFor(modelItem => item.GIANGVIEN.TenGV)
+                            </td>
+                            <td>
+                                50
+                            </td>
+                            <td>
+                                @Html.ActionLink("Chỉnh sửa", "Edit", new { id = item.MaMH }) |
+                                <a data-ajax='true' data-ajax-confirm='Bạn có muốn xóa bản ghi này ?' data-ajax-method='POST' data-ajax-success='deleteSuccess' href='/QuanLyMonHoc/Delete/@item.MaMH'>Xóa</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+
+<script>
+    function FnSuccess(data) {
+        if (data != false) {
+            console.log(data)
+            $(".close").click();
+            var row = `<tr role='row' class='odd' id='row_${data.MaMH}'>
+                                <td>${data.TenMH}</td >
+                                <td>${data.SoTC}</td >
+                                <td>${data.NgayBD}</td >
+                                <td>${data.NgayKT}</td >
+                                <td>${data.ThoiGianDay}</td >
+                                <td>${data.GiangVienDay}</td >
+                                <td>${data.SoSV}</td>
+                                <td><a href='/QuanLyMonHoc/Edit/${data.MaLop}'>Chỉnh sửa</a> |<a data-ajax='true' data-ajax-confirm='Bạn có muốn xóa bản ghi này ?' data-ajax-method='POST' data-ajax-success='deleteSuccess' href='/QuanLyMonHoc/Delete/${data.MaMH}'>Xóa</a></td>
+                           </tr >`;
+            $('#data_table tr:first').before(row)
+
+            alertSuccess();
+        }
+        $('#TenLop').val('');
+    }
+
+    function deleteSuccess(data) {
+        console.log(data)
+        $(`#row_${data}`).remove()
+        alertSuccess();
+    }
+
+    function alertSuccess() {
+        $('.alert').addClass("show");
+        $('.alert').removeClass("hide");
+        $('.alert').addClass("showAlert");
+        setTimeout(function () {
+            $('.alert').removeClass("show");
+            $('.alert').addClass("hide");
+        }, 5000);
+        $('.close-btn').click(function () {
+            $('.alert').removeClass("show");
+            $('.alert').addClass("hide");
+        });
+    }
+
+    $("#MaGV").change(function () {
+        var tengv = $("#MaGV option:selected").html();
+        $("#TenGV").val(tengv);
+    })
+</script>
+
+@section datatable{
+    <script>
+        $(document).ready(function () {
+            $('#dataTable').DataTable();
+        });
+    </script>
+}

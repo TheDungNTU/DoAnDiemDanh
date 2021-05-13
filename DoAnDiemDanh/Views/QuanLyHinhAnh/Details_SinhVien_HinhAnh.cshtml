@@ -1,0 +1,263 @@
+﻿@using DoAnDiemDanh.Models
+@model IEnumerable<HINHANH>
+@{
+    ViewBag.Title = "Details_SinhVien_HinhAnh";
+    Layout = "~/Views/Layout/_LayoutAdmin.cshtml";
+   
+}
+
+<div class="modal fade" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+    <div class="modal-dialog" role="document" style="background-color: white;">
+
+        <div class="modal-content" style="width: 800px;">
+
+            <div class="form-horizontal  p-3 form-avatar">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <div class="form-group camera ">
+                    <div class="h3 mb-2 ml-2 text-gray-800" style="font-size: 20px; font-weight: 600;">Hình ảnh</div>
+                    <div class="h3 mb-2 ml-2 text-gray-800" style="font-size: 16px; font-weight: 400;">Click button để chup ảnh</div>
+                    <div>
+                        <div class="row">
+                            <div class="col-6">
+                                <video id="stream" width="320" height="300"></video>
+                            </div>
+                            <div class="col-6">
+                                <div class="card shadow mb-4">
+                                    <div class="card-header py-3">
+                                        <h6 class="m-0 font-weight-bold text-primary" id="soluong">0 images</h6>
+                                    </div>
+                                    <div class="card-body" style="position: relative; display: block; overflow: scroll; height: 250px; padding: 0px; padding-left: 20px;" id="hinhanh_cam">
+                                        <canvas id="capture" width="320" height="240" class="d-none"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <span class="btn btn-success btn-icon-split m-2" id="btn-capture" style="margin-left: 10px;">
+                        <span class="text">Chụp Hình</span>
+                    </span>
+                    <span class="btn btn-success btn-icon-split m-2" id="btn-save" style="margin-left: 10px;">
+                        <span class="text">Lưu ảnh</span>
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Danh sách hình ảnh train của sinh viên @ViewBag.TenSV</h6>
+    </div>
+    <div class="card-body" style="position: relative; display: flex; overflow:scroll" id="card_hinhanh">
+        @Html.AntiForgeryToken()
+        @foreach (var item in Model)
+        {
+            <div id="hinhanh_@item.MaHA" style="margin-right: 10px; ">
+                <a data-ajax="true" data-ajax-confirm="Bạn có muốn hình ảnh này ?" data-ajax-method="POST" data-ajax-success="deleteSuccess" href="@Url.Action("Delete","QuanLyHinhAnh",new {id=item.MaHA })">
+                    <span class="icon" style=" z-index: 999; position: absolute; margin-left: 63px; color: #6784D9;">
+                        <i class="fas fa-times"></i>
+                    </span>
+                </a>
+                <img src="~/Content/img/@item.TenHA" style="width: 80px; height: auto;  border-radius: 5px;" />
+            </div>
+
+        }
+    </div>
+</div>
+
+@using (Ajax.BeginForm("Details_SinhVien_HinhAnh", "QuanLyHinhAnh", new AjaxOptions { HttpMethod = "POST", OnSuccess = "FnSuccess" }, new { id = ViewBag.MaSV, enctype = "multipart/form-data" }))
+{
+    <div class="row" style="text-align: center">
+        <div class="col-xl-6 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class=" font-weight-bold text-primary text-uppercase mb-1">
+                                Chọn hình ảnh để train
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                <img src="~/Content/img/photo.png" alt="avatar" style="width: 80px; height:auto; z-index: -999" />
+                                <input type="file" name="Avatar" accept="image/*" required id="upload" class="custom-file-input" onchange="loadFile(event)" style="position: absolute; left: -22px; top: 39px;" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row" style="text-align: center">
+        <div class="col-xl-6 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="h5 mb-0 font-weight-bold text-gray-800" style="text-align: center">
+                                <img alt="avatar" style="width: 200px; height:auto; z-index: -999;" id="output" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <input type="submit" value="Thêm mới" class="btn btn-success btn-icon-split p-2 border" />
+    <Button class="btn btn-success btn-icon-split shadow" data-toggle="modal" data-target="#exampleModalLong" id="open">
+        <span class="icon text-white-50">
+            <i class="fas fa-plus"></i>
+        </span>
+        <span class="text">Webcame</span>
+    </Button>
+}
+
+<script>
+
+    function FnSuccess(data) {
+        if (data != false) {
+            console.log(data)
+
+            var hinhanh = `<div id="hinhanh_${data.MaHA}" style="margin-right: 10px;">
+                                <a data-ajax="true" data-ajax-confirm="Bạn có muốn hình ảnh này ?" data-ajax-method="POST" data-ajax-success="deleteSuccess" href="/QuanLyHinhAnh/Delete/${data.MaHA}">
+
+                                    <span class="icon" style=" z-index: 999; position: absolute; margin-left: 30px; color: #6784D9;">
+                                        <i class="fas fa-times"></i>
+                                    </span>
+                                </a>
+                                <img src="../../Content/img/${data.TenHA}" style="width: 50px; height: auto;" />
+                            </div>`;
+            $('#card_hinhanh').append(hinhanh);
+            $('#upload').val("");
+            $('#output').attr("src", "");
+            alertSuccess();
+        }
+    }
+
+    function deleteSuccess(data) {
+        console.log(data)
+        $(`#hinhanh_${data}`).remove()
+        alertSuccess();
+    }
+
+    function alertSuccess() {
+        $('.alert').addClass("show");
+        $('.alert').removeClass("hide");
+        $('.alert').addClass("showAlert");
+        setTimeout(function () {
+            $('.alert').removeClass("show");
+            $('.alert').addClass("hide");
+        }, 5000);
+        $('.close-btn').click(function () {
+            $('.alert').removeClass("show");
+            $('.alert').addClass("hide");
+        });
+    }
+
+    function getAttrFromString(str, node, attr) {
+        var regex = new RegExp('<' + node + ' .*?' + attr + '="(.*?)"', "gi"), result, res = [];
+        while ((result = regex.exec(str))) {
+            res.push(result[1].substr(22, result[1].length));
+        }
+        return res;
+    }
+
+    var stream = document.getElementById("stream");
+    var capture = document.getElementById("capture");
+    var soluong = 0;
+    // The video stream
+    var cameraStream = null;
+
+    $("#open").click(function () {
+
+        var mediaSupport = 'mediaDevices' in navigator;
+        if (mediaSupport && null == cameraStream) {
+
+            navigator.mediaDevices.getUserMedia({ video: true })
+                .then(function (mediaStream) {
+                    cameraStream = mediaStream;
+                    stream.srcObject = mediaStream;
+                    stream.play();
+                })
+                .catch(function (err) {
+                    console.log("Unable to access camera: " + err);
+                });
+        }
+        else {
+            alert('Your browser does not support media devices.');
+            return;
+        }
+    });
+    $(".close").click(function () {
+        if (null != cameraStream) {
+            var track = cameraStream.getTracks()[0];
+            track.stop();
+            stream.load();
+            cameraStream = null;
+        }
+    });
+
+
+    $("#btn-capture").mousedown(startMouseCount);
+    $("#btn-capture").mouseup(stopMouseCount);
+    $("#btn-save").click(() => {
+        $(".close").click();
+
+        if (null != cameraStream) {
+            var track = cameraStream.getTracks()[0];
+            track.stop();
+            stream.load();
+            cameraStream = null;
+        }
+
+        var s = getAttrFromString($('#hinhanh_cam').html(), 'img', 'src');
+
+        $.ajax({
+            
+            type: 'POST',
+            url: "/QuanLyHinhAnh/Webcam",
+            data: { id: @ViewBag.MaSV, data: s },
+            beforeSend: () => { $('.loader-wrapper').show() },
+            complete: () => { $('.loader-wrapper').hide()},
+            success: function (data) {    
+                $('#hinhanh_cam').empty();
+                alertSuccess();
+                window.location = document.URL
+            }
+        });
+
+     })
+    var mouseDownCount = 0
+
+    function startMouseCount() {
+        mdcTimer = window.setTimeout(function () {
+            var ctx = capture.getContext('2d');
+            var img = new Image();
+
+            ctx.drawImage(stream, 0, 0, capture.width, capture.height);
+
+            img.src = capture.toDataURL("image/png");
+            img.width = 60;
+            img.height = 45;
+            img.style = "margin: 2px; border-radius: 5px;"
+            console.log($(''));
+            soluong += 1;
+            capture.innerHTML = '';
+            $("#soluong").html(`${soluong} Images`);
+            $("#hinhanh_cam").append(img);
+            $("#hinhanh_cam").scrollTop($("#hinhanh_cam")[0].scrollHeight);
+            startMouseCount();
+        }, 30);
+    }
+    function stopMouseCount() {
+        clearTimeout(mdcTimer);
+    }
+
+</script>

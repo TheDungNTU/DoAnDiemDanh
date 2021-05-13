@@ -1,0 +1,111 @@
+﻿@model IEnumerable<DoAnDiemDanh.Models.GIANGVIEN>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Layout/_LayoutAdmin.cshtml";
+    IEnumerable<DoAnDiemDanh.Models.MONHOC> MONHOC = (IEnumerable<DoAnDiemDanh.Models.MONHOC>)ViewBag.MONHOC;
+}
+
+<p>
+    <h1 class="h3 mb-4 text-gray-800">Quản lí Giảng Viên</h1>
+    <a href="@Url.Action("Create", "QuanLyGiangVien")" class="btn btn-success btn-icon-split shadow" style="position: absolute; top: 0px; right: 25px">
+        <span class="icon text-white-50">
+            <i class="fas fa-plus"></i>
+        </span>
+        <span class="text">Thêm Giảng Viên Mới</span>
+    </a>
+</p>
+
+
+<!-- DataTales Example -->
+<div class="card shadow mb-4">
+    <div>
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">DANH SÁCH TẤT CẢ GIẢNG VIÊN</h6>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>Tên Giảng Viên</th>
+                        <th>Password</th>
+                        <th>Khoa</th>
+                        <th>Số môn học giảng dạy</th>
+                        <th>Chức năng</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.TenGV)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Password)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.KHOA.TenKhoa)
+                            </td>
+                            <td>
+                                <a href="#" class="btn btn-primary btn-icon-split">
+                                    <span class="icon text-white-50">
+                                        @MONHOC.ToList().Where(_ => _.MaGV == item.MaGV).Count()
+                                    </span>
+                                    <span class="text">Môn Học</span>
+                                </a>
+                            </td>
+                            <td>
+                                @Html.ActionLink("Edit", "Edit", new { id = item.MaGV }) |
+                                @Html.ActionLink("Details", "Details", new { id = item.MaGV }) |
+                                @Html.ActionLink("Delete", "Delete", new { id = item.MaGV })
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+
+@section show
+{
+    <script>
+        $(document).ready(function () {
+            $("#dataTable_length label").html($("#dataTable_length label").html().replace('Show', ''));
+            $("#dataTable_length label").html($("#dataTable_length label").html().replace('entries', ''));
+        });
+    </script>
+}
+
+@foreach (var item in Model)
+{
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.TenGV)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Password)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.KHOA.TenKhoa)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id = item.MaGV }) |
+            @Html.ActionLink("Details", "Details", new { id = item.MaGV }) |
+            @Html.ActionLink("Delete", "Delete", new { id = item.MaGV })
+        </td>
+    </tr>
+}
+
+@section datatable{
+    <script>
+        $(document).ready(function () {
+            $('#dataTable').DataTable();
+        });
+    </script>
+}

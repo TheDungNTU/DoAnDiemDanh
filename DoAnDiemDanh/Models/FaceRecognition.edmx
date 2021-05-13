@@ -1,0 +1,811 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="FACE_RECOGNITIONModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="ADMIN">
+          <Key>
+            <PropertyRef Name="TaiKhoanAdmin" />
+          </Key>
+          <Property Name="TaiKhoanAdmin" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="PasswordAdmin" Type="varchar" MaxLength="100" />
+        </EntityType>
+        <EntityType Name="CTDD">
+          <Key>
+            <PropertyRef Name="MaDD" />
+            <PropertyRef Name="MaSV" />
+          </Key>
+          <Property Name="MaDD" Type="int" Nullable="false" />
+          <Property Name="MaSV" Type="int" Nullable="false" />
+          <Property Name="ThoiGianVao" Type="time" Precision="7" />
+          <Property Name="ThoiGianRa" Type="time" Precision="7" />
+          <Property Name="TTDD" Type="bit" />
+        </EntityType>
+        <EntityType Name="DIEMDANH">
+          <Key>
+            <PropertyRef Name="MaDD" />
+          </Key>
+          <Property Name="MaDD" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="MaMH" Type="int" />
+          <Property Name="NgayDiemDanh" Type="date" />
+        </EntityType>
+        <EntityType Name="DIEMDANH_T">
+          <Key>
+            <PropertyRef Name="MaDD" />
+          </Key>
+          <Property Name="MaDD" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="MaSV" Type="int" />
+          <Property Name="Ngay" Type="date" />
+          <Property Name="Gio" Type="time" Precision="7" />
+        </EntityType>
+        <EntityType Name="GIANGVIEN">
+          <Key>
+            <PropertyRef Name="MaGV" />
+          </Key>
+          <Property Name="MaGV" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="TenGV" Type="nvarchar" MaxLength="200" />
+          <Property Name="Password" Type="varchar" MaxLength="200" />
+          <Property Name="MaKhoa" Type="int" />
+        </EntityType>
+        <EntityType Name="HINHANH">
+          <Key>
+            <PropertyRef Name="MaHA" />
+          </Key>
+          <Property Name="MaHA" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="TenHA" Type="varchar" MaxLength="500" />
+          <Property Name="BASE64" Type="varchar(max)" />
+          <Property Name="MaSV" Type="int" />
+        </EntityType>
+        <EntityType Name="KHOA">
+          <Key>
+            <PropertyRef Name="MaKhoa" />
+          </Key>
+          <Property Name="MaKhoa" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="TenKhoa" Type="nvarchar" MaxLength="200" Nullable="false" />
+        </EntityType>
+        <EntityType Name="LOP">
+          <Key>
+            <PropertyRef Name="MaLop" />
+          </Key>
+          <Property Name="MaLop" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="TenLop" Type="varchar" MaxLength="100" />
+          <Property Name="MaKhoa" Type="int" />
+        </EntityType>
+        <EntityType Name="MONHOC">
+          <Key>
+            <PropertyRef Name="MaMH" />
+          </Key>
+          <Property Name="MaMH" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="TenMH" Type="nvarchar" MaxLength="200" />
+          <Property Name="SoTC" Type="int" />
+          <Property Name="NgayBD" Type="date" />
+          <Property Name="NgayKT" Type="date" />
+          <Property Name="ThoiGianBDGD" Type="time" Precision="7" />
+          <Property Name="ThoiGianKTGD" Type="time" Precision="7" />
+          <Property Name="MaGV" Type="int" />
+        </EntityType>
+        <EntityType Name="SINHVIEN">
+          <Key>
+            <PropertyRef Name="MaSV" />
+          </Key>
+          <Property Name="MaSV" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="TenSV" Type="nvarchar" MaxLength="200" />
+          <Property Name="MaKhoa" Type="int" />
+          <Property Name="MaLop" Type="int" />
+        </EntityType>
+        <EntityType Name="SINHVIEN_MONHOC">
+          <Key>
+            <PropertyRef Name="MaSV" />
+            <PropertyRef Name="MaMH" />
+          </Key>
+          <Property Name="MaSV" Type="int" Nullable="false" />
+          <Property Name="MaMH" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="sysdiagrams">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="principal_id" Type="int" Nullable="false" />
+          <Property Name="diagram_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="version" Type="int" />
+          <Property Name="definition" Type="varbinary(max)" />
+        </EntityType>
+        <Association Name="FK__DIEMDANH_T__MaSV__02084FDA">
+          <End Role="SINHVIEN" Type="Self.SINHVIEN" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="DIEMDANH_T" Type="Self.DIEMDANH_T" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SINHVIEN">
+              <PropertyRef Name="MaSV" />
+            </Principal>
+            <Dependent Role="DIEMDANH_T">
+              <PropertyRef Name="MaSV" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CTDD_DD">
+          <End Role="DIEMDANH" Type="Self.DIEMDANH" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="CTDD" Type="Self.CTDD" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="DIEMDANH">
+              <PropertyRef Name="MaDD" />
+            </Principal>
+            <Dependent Role="CTDD">
+              <PropertyRef Name="MaDD" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CTDD_SINHVIEN">
+          <End Role="SINHVIEN" Type="Self.SINHVIEN" Multiplicity="1" />
+          <End Role="CTDD" Type="Self.CTDD" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SINHVIEN">
+              <PropertyRef Name="MaSV" />
+            </Principal>
+            <Dependent Role="CTDD">
+              <PropertyRef Name="MaSV" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DIEMDANH_MONHOC">
+          <End Role="MONHOC" Type="Self.MONHOC" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="DIEMDANH" Type="Self.DIEMDANH" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="MONHOC">
+              <PropertyRef Name="MaMH" />
+            </Principal>
+            <Dependent Role="DIEMDANH">
+              <PropertyRef Name="MaMH" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_GIANGVIEN_KHOA">
+          <End Role="KHOA" Type="Self.KHOA" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="GIANGVIEN" Type="Self.GIANGVIEN" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="KHOA">
+              <PropertyRef Name="MaKhoa" />
+            </Principal>
+            <Dependent Role="GIANGVIEN">
+              <PropertyRef Name="MaKhoa" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_HINHANH_SINHVIEN">
+          <End Role="SINHVIEN" Type="Self.SINHVIEN" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="HINHANH" Type="Self.HINHANH" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SINHVIEN">
+              <PropertyRef Name="MaSV" />
+            </Principal>
+            <Dependent Role="HINHANH">
+              <PropertyRef Name="MaSV" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_LOP_KHOA">
+          <End Role="KHOA" Type="Self.KHOA" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="LOP" Type="Self.LOP" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="KHOA">
+              <PropertyRef Name="MaKhoa" />
+            </Principal>
+            <Dependent Role="LOP">
+              <PropertyRef Name="MaKhoa" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_MONHOC_GIANGVIEN">
+          <End Role="GIANGVIEN" Type="Self.GIANGVIEN" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="MONHOC" Type="Self.MONHOC" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="GIANGVIEN">
+              <PropertyRef Name="MaGV" />
+            </Principal>
+            <Dependent Role="MONHOC">
+              <PropertyRef Name="MaGV" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_SINHVIEN_KHOA">
+          <End Role="KHOA" Type="Self.KHOA" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="SINHVIEN" Type="Self.SINHVIEN" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="KHOA">
+              <PropertyRef Name="MaKhoa" />
+            </Principal>
+            <Dependent Role="SINHVIEN">
+              <PropertyRef Name="MaKhoa" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_SINHVIEN_LOP">
+          <End Role="LOP" Type="Self.LOP" Multiplicity="0..1" />
+          <End Role="SINHVIEN" Type="Self.SINHVIEN" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="LOP">
+              <PropertyRef Name="MaLop" />
+            </Principal>
+            <Dependent Role="SINHVIEN">
+              <PropertyRef Name="MaLop" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_SINHVIEN_MONHOC_1">
+          <End Role="SINHVIEN" Type="Self.SINHVIEN" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="SINHVIEN_MONHOC" Type="Self.SINHVIEN_MONHOC" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SINHVIEN">
+              <PropertyRef Name="MaSV" />
+            </Principal>
+            <Dependent Role="SINHVIEN_MONHOC">
+              <PropertyRef Name="MaSV" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_SINHVIEN_MONHOC_2">
+          <End Role="MONHOC" Type="Self.MONHOC" Multiplicity="1" />
+          <End Role="SINHVIEN_MONHOC" Type="Self.SINHVIEN_MONHOC" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="MONHOC">
+              <PropertyRef Name="MaMH" />
+            </Principal>
+            <Dependent Role="SINHVIEN_MONHOC">
+              <PropertyRef Name="MaMH" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="FACE_RECOGNITIONModelStoreContainer">
+          <EntitySet Name="ADMIN" EntityType="Self.ADMIN" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CTDD" EntityType="Self.CTDD" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="DIEMDANH" EntityType="Self.DIEMDANH" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="DIEMDANH_T" EntityType="Self.DIEMDANH_T" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="GIANGVIEN" EntityType="Self.GIANGVIEN" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="HINHANH" EntityType="Self.HINHANH" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="KHOA" EntityType="Self.KHOA" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="LOP" EntityType="Self.LOP" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="MONHOC" EntityType="Self.MONHOC" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SINHVIEN" EntityType="Self.SINHVIEN" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SINHVIEN_MONHOC" EntityType="Self.SINHVIEN_MONHOC" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK__DIEMDANH_T__MaSV__02084FDA" Association="Self.FK__DIEMDANH_T__MaSV__02084FDA">
+            <End Role="SINHVIEN" EntitySet="SINHVIEN" />
+            <End Role="DIEMDANH_T" EntitySet="DIEMDANH_T" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CTDD_DD" Association="Self.FK_CTDD_DD">
+            <End Role="DIEMDANH" EntitySet="DIEMDANH" />
+            <End Role="CTDD" EntitySet="CTDD" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CTDD_SINHVIEN" Association="Self.FK_CTDD_SINHVIEN">
+            <End Role="SINHVIEN" EntitySet="SINHVIEN" />
+            <End Role="CTDD" EntitySet="CTDD" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DIEMDANH_MONHOC" Association="Self.FK_DIEMDANH_MONHOC">
+            <End Role="MONHOC" EntitySet="MONHOC" />
+            <End Role="DIEMDANH" EntitySet="DIEMDANH" />
+          </AssociationSet>
+          <AssociationSet Name="FK_GIANGVIEN_KHOA" Association="Self.FK_GIANGVIEN_KHOA">
+            <End Role="KHOA" EntitySet="KHOA" />
+            <End Role="GIANGVIEN" EntitySet="GIANGVIEN" />
+          </AssociationSet>
+          <AssociationSet Name="FK_HINHANH_SINHVIEN" Association="Self.FK_HINHANH_SINHVIEN">
+            <End Role="SINHVIEN" EntitySet="SINHVIEN" />
+            <End Role="HINHANH" EntitySet="HINHANH" />
+          </AssociationSet>
+          <AssociationSet Name="FK_LOP_KHOA" Association="Self.FK_LOP_KHOA">
+            <End Role="KHOA" EntitySet="KHOA" />
+            <End Role="LOP" EntitySet="LOP" />
+          </AssociationSet>
+          <AssociationSet Name="FK_MONHOC_GIANGVIEN" Association="Self.FK_MONHOC_GIANGVIEN">
+            <End Role="GIANGVIEN" EntitySet="GIANGVIEN" />
+            <End Role="MONHOC" EntitySet="MONHOC" />
+          </AssociationSet>
+          <AssociationSet Name="FK_SINHVIEN_KHOA" Association="Self.FK_SINHVIEN_KHOA">
+            <End Role="KHOA" EntitySet="KHOA" />
+            <End Role="SINHVIEN" EntitySet="SINHVIEN" />
+          </AssociationSet>
+          <AssociationSet Name="FK_SINHVIEN_LOP" Association="Self.FK_SINHVIEN_LOP">
+            <End Role="LOP" EntitySet="LOP" />
+            <End Role="SINHVIEN" EntitySet="SINHVIEN" />
+          </AssociationSet>
+          <AssociationSet Name="FK_SINHVIEN_MONHOC_1" Association="Self.FK_SINHVIEN_MONHOC_1">
+            <End Role="SINHVIEN" EntitySet="SINHVIEN" />
+            <End Role="SINHVIEN_MONHOC" EntitySet="SINHVIEN_MONHOC" />
+          </AssociationSet>
+          <AssociationSet Name="FK_SINHVIEN_MONHOC_2" Association="Self.FK_SINHVIEN_MONHOC_2">
+            <End Role="MONHOC" EntitySet="MONHOC" />
+            <End Role="SINHVIEN_MONHOC" EntitySet="SINHVIEN_MONHOC" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="FACE_RECOGNITIONModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="ADMIN">
+          <Key>
+            <PropertyRef Name="TaiKhoanAdmin" />
+          </Key>
+          <Property Name="TaiKhoanAdmin" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="PasswordAdmin" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="CTDD">
+          <Key>
+            <PropertyRef Name="MaDD" />
+            <PropertyRef Name="MaSV" />
+          </Key>
+          <Property Name="MaDD" Type="Int32" Nullable="false" />
+          <Property Name="MaSV" Type="Int32" Nullable="false" />
+          <Property Name="ThoiGianVao" Type="Time" Precision="7" />
+          <Property Name="ThoiGianRa" Type="Time" Precision="7" />
+          <Property Name="TTDD" Type="Boolean" />
+          <NavigationProperty Name="DIEMDANH" Relationship="Self.FK_CTDD_DD" FromRole="CTDD" ToRole="DIEMDANH" />
+          <NavigationProperty Name="SINHVIEN" Relationship="Self.FK_CTDD_SINHVIEN" FromRole="CTDD" ToRole="SINHVIEN" />
+        </EntityType>
+        <EntityType Name="DIEMDANH">
+          <Key>
+            <PropertyRef Name="MaDD" />
+          </Key>
+          <Property Name="MaDD" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="MaMH" Type="Int32" />
+          <Property Name="NgayDiemDanh" Type="DateTime" Precision="0" />
+          <NavigationProperty Name="CTDDs" Relationship="Self.FK_CTDD_DD" FromRole="DIEMDANH" ToRole="CTDD" />
+          <NavigationProperty Name="MONHOC" Relationship="Self.FK_DIEMDANH_MONHOC" FromRole="DIEMDANH" ToRole="MONHOC" />
+        </EntityType>
+        <EntityType Name="DIEMDANH_T">
+          <Key>
+            <PropertyRef Name="MaDD" />
+          </Key>
+          <Property Name="MaDD" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="MaSV" Type="Int32" />
+          <Property Name="Ngay" Type="DateTime" Precision="0" />
+          <Property Name="Gio" Type="Time" Precision="7" />
+          <NavigationProperty Name="SINHVIEN" Relationship="Self.FK__DIEMDANH_T__MaSV__02084FDA" FromRole="DIEMDANH_T" ToRole="SINHVIEN" />
+        </EntityType>
+        <EntityType Name="GIANGVIEN">
+          <Key>
+            <PropertyRef Name="MaGV" />
+          </Key>
+          <Property Name="MaGV" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="TenGV" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="Password" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="MaKhoa" Type="Int32" />
+          <NavigationProperty Name="KHOA" Relationship="Self.FK_GIANGVIEN_KHOA" FromRole="GIANGVIEN" ToRole="KHOA" />
+          <NavigationProperty Name="MONHOCs" Relationship="Self.FK_MONHOC_GIANGVIEN" FromRole="GIANGVIEN" ToRole="MONHOC" />
+        </EntityType>
+        <EntityType Name="HINHANH">
+          <Key>
+            <PropertyRef Name="MaHA" />
+          </Key>
+          <Property Name="MaHA" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="TenHA" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="BASE64" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="MaSV" Type="Int32" />
+          <NavigationProperty Name="SINHVIEN" Relationship="Self.FK_HINHANH_SINHVIEN" FromRole="HINHANH" ToRole="SINHVIEN" />
+        </EntityType>
+        <EntityType Name="KHOA">
+          <Key>
+            <PropertyRef Name="MaKhoa" />
+          </Key>
+          <Property Name="MaKhoa" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="TenKhoa" Type="String" MaxLength="200" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="GIANGVIENs" Relationship="Self.FK_GIANGVIEN_KHOA" FromRole="KHOA" ToRole="GIANGVIEN" />
+          <NavigationProperty Name="LOPs" Relationship="Self.FK_LOP_KHOA" FromRole="KHOA" ToRole="LOP" />
+          <NavigationProperty Name="SINHVIENs" Relationship="Self.FK_SINHVIEN_KHOA" FromRole="KHOA" ToRole="SINHVIEN" />
+        </EntityType>
+        <EntityType Name="LOP">
+          <Key>
+            <PropertyRef Name="MaLop" />
+          </Key>
+          <Property Name="MaLop" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="TenLop" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="MaKhoa" Type="Int32" />
+          <NavigationProperty Name="KHOA" Relationship="Self.FK_LOP_KHOA" FromRole="LOP" ToRole="KHOA" />
+          <NavigationProperty Name="SINHVIENs" Relationship="Self.FK_SINHVIEN_LOP" FromRole="LOP" ToRole="SINHVIEN" />
+        </EntityType>
+        <EntityType Name="MONHOC">
+          <Key>
+            <PropertyRef Name="MaMH" />
+          </Key>
+          <Property Name="MaMH" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="TenMH" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="SoTC" Type="Int32" />
+          <Property Name="NgayBD" Type="DateTime" Precision="0" />
+          <Property Name="NgayKT" Type="DateTime" Precision="0" />
+          <Property Name="ThoiGianBDGD" Type="Time" Precision="7" />
+          <Property Name="ThoiGianKTGD" Type="Time" Precision="7" />
+          <Property Name="MaGV" Type="Int32" />
+          <NavigationProperty Name="DIEMDANHs" Relationship="Self.FK_DIEMDANH_MONHOC" FromRole="MONHOC" ToRole="DIEMDANH" />
+          <NavigationProperty Name="GIANGVIEN" Relationship="Self.FK_MONHOC_GIANGVIEN" FromRole="MONHOC" ToRole="GIANGVIEN" />
+          <NavigationProperty Name="SINHVIENs" Relationship="Self.SINHVIEN_MONHOC" FromRole="MONHOC" ToRole="SINHVIEN" />
+        </EntityType>
+        <EntityType Name="SINHVIEN">
+          <Key>
+            <PropertyRef Name="MaSV" />
+          </Key>
+          <Property Name="MaSV" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="TenSV" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="MaKhoa" Type="Int32" />
+          <Property Name="MaLop" Type="Int32" />
+          <NavigationProperty Name="CTDDs" Relationship="Self.FK_CTDD_SINHVIEN" FromRole="SINHVIEN" ToRole="CTDD" />
+          <NavigationProperty Name="DIEMDANH_T" Relationship="Self.FK__DIEMDANH_T__MaSV__02084FDA" FromRole="SINHVIEN" ToRole="DIEMDANH_T" />
+          <NavigationProperty Name="HINHANHs" Relationship="Self.FK_HINHANH_SINHVIEN" FromRole="SINHVIEN" ToRole="HINHANH" />
+          <NavigationProperty Name="KHOA" Relationship="Self.FK_SINHVIEN_KHOA" FromRole="SINHVIEN" ToRole="KHOA" />
+          <NavigationProperty Name="LOP" Relationship="Self.FK_SINHVIEN_LOP" FromRole="SINHVIEN" ToRole="LOP" />
+          <NavigationProperty Name="MONHOCs" Relationship="Self.SINHVIEN_MONHOC" FromRole="SINHVIEN" ToRole="MONHOC" />
+        </EntityType>
+        <EntityType Name="sysdiagram">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="principal_id" Type="Int32" Nullable="false" />
+          <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="version" Type="Int32" />
+          <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
+        </EntityType>
+        <Association Name="FK_CTDD_DD">
+          <End Role="DIEMDANH" Type="Self.DIEMDANH" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="CTDD" Type="Self.CTDD" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="DIEMDANH">
+              <PropertyRef Name="MaDD" />
+            </Principal>
+            <Dependent Role="CTDD">
+              <PropertyRef Name="MaDD" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CTDD_SINHVIEN">
+          <End Role="SINHVIEN" Type="Self.SINHVIEN" Multiplicity="1" />
+          <End Role="CTDD" Type="Self.CTDD" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SINHVIEN">
+              <PropertyRef Name="MaSV" />
+            </Principal>
+            <Dependent Role="CTDD">
+              <PropertyRef Name="MaSV" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DIEMDANH_MONHOC">
+          <End Role="MONHOC" Type="Self.MONHOC" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="DIEMDANH" Type="Self.DIEMDANH" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="MONHOC">
+              <PropertyRef Name="MaMH" />
+            </Principal>
+            <Dependent Role="DIEMDANH">
+              <PropertyRef Name="MaMH" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__DIEMDANH_T__MaSV__02084FDA">
+          <End Role="SINHVIEN" Type="Self.SINHVIEN" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="DIEMDANH_T" Type="Self.DIEMDANH_T" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SINHVIEN">
+              <PropertyRef Name="MaSV" />
+            </Principal>
+            <Dependent Role="DIEMDANH_T">
+              <PropertyRef Name="MaSV" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_GIANGVIEN_KHOA">
+          <End Role="KHOA" Type="Self.KHOA" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="GIANGVIEN" Type="Self.GIANGVIEN" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="KHOA">
+              <PropertyRef Name="MaKhoa" />
+            </Principal>
+            <Dependent Role="GIANGVIEN">
+              <PropertyRef Name="MaKhoa" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_MONHOC_GIANGVIEN">
+          <End Role="GIANGVIEN" Type="Self.GIANGVIEN" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="MONHOC" Type="Self.MONHOC" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="GIANGVIEN">
+              <PropertyRef Name="MaGV" />
+            </Principal>
+            <Dependent Role="MONHOC">
+              <PropertyRef Name="MaGV" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_HINHANH_SINHVIEN">
+          <End Role="SINHVIEN" Type="Self.SINHVIEN" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="HINHANH" Type="Self.HINHANH" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SINHVIEN">
+              <PropertyRef Name="MaSV" />
+            </Principal>
+            <Dependent Role="HINHANH">
+              <PropertyRef Name="MaSV" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_LOP_KHOA">
+          <End Role="KHOA" Type="Self.KHOA" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="LOP" Type="Self.LOP" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="KHOA">
+              <PropertyRef Name="MaKhoa" />
+            </Principal>
+            <Dependent Role="LOP">
+              <PropertyRef Name="MaKhoa" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_SINHVIEN_KHOA">
+          <End Role="KHOA" Type="Self.KHOA" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="SINHVIEN" Type="Self.SINHVIEN" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="KHOA">
+              <PropertyRef Name="MaKhoa" />
+            </Principal>
+            <Dependent Role="SINHVIEN">
+              <PropertyRef Name="MaKhoa" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_SINHVIEN_LOP">
+          <End Role="LOP" Type="Self.LOP" Multiplicity="0..1" />
+          <End Role="SINHVIEN" Type="Self.SINHVIEN" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="LOP">
+              <PropertyRef Name="MaLop" />
+            </Principal>
+            <Dependent Role="SINHVIEN">
+              <PropertyRef Name="MaLop" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="SINHVIEN_MONHOC">
+          <End Role="SINHVIEN" Type="Self.SINHVIEN" Multiplicity="*" />
+          <End Role="MONHOC" Type="Self.MONHOC" Multiplicity="*" />
+        </Association>
+        <EntityContainer Name="FACE_RECOGNITIONEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="ADMINs" EntityType="Self.ADMIN" />
+          <EntitySet Name="CTDDs" EntityType="Self.CTDD" />
+          <EntitySet Name="DIEMDANHs" EntityType="Self.DIEMDANH" />
+          <EntitySet Name="DIEMDANH_T" EntityType="Self.DIEMDANH_T" />
+          <EntitySet Name="GIANGVIENs" EntityType="Self.GIANGVIEN" />
+          <EntitySet Name="HINHANHs" EntityType="Self.HINHANH" />
+          <EntitySet Name="KHOAs" EntityType="Self.KHOA" />
+          <EntitySet Name="LOPs" EntityType="Self.LOP" />
+          <EntitySet Name="MONHOCs" EntityType="Self.MONHOC" />
+          <EntitySet Name="SINHVIENs" EntityType="Self.SINHVIEN" />
+          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagram" />
+          <AssociationSet Name="FK_CTDD_DD" Association="Self.FK_CTDD_DD">
+            <End Role="DIEMDANH" EntitySet="DIEMDANHs" />
+            <End Role="CTDD" EntitySet="CTDDs" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CTDD_SINHVIEN" Association="Self.FK_CTDD_SINHVIEN">
+            <End Role="SINHVIEN" EntitySet="SINHVIENs" />
+            <End Role="CTDD" EntitySet="CTDDs" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DIEMDANH_MONHOC" Association="Self.FK_DIEMDANH_MONHOC">
+            <End Role="MONHOC" EntitySet="MONHOCs" />
+            <End Role="DIEMDANH" EntitySet="DIEMDANHs" />
+          </AssociationSet>
+          <AssociationSet Name="FK__DIEMDANH_T__MaSV__02084FDA" Association="Self.FK__DIEMDANH_T__MaSV__02084FDA">
+            <End Role="SINHVIEN" EntitySet="SINHVIENs" />
+            <End Role="DIEMDANH_T" EntitySet="DIEMDANH_T" />
+          </AssociationSet>
+          <AssociationSet Name="FK_GIANGVIEN_KHOA" Association="Self.FK_GIANGVIEN_KHOA">
+            <End Role="KHOA" EntitySet="KHOAs" />
+            <End Role="GIANGVIEN" EntitySet="GIANGVIENs" />
+          </AssociationSet>
+          <AssociationSet Name="FK_MONHOC_GIANGVIEN" Association="Self.FK_MONHOC_GIANGVIEN">
+            <End Role="GIANGVIEN" EntitySet="GIANGVIENs" />
+            <End Role="MONHOC" EntitySet="MONHOCs" />
+          </AssociationSet>
+          <AssociationSet Name="FK_HINHANH_SINHVIEN" Association="Self.FK_HINHANH_SINHVIEN">
+            <End Role="SINHVIEN" EntitySet="SINHVIENs" />
+            <End Role="HINHANH" EntitySet="HINHANHs" />
+          </AssociationSet>
+          <AssociationSet Name="FK_LOP_KHOA" Association="Self.FK_LOP_KHOA">
+            <End Role="KHOA" EntitySet="KHOAs" />
+            <End Role="LOP" EntitySet="LOPs" />
+          </AssociationSet>
+          <AssociationSet Name="FK_SINHVIEN_KHOA" Association="Self.FK_SINHVIEN_KHOA">
+            <End Role="KHOA" EntitySet="KHOAs" />
+            <End Role="SINHVIEN" EntitySet="SINHVIENs" />
+          </AssociationSet>
+          <AssociationSet Name="FK_SINHVIEN_LOP" Association="Self.FK_SINHVIEN_LOP">
+            <End Role="LOP" EntitySet="LOPs" />
+            <End Role="SINHVIEN" EntitySet="SINHVIENs" />
+          </AssociationSet>
+          <AssociationSet Name="SINHVIEN_MONHOC" Association="Self.SINHVIEN_MONHOC">
+            <End Role="SINHVIEN" EntitySet="SINHVIENs" />
+            <End Role="MONHOC" EntitySet="MONHOCs" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="FACE_RECOGNITIONModelStoreContainer" CdmEntityContainer="FACE_RECOGNITIONEntities">
+          <EntitySetMapping Name="ADMINs">
+            <EntityTypeMapping TypeName="FACE_RECOGNITIONModel.ADMIN">
+              <MappingFragment StoreEntitySet="ADMIN">
+                <ScalarProperty Name="TaiKhoanAdmin" ColumnName="TaiKhoanAdmin" />
+                <ScalarProperty Name="PasswordAdmin" ColumnName="PasswordAdmin" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CTDDs">
+            <EntityTypeMapping TypeName="FACE_RECOGNITIONModel.CTDD">
+              <MappingFragment StoreEntitySet="CTDD">
+                <ScalarProperty Name="MaDD" ColumnName="MaDD" />
+                <ScalarProperty Name="MaSV" ColumnName="MaSV" />
+                <ScalarProperty Name="ThoiGianVao" ColumnName="ThoiGianVao" />
+                <ScalarProperty Name="ThoiGianRa" ColumnName="ThoiGianRa" />
+                <ScalarProperty Name="TTDD" ColumnName="TTDD" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="DIEMDANHs">
+            <EntityTypeMapping TypeName="FACE_RECOGNITIONModel.DIEMDANH">
+              <MappingFragment StoreEntitySet="DIEMDANH">
+                <ScalarProperty Name="MaDD" ColumnName="MaDD" />
+                <ScalarProperty Name="MaMH" ColumnName="MaMH" />
+                <ScalarProperty Name="NgayDiemDanh" ColumnName="NgayDiemDanh" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="DIEMDANH_T">
+            <EntityTypeMapping TypeName="FACE_RECOGNITIONModel.DIEMDANH_T">
+              <MappingFragment StoreEntitySet="DIEMDANH_T">
+                <ScalarProperty Name="MaDD" ColumnName="MaDD" />
+                <ScalarProperty Name="MaSV" ColumnName="MaSV" />
+                <ScalarProperty Name="Ngay" ColumnName="Ngay" />
+                <ScalarProperty Name="Gio" ColumnName="Gio" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="GIANGVIENs">
+            <EntityTypeMapping TypeName="FACE_RECOGNITIONModel.GIANGVIEN">
+              <MappingFragment StoreEntitySet="GIANGVIEN">
+                <ScalarProperty Name="MaGV" ColumnName="MaGV" />
+                <ScalarProperty Name="TenGV" ColumnName="TenGV" />
+                <ScalarProperty Name="Password" ColumnName="Password" />
+                <ScalarProperty Name="MaKhoa" ColumnName="MaKhoa" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="HINHANHs">
+            <EntityTypeMapping TypeName="FACE_RECOGNITIONModel.HINHANH">
+              <MappingFragment StoreEntitySet="HINHANH">
+                <ScalarProperty Name="MaHA" ColumnName="MaHA" />
+                <ScalarProperty Name="TenHA" ColumnName="TenHA" />
+                <ScalarProperty Name="BASE64" ColumnName="BASE64" />
+                <ScalarProperty Name="MaSV" ColumnName="MaSV" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="KHOAs">
+            <EntityTypeMapping TypeName="FACE_RECOGNITIONModel.KHOA">
+              <MappingFragment StoreEntitySet="KHOA">
+                <ScalarProperty Name="MaKhoa" ColumnName="MaKhoa" />
+                <ScalarProperty Name="TenKhoa" ColumnName="TenKhoa" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="LOPs">
+            <EntityTypeMapping TypeName="FACE_RECOGNITIONModel.LOP">
+              <MappingFragment StoreEntitySet="LOP">
+                <ScalarProperty Name="MaLop" ColumnName="MaLop" />
+                <ScalarProperty Name="TenLop" ColumnName="TenLop" />
+                <ScalarProperty Name="MaKhoa" ColumnName="MaKhoa" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="MONHOCs">
+            <EntityTypeMapping TypeName="FACE_RECOGNITIONModel.MONHOC">
+              <MappingFragment StoreEntitySet="MONHOC">
+                <ScalarProperty Name="MaMH" ColumnName="MaMH" />
+                <ScalarProperty Name="TenMH" ColumnName="TenMH" />
+                <ScalarProperty Name="SoTC" ColumnName="SoTC" />
+                <ScalarProperty Name="NgayBD" ColumnName="NgayBD" />
+                <ScalarProperty Name="NgayKT" ColumnName="NgayKT" />
+                <ScalarProperty Name="ThoiGianBDGD" ColumnName="ThoiGianBDGD" />
+                <ScalarProperty Name="ThoiGianKTGD" ColumnName="ThoiGianKTGD" />
+                <ScalarProperty Name="MaGV" ColumnName="MaGV" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SINHVIENs">
+            <EntityTypeMapping TypeName="FACE_RECOGNITIONModel.SINHVIEN">
+              <MappingFragment StoreEntitySet="SINHVIEN">
+                <ScalarProperty Name="MaSV" ColumnName="MaSV" />
+                <ScalarProperty Name="TenSV" ColumnName="TenSV" />
+                <ScalarProperty Name="MaKhoa" ColumnName="MaKhoa" />
+                <ScalarProperty Name="MaLop" ColumnName="MaLop" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="sysdiagrams">
+            <EntityTypeMapping TypeName="FACE_RECOGNITIONModel.sysdiagram">
+              <MappingFragment StoreEntitySet="sysdiagrams">
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="principal_id" ColumnName="principal_id" />
+                <ScalarProperty Name="diagram_id" ColumnName="diagram_id" />
+                <ScalarProperty Name="version" ColumnName="version" />
+                <ScalarProperty Name="definition" ColumnName="definition" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <AssociationSetMapping Name="SINHVIEN_MONHOC" TypeName="FACE_RECOGNITIONModel.SINHVIEN_MONHOC" StoreEntitySet="SINHVIEN_MONHOC">
+            <EndProperty Name="SINHVIEN">
+              <ScalarProperty Name="MaSV" ColumnName="MaSV" />
+            </EndProperty>
+            <EndProperty Name="MONHOC">
+              <ScalarProperty Name="MaMH" ColumnName="MaMH" />
+            </EndProperty>
+          </AssociationSetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
