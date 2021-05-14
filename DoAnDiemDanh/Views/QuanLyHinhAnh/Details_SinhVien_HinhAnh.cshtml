@@ -195,6 +195,7 @@
             return;
         }
     });
+
     $(".close").click(function () {
         if (null != cameraStream) {
             var track = cameraStream.getTracks()[0];
@@ -233,7 +234,8 @@
             }
         });
 
-     })
+    })
+
     var mouseDownCount = 0
 
     function startMouseCount() {

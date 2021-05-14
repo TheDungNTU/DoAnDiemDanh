@@ -4,6 +4,13 @@
     var GiangVien = (IEnumerable<DoAnDiemDanh.Models.GIANGVIEN>)ViewBag.MaGV;
     ViewBag.Title = "Index";
     Layout = "~/Views/Layout/_LayoutAdmin.cshtml";
+
+    <style>
+        .is-invalid {
+            color: #E84C3D;
+            margin-top: 5px;
+        }
+    </style>
 }
 
 <!-- Modal -->
@@ -16,7 +23,7 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            @using (Ajax.BeginForm("Create", "QuanLyMonHoc", new AjaxOptions { HttpMethod = "POST", OnSuccess = "FnSuccess" }))
+            @using (Ajax.BeginForm("Create", "QuanLyMonHoc", new AjaxOptions { HttpMethod = "POST", OnSuccess = "FnSuccess" }, new { @class = "formLop" }))
             {
                 @Html.AntiForgeryToken()
 
@@ -32,7 +39,7 @@
                     <div class="form-group">
                         <label class="control-label col-md-4" for="SoTC">Số Tín Chỉ</label>
                         <div class="col-md-12">
-                            <input class="form-control text-box single-line" data-val="true" data-val-number="The field SoTC must be a number." id="SoTC" name="SoTC" type="number" value="1" min="1" required>
+                            <input class="form-control text-box single-line" data-val="true" data-val-number="The field SoTC must be a number." id="SoTC" name="SoTC" type="number" value="1" required>
                             <span class="field-validation-valid text-danger" data-valmsg-for="SoTC" data-valmsg-replace="true"></span>
                         </div>
                     </div>
@@ -40,7 +47,7 @@
                     <div class="form-group">
                         <label class="control-label col-md-4" for="NgayBD">Ngày Bắt Đầu</label>
                         <div class="col-md-12">
-                            <input class="form-control text-box single-line" data-val="true" data-val-date="The field NgayBD must be a date." id="NgayBD" name="NgayBD" type="date" value="@DateTime.Now.ToString("yyyy-MM-dd")" min="@DateTime.Now.ToString("yyyy-MM-dd")" required>
+                            <input class="form-control text-box single-line" data-val="true" data-val-date="The field NgayBD must be a date." id="NgayBD" name="NgayBD" type="date" value="@DateTime.Now.ToString("yyyy-MM-dd")" @*min="@DateTime.Now.ToString("yyyy-MM-dd")"*@ required>
                             <span class="field-validation-valid text-danger" data-valmsg-for="NgayBD" data-valmsg-replace="true"></span>
                         </div>
                     </div>
@@ -48,7 +55,7 @@
                     <div class="form-group">
                         <label class="control-label col-md-4" for="NgayKT">Ngày Kết Thúc</label>
                         <div class="col-md-12">
-                            <input class="form-control text-box single-line" data-val="true" data-val-date="The field NgayKT must be a date." id="NgayKT" name="NgayKT" type="date" value="" min="@DateTime.Now.ToString("yyyy-MM-dd")" required>
+                            <input class="form-control text-box single-line" data-val="true" data-val-date="The field NgayKT must be a date." id="NgayKT" name="NgayKT" type="date" value="" @*min="@DateTime.Now.ToString("yyyy-MM-dd")"*@ required>
                             <span class="field-validation-valid text-danger" data-valmsg-for="NgayKT" data-valmsg-replace="true"></span>
                         </div>
                     </div>
@@ -224,6 +231,89 @@
     <script>
         $(document).ready(function () {
             $('#dataTable').DataTable();
+
+            jQuery.validator.addMethod("NotAllowNumber", function (value, element) {
+                return this.optional(element) || /^([^0-9]*)$/.test(value);
+            }, "Không được phép có chữ số.");
+
+            jQuery.validator.addMethod("NotAllowFirstSpace", function (value, element) {
+                return this.optional(element) || /^\S{1}/.test(value);
+            }, "Kí tự đầu tiên không được có khoảng trắng.");
+
+            jQuery.validator.addMethod("NotAllowSpecial", function (value, element) {
+                return this.optional(element) || /^([^*.!/'#$%^&(){}[:;<>,.?/~_+-=|]*)$/.test(value);
+            }, "Không được phép có kí tự đặc biệt.");
+
+            jQuery.validator.addMethod("greaterThan",
+                function (value, element, params) {
+
+                    if (!/Invalid|NaN/.test(new Date(value))) {
+                        return new Date(value) > new Date($(params).val());
+                    }
+
+                    return isNaN(value) && isNaN($(params).val())
+                        || (Number(value) > Number($(params).val()));
+                }, 'Ngày kết thúc phải lớn hơn ngày bắt đầu.');
+
+
+            $(".formLop").validate({
+                errorClass: "is-invalid",
+                validClass: "is-valid",
+                rules: {
+                    TenMH: {
+                        required: true,
+                        NotAllowFirstSpace: true,
+                        NotAllowNumber: true,
+                        NotAllowSpecial: true,
+
+                    },
+                    SoTC: {
+                        required: true,
+                        range: [1, 10]
+                    },
+                    NgayBD: {
+                        required: true,
+                    },
+                    NgayKT: {
+                        required: true,
+                        greaterThan: "#NgayBD"
+                    },
+                    ThoiGianBDGD: {
+                        required: true,
+                    },
+                    ThoiGianKTGD: {
+                        required: true,
+                    },
+                    MaGV: {
+                        required: true,
+                    },
+                    
+                },
+                messages: {
+                    TenMH: {
+                        required: "Tên môn học không được để trống.",
+                    },
+                    SoTC: {
+                        required: "Số tín chỉ không được để trống",
+                        range: "Số tín chỉ phải lớn hơn 1 và bé hơn 10"
+                    },
+                    NgayBD: {
+                        required: "Ngày bắt đầu không được để trống",
+                    },
+                    NgayKT: {
+                        required: "Ngày kết thúc không được để trống.",
+                    },
+                    ThoiGianBDGD: {
+                        required: "Thời gian bắt đầu giảng dạy không được để trống",
+                    },
+                    ThoiGianKTGD: {
+                        required: "Thời gian bắt đầu giảng dạy không được để trống",
+                    },
+                    MaGV: {
+                        required: "Bạn chưa chọn Giảng viên, hãy chọn 1.",
+                    }
+                }
+            });
         });
     </script>
 }

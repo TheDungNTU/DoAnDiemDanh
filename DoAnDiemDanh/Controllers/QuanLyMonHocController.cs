@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data;
 using System.Data.Entity;
 using System.Data.SqlClient;
@@ -34,7 +35,7 @@ namespace DoAnDiemDanh.Controllers
         [HttpPost]
         public JsonResult DangKyMonHoc(string MaMH, string MaSV)
         {
-            string sqlconnectStr = "Data Source=DESKTOP-37IIIG3;initial catalog=FACE_RECOGNITION;User ID=sa;Password=dung.lt.59cntt;";
+            string sqlconnectStr = ConfigurationManager.ConnectionStrings["ASPNETConnectionString"].ToString();
             var cnn = new SqlConnection(sqlconnectStr);
             cnn.Open();
 

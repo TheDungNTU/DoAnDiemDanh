@@ -17,9 +17,8 @@
             <span class="fas fa-times"></span>
         </div>
     </div>*@
-
 <div>
-    @using (Ajax.BeginForm("Create", "QuanLyKhoa", new AjaxOptions { HttpMethod = "POST", OnSuccess = "FnSuccess" }, new{@class = "abc"}))
+    @using (Ajax.BeginForm("Create", "QuanLyKhoa", new AjaxOptions { HttpMethod = "POST", OnSuccess = "FnSuccess" }, new{@class = "formKhoa"}))
     {
         @Html.AntiForgeryToken()
 
@@ -133,8 +132,9 @@
             jQuery.validator.addMethod("NotAllowNumber", function (value, element) {
                 return this.optional(element) || /^([^0-9]*)$/.test(value);
             }, "Không được phép có chữ số.");
-            
 
+
+   
             jQuery.validator.addMethod("NotAllowFirstSpace", function (value, element) {
                 return this.optional(element) || /^\S{1}/.test(value);
             }, "Kí tự đầu tiên không được có khoảng trắng.");
@@ -145,7 +145,7 @@
 
 
 
-            $(".abc").validate({
+            $(".formKhoa").validate({
                 errorClass: "is-invalid",
                 validClass: "is-valid",
                 rules: {

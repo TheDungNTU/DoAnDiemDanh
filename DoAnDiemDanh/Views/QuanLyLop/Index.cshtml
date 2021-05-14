@@ -5,6 +5,14 @@
     Layout = "~/Views/Layout/_LayoutAdmin.cshtml";
     var Khoa = (IEnumerable<DoAnDiemDanh.Models.KHOA>)ViewBag.MaKhoa;
     var list = (List<LopHocCount>)ViewBag.danhsach;
+
+    <style>
+        .is-invalid {
+            color: #E84C3D;
+            margin-top: 5px;
+        }
+    </style>
+
 }
 
 <!--<p>
@@ -17,7 +25,7 @@
     </a>*@
 <!--</p>-->
 
-@using (Ajax.BeginForm("Create", "QuanLyLop", new AjaxOptions { HttpMethod = "POST", OnSuccess = "FnSuccess" }))
+@using (Ajax.BeginForm("Create", "QuanLyLop", new AjaxOptions { HttpMethod = "POST", OnSuccess = "FnSuccess" }, new { @class = "formLop" }))
 {
     @Html.AntiForgeryToken()
     <div class="form-horizontal shadow p-3 mb-2 card">
@@ -161,6 +169,35 @@
     <script>
         $(document).ready(function () {
             $('#dataTable').DataTable();
+
+            jQuery.validator.addMethod("NotAllowFirstSpace", function (value, element) {
+                return this.optional(element) || /^\S{1}/.test(value);
+            }, "Kí tự đầu tiên không được có khoảng trắng.");
+
+            jQuery.validator.addMethod("RequireClass", function (value, element) {
+                return this.optional(element) || /^\d{2}[.]{1}[a-zA-Z]+[-]{1}\d+/.test(value);
+            }, "Hãy nhập đúng định dạng tên lớp (VD: 59.CNTT-1).");
+            
+            $(".formLop").validate({
+                errorClass: "is-invalid",
+                validClass: "is-valid",
+                rules: {
+                    TenLop: {
+                        required: true,
+                        NotAllowFirstSpace: true,
+                        RequireClass: true,
+                    },
+                    MaKhoa: "required"
+                },
+                messages: {
+                    TenLop: {
+                        required: "Tên Lớp không được để trống.",
+                    },
+                    MaKhoa: {
+                        required: "Bạn chưa chọn Khoa, hãy chọn 1.",
+                    }
+                }
+            });
         });
     </script>
 }

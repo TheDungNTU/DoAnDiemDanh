@@ -59,7 +59,6 @@ namespace DoAnDiemDanh.Controllers
                         db.SaveChanges();
                     }
                 }
-                
             }
             return Json(true, JsonRequestBehavior.AllowGet);
         }
