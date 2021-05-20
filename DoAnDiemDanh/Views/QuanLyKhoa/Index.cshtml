@@ -92,7 +92,6 @@
             alertSuccess();
         }
         $('#TenKhoa').val(''); 
-        
     }
 
     function deleteSuccess(data) {
@@ -128,10 +127,14 @@
         }, "Kí tự đầu tiên không được có khoảng trắng.");
 
         jQuery.validator.addMethod("NotAllowSpecial", function (value, element) {
-            return this.optional(element) || /^([^*.!/'#$%^&(){}[:;<>,.?/~_+-=|]*)$/.test(value);
+            return this.optional(element) || /^([^*\u0040.!/'#$%^&(){}[:;<>,.?/~_+-=|]*)$/.test(value);
         }, "Không được phép có kí tự đặc biệt.");
 
         $(".formKhoa").validate({
+            onfocusout: function (element) {
+                $(element).valid();
+            },
+
             errorClass: "is-invalid",
             validClass: "is-valid",
             rules: {

@@ -29,7 +29,7 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            @using (Ajax.BeginForm("Create", "QuanLyMonHoc", new AjaxOptions { HttpMethod = "POST", OnSuccess = "FnSuccess" }, new { @class = "formLop" }))
+            @using (Ajax.BeginForm("Create", "QuanLyMonHoc", new AjaxOptions { HttpMethod = "POST", OnSuccess = "FnSuccess" }, new { @class = "formMH" }))
             {
                 @Html.AntiForgeryToken()
 
@@ -190,7 +190,7 @@
                                 <a data-ajax='true' data-ajax-confirm='Bạn có muốn xóa bản ghi này ?' data-ajax-method='POST' data-ajax-success='deleteSuccess' href='/QuanLyMonHoc/Delete/@item.MaMH'>Xóa</a>
                             </td>
                         </tr>
-                    }
+                                    }
                 </tbody>
             </table>
         </div>
@@ -279,7 +279,7 @@
         }, "Kí tự đầu tiên không được có khoảng trắng.");
 
         jQuery.validator.addMethod("NotAllowSpecial", function (value, element) {
-            return this.optional(element) || /^([^*.!/'#$%^&(){}[:;<>,.?/~_+-=|]*)$/.test(value);
+            return this.optional(element) || /^([^*\u0040.!/'#$%^&(){}[:;<>,.?/~_+-=|]*)$/.test(value);
         }, "Không được phép có kí tự đặc biệt.");
 
         jQuery.validator.addMethod("greaterThan",
@@ -294,7 +294,26 @@
             }, 'Ngày kết thúc phải lớn hơn ngày bắt đầu.');
 
 
-        $(".formLop").validate({
+        var form = $(".formMH").validate({
+            onfocusout: function (element) {
+                $(element).valid();
+            },
+            invalidHandler: function (form, validator) {
+                var errors = validator.numberOfInvalids();
+                if (errors) {
+                    var message = errors == 1
+                        ? 'Please correct the following error:\n'
+                        : 'Please correct the following ' + errors + ' errors.\n';
+                    var errors = "";
+                    if (validator.errorList.length > 0) {
+                        for (x = 0; x < validator.errorList.length; x++) {
+                            errors += "\n\u25CF " + validator.errorList[x].message;
+                        }
+                    }
+                    alert(message + errors);
+                }
+                validator.focusInvalid();
+            },
             errorClass: "is-invalid",
             validClass: "is-valid",
             rules: {
@@ -360,6 +379,10 @@
             width: 'resolve',
             heigth: 'resolve'
         });
+       
+        $(".close").click(function () {
+            form.resetForm(); 
+        })
     });
 
 </script>
