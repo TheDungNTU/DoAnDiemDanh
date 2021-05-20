@@ -235,8 +235,8 @@
 
                     var Data_TenKhoa = data[2];
                     var Data_TenLop = data[3];
-           
-                    if (Data_TenLop.includes(TenLop))  
+
+                    if (Data_TenLop.includes(TenLop) && Data_TenKhoa.includes(TenKhoa))  
                     {
                         return true;
                     }
@@ -251,7 +251,6 @@
                 },
                 "lengthMenu": [[5,10, 25, 50, -1], [5,10, 25, 50, "All"]]
             });
-
 
 
             $("#Filter_TenKhoa").change(function (){
