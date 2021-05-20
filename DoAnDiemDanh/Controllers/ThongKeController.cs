@@ -380,8 +380,7 @@ namespace DoAnDiemDanh.Controllers
             var row = 11;
 
             CultureInfo vn = new CultureInfo("vi-VN");
-            
-
+           
             foreach (var item in diemdanhct)
             {
              
@@ -391,10 +390,103 @@ namespace DoAnDiemDanh.Controllers
 
                 worksheet.Cells[row, col+1].Value = vn.DateTimeFormat.GetDayName(dt.DayOfWeek);
                 worksheet.Cells[row, col+1].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-                
+
+                TimeSpan t1 = (TimeSpan)item.daugio;
+                TimeSpan t2 = (TimeSpan)item.daugio + TimeSpan.FromMinutes(15);
+
+                TimeSpan t3 = (TimeSpan)item.cuoigio;
+                TimeSpan t4 = (TimeSpan)item.cuoigio - TimeSpan.FromMinutes(15);
+
+                var diemdanhdg = "_";
+                var diemdanhcg = "_";
+
+                if(item.tgdddg != null)
+                {
+                    TimeSpan t5 = (TimeSpan)item.tgdddg;
+                    diemdanhdg = t5.ToString(@"hh\:mm");
+                }
+
+                if (item.tgddcg != null)
+                {
+                    TimeSpan t6 = (TimeSpan)item.tgddcg;
+                    diemdanhcg = t6.ToString(@"hh\:mm");
+                }
+
+                worksheet.Cells[row, col + 2].Value = $"{t1.ToString(@"hh\:mm")} - {t2.ToString(@"hh\:mm")}";
+                worksheet.Cells[row, col + 2].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+
+                worksheet.Cells[row, col + 3].Value = $"{t4.ToString(@"hh\:mm")} - {t3.ToString(@"hh\:mm")}";
+                worksheet.Cells[row, col + 3].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+
+                worksheet.Cells[row, col + 4].Value = diemdanhdg;
+                worksheet.Cells[row, col + 4].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+
+                worksheet.Cells[row, col + 5].Value = diemdanhcg;
+                worksheet.Cells[row, col + 5].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+
+                worksheet.Cells[row, col + 6].Value = ((bool)item.tinhtrang) ? "1": "v";
+                worksheet.Cells[row, col + 6].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+
+                worksheet.Cells[row, col + 7].Style.Border.BorderAround(ExcelBorderStyle.Thin);
 
                 row += 1;
             }
+
+            worksheet.Cells[row, 6].Value = "Tổng lượt điểm danh: ";
+            worksheet.Cells[row, 6].Style.Font.Bold = true;
+
+            worksheet.Cells[row, 7].Value = diemdanh.Count();
+            worksheet.Cells[row, 7].Style.Font.Bold = true;
+
+            var date = DateTime.Now;
+
+            worksheet.Cells[row + 1,2].Value = $"{vn.DateTimeFormat.GetDayName(date.DayOfWeek)} Ngày {date.Day} Tháng {date.Month} Năm {date.Year}";
+            worksheet.Cells[row + 1, 2].Style.Font.Name = "Arial";
+            worksheet.Cells[row + 1, 2].Style.Font.Size = 10;
+            worksheet.Cells[row + 1, 2, row + 1, 7].Merge = true;
+            worksheet.Cells[row + 1, 2, row + 1, 7].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+
+            worksheet.Cells[row + 2, 2].Value = "Sinh viên";
+            worksheet.Cells[row + 2, 2].Style.Font.Name = "Arial";
+            worksheet.Cells[row + 2, 2].Style.Font.Size = 10;
+            worksheet.Cells[row + 2, 2].Style.Font.Bold = true;
+
+            worksheet.Cells[row + 3, 2].Value = "(Ký, họ tên)";
+            worksheet.Cells[row + 3, 2].Style.Font.Name = "Arial";
+            worksheet.Cells[row + 3, 2].Style.Font.Size = 10;
+            worksheet.Cells[row + 3, 2].Style.Font.Italic = true;
+
+
+            worksheet.Cells[row + 2, 5].Value = "Giảng viên";
+            worksheet.Cells[row + 2, 5].Style.Font.Name = "Arial";
+            worksheet.Cells[row + 2, 5].Style.Font.Size = 10;
+            worksheet.Cells[row + 2, 5].Style.Font.Bold = true;
+
+            worksheet.Cells[row + 3, 5].Value = "(Ký, họ tên)";
+            worksheet.Cells[row + 3, 5].Style.Font.Name = "Arial";
+            worksheet.Cells[row + 3, 5].Style.Font.Size = 10;
+            worksheet.Cells[row + 3, 5].Style.Font.Italic = true;
+
+
+            worksheet.Cells[row + 2, 7].Value = "Phòng giáo vụ";
+            worksheet.Cells[row + 2, 7].Style.Font.Name = "Arial";
+            worksheet.Cells[row + 2, 7].Style.Font.Size = 10;
+            worksheet.Cells[row + 2, 7].Style.Font.Bold = true;
+
+            worksheet.Cells[row + 3, 7].Value = "(Ký, họ tên)";
+            worksheet.Cells[row + 3, 7].Style.Font.Name = "Arial";
+            worksheet.Cells[row + 3, 7].Style.Font.Size = 10;
+            worksheet.Cells[row + 3, 7].Style.Font.Italic = true;
+
+            worksheet.Cells[row + 5, 1].Value = "Thời gian điểm danh dựa theo thời khóa biểu, quy định cách thời gian bắt đầu và thời gian kết thúc học 15 phút";
+            worksheet.Cells[row + 6, 1].Value = "Điểm danh ngoài khung giờ quy định được coi là vắng";
+            worksheet.Cells[row + 7, 1].Value = "Điểm danh không đủ hai lượt đầu giờ và cuối giờ được coi là vắng";
+            worksheet.Cells[row + 8, 1].Value = "Không điểm danh được coi là vắng";
+            worksheet.Cells[row + 9, 1].Value = "Cách tính điểm chuyên cần: Điểm chuyên cần là 1 điểm, vắng 1 buổi - 0,25 điểm";
+            worksheet.Cells[row + 10, 1].Value = "Sinh viên được vắng tối đa 3 buổi, nếu hơn sẽ cấm thi";
+
+            worksheet.Cells[row + 5, 1, row + 10, 8].Style.Fill.PatternType = ExcelFillStyle.Solid;
+            worksheet.Cells[row + 5, 1, row + 10, 8].Style.Fill.BackgroundColor.SetColor(0, 255, 242, 204);
 
             string tenfile = $"ChiTietDiemDanh_MaSV_{MaSV}_{monhoc.TenMH}_{Convert.ToDateTime(DateTime.Now).ToString("dd/MM/yyyy")}";
 

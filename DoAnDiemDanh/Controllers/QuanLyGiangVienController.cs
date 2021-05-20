@@ -17,50 +17,30 @@ namespace DoAnDiemDanh.Controllers
         // GET: QuanLyGiangVien
         public ActionResult Index()
         {
-
             var gIANGVIENs = db.GIANGVIENs.Include(g => g.KHOA);
             ViewBag.MONHOC = db.MONHOCs.Include(_ => _.GIANGVIEN);
+            ViewBag.MaKhoa = db.KHOAs;
             return View(gIANGVIENs.ToList());
-        }
-
-        // GET: QuanLyGiangVien/Details/5
-        public ActionResult Details(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            GIANGVIEN gIANGVIEN = db.GIANGVIENs.Find(id);
-            if (gIANGVIEN == null)
-            {
-                return HttpNotFound();
-            }
-            return View(gIANGVIEN);
-        }
-
-        // GET: QuanLyGiangVien/Create
-        public ActionResult Create()
-        {
-            ViewBag.MaKhoa = new SelectList(db.KHOAs, "MaKhoa", "TenKhoa");
-            return View();
         }
 
         // POST: QuanLyGiangVien/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "MaGV,TenGV,Password,MaKhoa")] GIANGVIEN gIANGVIEN)
+        public JsonResult Create([Bind(Include = "MaGV,TenGV,Password,MaKhoa")] GIANGVIEN gIANGVIEN)
         {
-            if (ModelState.IsValid)
+            db.GIANGVIENs.Add(gIANGVIEN);
+            var Khoa = db.KHOAs.Where(_ => _.MaKhoa == gIANGVIEN.MaKhoa).Single();
+            db.SaveChanges();
+            var data = new
             {
-                db.GIANGVIENs.Add(gIANGVIEN);
-                db.SaveChanges();
-                return RedirectToAction("Index");
-            }
+                MaGV = gIANGVIEN.MaGV,
+                TenGV = gIANGVIEN.TenGV,
+                Password = gIANGVIEN.Password,
+                TenKhoa = Khoa.TenKhoa
 
-            ViewBag.MaKhoa = new SelectList(db.KHOAs, "MaKhoa", "TenKhoa", gIANGVIEN.MaKhoa);
-            return View(gIANGVIEN);
+            };
+            return Json(data,JsonRequestBehavior.AllowGet);
         }
 
         // GET: QuanLyGiangVien/Edit/5
@@ -96,30 +76,14 @@ namespace DoAnDiemDanh.Controllers
             return View(gIANGVIEN);
         }
 
-        // GET: QuanLyGiangVien/Delete/5
-        public ActionResult Delete(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            GIANGVIEN gIANGVIEN = db.GIANGVIENs.Find(id);
-            if (gIANGVIEN == null)
-            {
-                return HttpNotFound();
-            }
-            return View(gIANGVIEN);
-        }
-
         // POST: QuanLyGiangVien/Delete/5
         [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int id)
+        public JsonResult DeleteConfirmed(int id)
         {
             GIANGVIEN gIANGVIEN = db.GIANGVIENs.Find(id);
             db.GIANGVIENs.Remove(gIANGVIEN);
             db.SaveChanges();
-            return RedirectToAction("Index");
+            return Json(id,JsonRequestBehavior.AllowGet);
         }
 
         protected override void Dispose(bool disposing)

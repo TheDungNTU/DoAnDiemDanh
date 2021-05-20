@@ -90,6 +90,16 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
+    <EntitySetMapping Name="NGAYLEs">
+      <EntityTypeMapping TypeName="FACE_RECOGNITIONModel.NGAYLE">
+        <MappingFragment StoreEntitySet="NGAYLE">
+          <ScalarProperty Name="MaNL" ColumnName="MaNL" />
+          <ScalarProperty Name="TenNL" ColumnName="TenNL" />
+          <ScalarProperty Name="Ngay" ColumnName="Ngay" />
+          <ScalarProperty Name="GhiChu" ColumnName="GhiChu" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
     <EntitySetMapping Name="SINHVIENs">
       <EntityTypeMapping TypeName="FACE_RECOGNITIONModel.SINHVIEN">
         <MappingFragment StoreEntitySet="SINHVIEN">
@@ -108,6 +118,19 @@
           <ScalarProperty Name="diagram_id" ColumnName="diagram_id" />
           <ScalarProperty Name="version" ColumnName="version" />
           <ScalarProperty Name="definition" ColumnName="definition" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="THOIKHOABIEUx">
+      <EntityTypeMapping TypeName="FACE_RECOGNITIONModel.THOIKHOABIEU">
+        <MappingFragment StoreEntitySet="THOIKHOABIEU">
+          <ScalarProperty Name="MaMH" ColumnName="MaMH" />
+          <ScalarProperty Name="ThuHai" ColumnName="ThuHai" />
+          <ScalarProperty Name="ThuBa" ColumnName="ThuBa" />
+          <ScalarProperty Name="ThuTu" ColumnName="ThuTu" />
+          <ScalarProperty Name="ThuNam" ColumnName="ThuNam" />
+          <ScalarProperty Name="ThuSau" ColumnName="ThuSau" />
+          <ScalarProperty Name="ThuBay" ColumnName="ThuBay" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

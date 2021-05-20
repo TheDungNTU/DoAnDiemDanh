@@ -4,18 +4,20 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="c8a47a673bc0496cbc61b9a88f8ae0d4" Name="Diagram1">
+      <Diagram DiagramId="777fef6115434e8c8419711b05c584e9" Name="Diagram1">
         <EntityTypeShape EntityType="FACE_RECOGNITIONModel.ADMIN" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="FACE_RECOGNITIONModel.CTDD" Width="1.5" PointX="9.75" PointY="5.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="FACE_RECOGNITIONModel.DIEMDANH" Width="1.5" PointX="7.5" PointY="3.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="FACE_RECOGNITIONModel.DIEMDANH_T" Width="1.5" PointX="7.5" PointY="5.875" IsExpanded="true" />
-        <EntityTypeShape EntityType="FACE_RECOGNITIONModel.GIANGVIEN" Width="1.5" PointX="3" PointY="3.125" IsExpanded="true" />
-        <EntityTypeShape EntityType="FACE_RECOGNITIONModel.HINHANH" Width="1.5" PointX="7.5" PointY="8.625" IsExpanded="true" />
-        <EntityTypeShape EntityType="FACE_RECOGNITIONModel.KHOA" Width="1.5" PointX="0.75" PointY="4.5" IsExpanded="true" />
-        <EntityTypeShape EntityType="FACE_RECOGNITIONModel.LOP" Width="1.5" PointX="3" PointY="6" IsExpanded="true" />
-        <EntityTypeShape EntityType="FACE_RECOGNITIONModel.MONHOC" Width="1.5" PointX="5.25" PointY="2.625" IsExpanded="true" />
-        <EntityTypeShape EntityType="FACE_RECOGNITIONModel.SINHVIEN" Width="1.5" PointX="5.25" PointY="6.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="FACE_RECOGNITIONModel.sysdiagram" Width="1.5" PointX="9.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="FACE_RECOGNITIONModel.CTDD" Width="1.5" PointX="9.75" PointY="5.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="FACE_RECOGNITIONModel.DIEMDANH" Width="1.5" PointX="7.5" PointY="3" IsExpanded="true" />
+        <EntityTypeShape EntityType="FACE_RECOGNITIONModel.DIEMDANH_T" Width="1.5" PointX="7.5" PointY="9.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="FACE_RECOGNITIONModel.GIANGVIEN" Width="1.5" PointX="3" PointY="4.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="FACE_RECOGNITIONModel.HINHANH" Width="1.5" PointX="7.5" PointY="12" IsExpanded="true" />
+        <EntityTypeShape EntityType="FACE_RECOGNITIONModel.KHOA" Width="1.5" PointX="0.75" PointY="6" IsExpanded="true" />
+        <EntityTypeShape EntityType="FACE_RECOGNITIONModel.LOP" Width="1.5" PointX="3" PointY="7.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="FACE_RECOGNITIONModel.MONHOC" Width="1.5" PointX="5.25" PointY="3.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="FACE_RECOGNITIONModel.NGAYLE" Width="1.5" PointX="2.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="FACE_RECOGNITIONModel.SINHVIEN" Width="1.5" PointX="5.25" PointY="8.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="FACE_RECOGNITIONModel.sysdiagram" Width="1.5" PointX="4.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="FACE_RECOGNITIONModel.THOIKHOABIEU" Width="1.5" PointX="7.5" PointY="5.625" IsExpanded="true" />
         <AssociationConnector Association="FACE_RECOGNITIONModel.FK_CTDD_DD" ManuallyRouted="false" />
         <AssociationConnector Association="FACE_RECOGNITIONModel.FK_CTDD_SINHVIEN" ManuallyRouted="false" />
         <AssociationConnector Association="FACE_RECOGNITIONModel.FK_DIEMDANH_MONHOC" ManuallyRouted="false" />
@@ -26,6 +28,7 @@
         <AssociationConnector Association="FACE_RECOGNITIONModel.FK_LOP_KHOA" ManuallyRouted="false" />
         <AssociationConnector Association="FACE_RECOGNITIONModel.FK_SINHVIEN_KHOA" ManuallyRouted="false" />
         <AssociationConnector Association="FACE_RECOGNITIONModel.FK_SINHVIEN_LOP" ManuallyRouted="false" />
+        <AssociationConnector Association="FACE_RECOGNITIONModel.FK_TKB_MH" ManuallyRouted="false" />
         <AssociationConnector Association="FACE_RECOGNITIONModel.SINHVIEN_MONHOC" ManuallyRouted="false" />
       </Diagram>
     </edmx:Diagrams>

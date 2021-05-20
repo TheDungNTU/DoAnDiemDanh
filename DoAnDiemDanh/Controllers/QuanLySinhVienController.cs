@@ -84,27 +84,14 @@ namespace DoAnDiemDanh.Controllers
         public ActionResult Index()
         {
             var sINHVIENs = db.SINHVIENs.Include(sv => sv.KHOA).Include(sv => sv.LOP);
-
+            ViewBag.Khoa = db.KHOAs.Where(_ => _.LOPs.Count() > 0);
+            ViewBag.Khoa_Filter = db.KHOAs;
+            ViewBag.Lop_Filter = db.LOPs;
             var t = (from hinhanh in db.HINHANHs
                                group hinhanh by hinhanh.MaSV into hinhanhgrp
                                select new HinhAnhCount { masv = hinhanhgrp.Key, soluong = hinhanhgrp.Count() }).ToList();
             ViewBag.danhsach = t;
             return View(sINHVIENs.ToList());
-        }
-
-        // GET: QuanLySinhVien/Details/5
-        public ActionResult Details(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            SINHVIEN sINHVIEN = db.SINHVIENs.Find(id);
-            if (sINHVIEN == null)
-            {
-                return HttpNotFound();
-            }
-            return View(sINHVIEN);
         }
 
         public JsonResult GetLopHoc(int id)
@@ -114,12 +101,6 @@ namespace DoAnDiemDanh.Controllers
             return Json(LOPHOC, JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult Create()
-        {
-            ViewBag.MaKhoa = new SelectList(db.KHOAs, "MaKhoa", "TenKhoa");
-            ViewBag.MaLop = new SelectList(db.LOPs, "MaLop", "TenLop");
-            return View();
-        }
 
 
         // POST: QuanLySinhVien/Create
@@ -127,18 +108,20 @@ namespace DoAnDiemDanh.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "MaSV,TenSV,MaKhoa,MaLop")] SINHVIEN sINHVIEN)
+        public JsonResult Create([Bind(Include = "MaSV,TenSV,MaKhoa,MaLop")] SINHVIEN sINHVIEN)
         {
-            if (ModelState.IsValid)
-            {
-                db.SINHVIENs.Add(sINHVIEN);
+            var Khoa = db.KHOAs.Where(_ => _.MaKhoa == sINHVIEN.MaKhoa).Single();
+            var Lop = db.LOPs.Where(_ => _.MaLop == sINHVIEN.MaLop).Single();
+            db.SINHVIENs.Add(sINHVIEN);
                 db.SaveChanges();
-                return RedirectToAction("Index");
-            }
-           
-            ViewBag.MaKhoa = new SelectList(db.KHOAs, "MaKhoa", "TenKhoa", sINHVIEN.MaKhoa);
-            ViewBag.MaLop = new SelectList(db.LOPs, "MaLop", "TenLop", sINHVIEN.MaLop);
-            return View(sINHVIEN);
+            var data = new
+            {
+                MaSV = sINHVIEN.MaSV,
+                TenSV = sINHVIEN.TenSV,
+                TenKhoa = Khoa.TenKhoa,
+                TenLop = Lop.TenLop,
+            };
+            return Json(data,JsonRequestBehavior.AllowGet);
         }
 
         // GET: QuanLySinhVien/Edit/5
@@ -193,13 +176,12 @@ namespace DoAnDiemDanh.Controllers
 
         // POST: QuanLySinhVien/Delete/5
         [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int id)
+        public JsonResult DeleteConfirmed(int id)
         {
             SINHVIEN sINHVIEN = db.SINHVIENs.Find(id);
             db.SINHVIENs.Remove(sINHVIEN);
             db.SaveChanges();
-            return RedirectToAction("Index");
+            return Json(id,JsonRequestBehavior.AllowGet);
         }
 
         protected override void Dispose(bool disposing)

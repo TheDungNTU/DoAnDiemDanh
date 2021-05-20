@@ -86,26 +86,49 @@ namespace DoAnDiemDanh.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public JsonResult Create([Bind(Include = "MaMH,TenMH,SoTC,NgayBD,NgayKT,ThoiGianBDGD,ThoiGianKTGD,MaGV")] MONHOC mONHOC, string TenGV)
+        public JsonResult Create([Bind(Include = "MaMH,TenMH,SoTC,NgayBD,NgayKT,ThoiGianBDGD,ThoiGianKTGD,MaGV")] MONHOC mONHOC, string TenGV, List<int> TKB)
         {
-
+            
             if (ModelState.IsValid)
             {
                 TimeSpan time = (TimeSpan)mONHOC.ThoiGianKTGD - (TimeSpan)mONHOC.ThoiGianBDGD;
                 var listime = EachDay((DateTime)mONHOC.NgayBD, (DateTime)mONHOC.NgayKT);
 
-                var DiemDanh = new DIEMDANH();
-
                 db.MONHOCs.Add(mONHOC);
                 db.SaveChanges();
 
-                CultureInfo vn = new CultureInfo("vi-VN");
+
+                THOIKHOABIEU tkb = new THOIKHOABIEU();
+                tkb.MaMH = mONHOC.MaMH;
+
+                foreach (var item in TKB)
+                {
+                    if (item == 1)
+                        tkb.ThuHai = true;
+                    else if (item == 2)
+                        tkb.ThuBa = true;
+                    else if (item == 3)
+                        tkb.ThuTu = true;
+                    else if (item == 4)
+                        tkb.ThuNam = true;
+                    else if (item == 5)
+                        tkb.ThuSau = true;
+                    else
+                        tkb.ThuBay = true;
+                }
+                db.THOIKHOABIEUx.Add(tkb);
+                db.SaveChanges();
+
+             
 
                 foreach (var item in listime)
                 {
-                    var ngay = vn.DateTimeFormat.GetDayName(item.DayOfWeek);
-                    if (ngay != "Chủ Nhật" && ngay != "Thứ Bảy")
+                    var ngay = (int)item.DayOfWeek;
+                    var flag = TKB.Contains(ngay);
+                    
+                    if (flag)
                     {
+                        var DiemDanh = new DIEMDANH();
                         DiemDanh.MaMH = mONHOC.MaMH;
                         DiemDanh.NgayDiemDanh = item;
                         db.DIEMDANHs.Add(DiemDanh);

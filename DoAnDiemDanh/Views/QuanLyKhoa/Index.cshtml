@@ -3,6 +3,7 @@
 @{
     ViewBag.Title = "Index";
     Layout = "~/Views/Layout/_LayoutAdmin.cshtml";
+   
     <style>
         .is-invalid {
             color: #E84C3D;
@@ -10,13 +11,7 @@
         }
     </style>
 }
-@*<div class="alert show">
-        <span class="fas fa-exclamation-circle"></span>
-        <span class="msg">Success: Thêm thành công Khoa</span>
-        <div class="close-btn">
-            <span class="fas fa-times"></span>
-        </div>
-    </div>*@
+
 <div>
     @using (Ajax.BeginForm("Create", "QuanLyKhoa", new AjaxOptions { HttpMethod = "POST", OnSuccess = "FnSuccess" }, new{@class = "formKhoa"}))
     {
@@ -27,7 +22,6 @@
                 <label class="h3 mb-2 ml-2 text-gray-800" for="TenKhoa" style="font-size: 20px; font-weight: 600;">Tên Khoa</label>
                 <div class="col-md-10">
                     <input class="form-control text-box single-line " id="TenKhoa" name="TenKhoa" type="text" value="" required>
-                    @*<span class="field-validation-valid text-danger" data-valmsg-for="TenKhoa" data-valmsg-replace="true"></span>*@
                 </div>
             </div>
 
@@ -39,7 +33,6 @@
         </div>
     }
 
-    <!-- DataTales Example -->
     <div class="card shadow mb-4">
         <div class="card-header py-3">
             <h6 class="m-0 font-weight-bold text-primary">DANH SÁCH TẤT CẢ KHOA</h6>
@@ -80,33 +73,33 @@
 
 
 <script>
+
+    var dt;
+
+    function loadDataTable() {
+        dt = $("#dataTable").DataTable();
+    }
+
     function FnSuccess(data) {
         if (data != false) {
-
-            var row = `<tr id="row_${data.MaKhoa}" role="row" class="odd">
-                                <td class="sorting_1">
-                                    ${data.MaKhoa}
-                                </td>
-                                <td>
-                                    ${data.TenKhoa}
-                                </td>
-                                <td>
-                                    <a href="/QuanLyKhoa/Edit/1">Chỉnh sửa</a> |
-                                    <a data-ajax="true" data-ajax-confirm="Bạn có muốn xóa bản ghi này ?" data-ajax-method="POST" data-ajax-success="deleteSuccess" href="/QuanLyKhoa/Delete/${data.MaKhoa}">Xóa</a>
-                                </td>
-                            </tr>`;
-            $('#data_table tr:first').before(row)
-
+            var node = dt.row.add([
+                data.MaKhoa,
+                data.TenKhoa,
+                `<a href="/QuanLyKhoa/Edit/1">Chỉnh sửa</a> |
+                                         <a data-ajax="true" data-ajax-confirm="Bạn có muốn xóa bản ghi này ?" data-ajax-method="POST" data-ajax-success="deleteSuccess" href="/QuanLyKhoa/Delete/${data.MaKhoa}">Xóa</a>`
+            ]).draw().node();
+            $(node).attr('id', `row_${data.MaKhoa}`);
             alertSuccess();
         }
-        $('#TenKhoa').val('');
+        $('#TenKhoa').val(''); 
+        
     }
 
     function deleteSuccess(data) {
-        console.log(data)
-        $(`#row_${data}`).remove()
+        dt.rows(`#row_${data}`)
+            .remove()
+            .draw();
         alertSuccess();
-
     }
 
     function alertSuccess() {
@@ -122,48 +115,41 @@
             $('.alert').addClass("hide");
         });
     }
-</script>
 
-@section datatable{
-    <script>
-        $(document).ready(function () {
-            $('#dataTable').DataTable();
+    $(document).ready(function () {
+        loadDataTable();
 
-            jQuery.validator.addMethod("NotAllowNumber", function (value, element) {
-                return this.optional(element) || /^([^0-9]*)$/.test(value);
-            }, "Không được phép có chữ số.");
+        jQuery.validator.addMethod("NotAllowNumber", function (value, element) {
+            return this.optional(element) || /^([^0-9]*)$/.test(value);
+        }, "Không được phép có chữ số.");
 
+        jQuery.validator.addMethod("NotAllowFirstSpace", function (value, element) {
+            return this.optional(element) || /^\S{1}/.test(value);
+        }, "Kí tự đầu tiên không được có khoảng trắng.");
 
-   
-            jQuery.validator.addMethod("NotAllowFirstSpace", function (value, element) {
-                return this.optional(element) || /^\S{1}/.test(value);
-            }, "Kí tự đầu tiên không được có khoảng trắng.");
+        jQuery.validator.addMethod("NotAllowSpecial", function (value, element) {
+            return this.optional(element) || /^([^*.!/'#$%^&(){}[:;<>,.?/~_+-=|]*)$/.test(value);
+        }, "Không được phép có kí tự đặc biệt.");
 
-            jQuery.validator.addMethod("NotAllowSpecial", function (value, element) {
-                return this.optional(element) || /^([^*.!/'#$%^&(){}[:;<>,.?/~_+-=|]*)$/.test(value);
-            }, "Không được phép có kí tự đặc biệt.");
-
-
-
-            $(".formKhoa").validate({
-                errorClass: "is-invalid",
-                validClass: "is-valid",
-                rules: {
-                    TenKhoa: {
-                        required: true,
-                        NotAllowNumber: true,
-                        NotAllowSpecial: true,
-                        NotAllowFirstSpace: true,
-                    },
+        $(".formKhoa").validate({
+            errorClass: "is-invalid",
+            validClass: "is-valid",
+            rules: {
+                TenKhoa: {
+                    required: true,
+                    NotAllowNumber: true,
+                    NotAllowSpecial: true,
+                    NotAllowFirstSpace: true,
                 },
-                messages: {
-                    TenKhoa: {
-                        required: "Tên Khoa không được để trống.",
+            },
+            messages: {
+                TenKhoa: {
+                    required: "Tên Khoa không được để trống.",
 
-                    },
-                }
-            });
-
+                },
+            }
         });
-    </script>
-}
+
+    });
+
+</script>

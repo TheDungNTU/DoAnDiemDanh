@@ -231,10 +231,16 @@
     <Compile Include="Models\MONHOC.cs">
       <DependentUpon>FaceRecognition.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\NGAYLE.cs">
+      <DependentUpon>FaceRecognition.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\SINHVIEN.cs">
       <DependentUpon>FaceRecognition.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\sysdiagram.cs">
+      <DependentUpon>FaceRecognition.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\THOIKHOABIEU.cs">
       <DependentUpon>FaceRecognition.tt</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -269,6 +275,7 @@
     <Content Include="Content\js\sb-admin-2.js" />
     <Content Include="Content\js\sb-admin-2.min.js" />
     <Content Include="Content\img\new.png" />
+    <Content Include="Content\select2.min.css" />
     <Content Include="Content\vendor\bootstrap\js\bootstrap.bundle.js" />
     <Content Include="Content\vendor\bootstrap\js\bootstrap.bundle.min.js" />
     <Content Include="Content\vendor\bootstrap\js\bootstrap.js" />
@@ -2127,6 +2134,7 @@
     <Content Include="Content\vendor\fontawesome-free\webfonts\fa-solid-900.woff2" />
     <Content Include="Content\vendor\jquery\jquery.min.map" />
     <Content Include="Content\vendor\jquery\jquery.slim.min.map" />
+    <Content Include="Controllers\ExcelData.xlsx" />
     <EntityDeploy Include="Models\FaceRecognition.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>FaceRecognition.Designer.cs</LastGenOutput>
@@ -2134,7 +2142,6 @@
     <Content Include="Models\FaceRecognition.edmx.diagram">
       <DependentUpon>FaceRecognition.edmx</DependentUpon>
     </Content>
-    <Content Include="Controllers\ExcelData.xlsx" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.4.1.js" />
     <Content Include="Scripts\jquery-3.4.1.min.js" />
@@ -2165,21 +2172,11 @@
     <Content Include="Views\QuanLyLop\Edit.cshtml" />
     <Content Include="Views\QuanLyLop\Index.cshtml" />
     <Content Include="Views\QuanLySinhVien\Create.cshtml" />
-    <Content Include="Views\QuanLySinhVien\Delete.cshtml" />
-    <Content Include="Views\QuanLySinhVien\Details.cshtml" />
     <Content Include="Views\QuanLySinhVien\Edit.cshtml" />
     <Content Include="Views\QuanLySinhVien\Index.cshtml" />
-    <Content Include="Views\QuanLyHinhAnh\Create.cshtml" />
-    <Content Include="Views\QuanLyHinhAnh\Delete.cshtml" />
-    <Content Include="Views\QuanLyHinhAnh\Details.cshtml" />
-    <Content Include="Views\QuanLyHinhAnh\Edit.cshtml" />
-    <Content Include="Views\QuanLyHinhAnh\Index.cshtml" />
     <Content Include="Views\QuanLyHinhAnh\Details_SinhVien_HinhAnh.cshtml" />
     <Content Include="Views\QuanLyMonHoc\Edit.cshtml" />
     <Content Include="Views\QuanLyMonHoc\Index.cshtml" />
-    <Content Include="Views\QuanLyGiangVien\Create.cshtml" />
-    <Content Include="Views\QuanLyGiangVien\Delete.cshtml" />
-    <Content Include="Views\QuanLyGiangVien\Details.cshtml" />
     <Content Include="Views\QuanLyGiangVien\Edit.cshtml" />
     <Content Include="Views\QuanLyGiangVien\Index.cshtml" />
     <Content Include="Views\QuanLyMonHoc\DangKyMonHoc.cshtml" />

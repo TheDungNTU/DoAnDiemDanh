@@ -33,6 +33,7 @@ namespace DoAnDiemDanh.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<DIEMDANH> DIEMDANHs { get; set; }
         public virtual GIANGVIEN GIANGVIEN { get; set; }
+        public virtual THOIKHOABIEU THOIKHOABIEU { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<SINHVIEN> SINHVIENs { get; set; }
     }

@@ -4,20 +4,53 @@
     ViewBag.Title = "Index";
     Layout = "~/Views/Layout/_LayoutAdmin.cshtml";
     IEnumerable<DoAnDiemDanh.Models.MONHOC> MONHOC = (IEnumerable<DoAnDiemDanh.Models.MONHOC>)ViewBag.MONHOC;
+    var Khoa = (IEnumerable<DoAnDiemDanh.Models.KHOA>)ViewBag.MaKhoa;
 }
 
-<p>
-    <h1 class="h3 mb-4 text-gray-800">Quản lí Giảng Viên</h1>
-    <a href="@Url.Action("Create", "QuanLyGiangVien")" class="btn btn-success btn-icon-split shadow" style="position: absolute; top: 0px; right: 25px">
-        <span class="icon text-white-50">
-            <i class="fas fa-plus"></i>
-        </span>
-        <span class="text">Thêm Giảng Viên Mới</span>
-    </a>
-</p>
 
+@using (Ajax.BeginForm("Create", "QuanLyGiangVien", new AjaxOptions { HttpMethod = "POST", OnSuccess = "FnSuccess" }, new { @class = "formGiangVien" }))
+{
+    @Html.AntiForgeryToken()
+    <div class="form-horizontal shadow p-3 mb-2 card">
+        <div class="form-group">
+            <div class="h3 mb-2 ml-2 text-gray-800" style="font-size: 20px; font-weight: 600;">Tên Giảng Viên</div>
+            <div class="col-md-10">
+                <input class="form-control text-box single-line" id="TenGV" name="TenGV" type="text" value="">
+                <span class="field-validation-valid text-danger" data-valmsg-for="TenGV" data-valmsg-replace="true"></span>
+            </div>
+        </div>
 
-<!-- DataTales Example -->
+        <div class="form-group">
+            <div class="h3 mb-2 ml-2 text-gray-800" style="font-size: 20px; font-weight: 600;">Mật Khẩu</div>
+            <div class="col-md-10">
+                <input class="form-control text-box single-line" id="Password" name="Password" type="text" value="">
+                <span class="field-validation-valid text-danger" data-valmsg-for="Password" data-valmsg-replace="true"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <input class="form-control text-box single-line" id="TenKhoa" name="TenKhoa" type="text" value="" style="display: none;">
+            <div class="h3 mb-2 ml-2 text-gray-800" style="font-size: 20px; font-weight: 600;">Tên Khoa</div>
+            <span id="TenKhoa"></span>
+            <div class="col-md-10">
+                <select class="form-control" id="MaKhoa" name="MaKhoa" required>
+                    <option value="">Mời bạn chọn Khoa</option>
+                    @foreach (var item in Khoa)
+                    {
+                        <option value="@item.MaKhoa">@item.TenKhoa</option>
+                    }
+                </select>
+                <span class="field-validation-valid text-danger" data-valmsg-for="MaKhoa" data-valmsg-replace="true"></span>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Thêm mới" class="btn btn-success btn-icon-split p-2 border">
+            </div>
+        </div>
+    </div>
+}
+
 <div class="card shadow mb-4">
     <div>
         <div class="card-header py-3">
@@ -29,6 +62,7 @@
             <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                 <thead>
                     <tr>
+                        <th>Mã Giảng Viên</th>
                         <th>Tên Giảng Viên</th>
                         <th>Password</th>
                         <th>Khoa</th>
@@ -36,33 +70,35 @@
                         <th>Chức năng</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody id="data_table">
                     @foreach (var item in Model)
                     {
-                        <tr>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.TenGV)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.Password)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.KHOA.TenKhoa)
-                            </td>
-                            <td>
-                                <a href="#" class="btn btn-primary btn-icon-split">
-                                    <span class="icon text-white-50">
-                                        @MONHOC.ToList().Where(_ => _.MaGV == item.MaGV).Count()
-                                    </span>
-                                    <span class="text">Môn Học</span>
-                                </a>
-                            </td>
-                            <td>
-                                @Html.ActionLink("Edit", "Edit", new { id = item.MaGV }) |
-                                @Html.ActionLink("Details", "Details", new { id = item.MaGV }) |
-                                @Html.ActionLink("Delete", "Delete", new { id = item.MaGV })
-                            </td>
-                        </tr>
+                    <tr id="row_@item.MaGV">
+                        <td>
+                            @Html.DisplayFor(modelItem => item.MaGV)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.TenGV)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Password)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.KHOA.TenKhoa)
+                        </td>
+                        <td>
+                            <a href="#" class="btn btn-primary btn-icon-split">
+                                <span class="icon text-white-50">
+                                    @MONHOC.ToList().Where(_ => _.MaGV == item.MaGV).Count()
+                                </span>
+                                <span class="text">Môn Học</span>
+                            </a>
+                        </td>
+                        <td>
+                            <a href='/QuanLyGiangVien/Edit/@item.MaGV'>Chỉnh sửa</a> |
+                            @Ajax.ActionLink("Xóa", "Delete", new { id = item.MaGV }, new AjaxOptions { HttpMethod = "POST", OnSuccess = "deleteSuccess", Confirm = "Bạn có muốn xóa bản ghi này ?" })
+                        </td>
+                    </tr>
                     }
                 </tbody>
             </table>
@@ -70,42 +106,61 @@
     </div>
 </div>
 
+<script>
 
+    var dt;
 
-@section show
-{
-    <script>
-        $(document).ready(function () {
-            $("#dataTable_length label").html($("#dataTable_length label").html().replace('Show', ''));
-            $("#dataTable_length label").html($("#dataTable_length label").html().replace('entries', ''));
+    function loadDataTable() {
+        dt = $("#dataTable").DataTable();
+    }
+
+    function FnSuccess(data) {
+        if (data != false) {
+            var node = dt.row.add([
+                data.MaGV,
+                data.TenGV,
+                data.Password,
+                data.TenKhoa,
+                `<a href="#" class="btn btn-primary btn-icon-split">
+                                <span class="icon text-white-50">
+                                    0
+                                </span>
+                                <span class="text">Môn Học</span>`,
+       
+                `<a href='/QuanLyGiangVien/Edit/${data.MaGV}'>Chỉnh sửa</a> |<a data-ajax="true" data-ajax-confirm="Bạn có muốn xóa bản ghi này ?" data-ajax-method="POST" data-ajax-success="deleteSuccess" href="/QuanLyGiangVien/Delete/${data.MaGV}">Xóa</a>`
+            ]).draw().node();
+            $(node).attr('id', `row_${data.MaGV}`);
+            alertSuccess();
+        }
+        $('#TenGV').val('');
+        $('#Password').val('');
+        $('#MaKhoa').val('').change();
+    }
+
+    function deleteSuccess(data) {
+        dt.rows(`#row_${data}`)
+            .remove()
+            .draw();
+        alertSuccess();
+
+    }
+
+    function alertSuccess() {
+        $('.alert').addClass("show");
+        $('.alert').removeClass("hide");
+        $('.alert').addClass("showAlert");
+        setTimeout(function () {
+            $('.alert').removeClass("show");
+            $('.alert').addClass("hide");
+        }, 5000);
+        $('.close-btn').click(function () {
+            $('.alert').removeClass("show");
+            $('.alert').addClass("hide");
         });
-    </script>
-}
+    }
 
-@foreach (var item in Model)
-{
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.TenGV)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Password)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.KHOA.TenKhoa)
-        </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id = item.MaGV }) |
-            @Html.ActionLink("Details", "Details", new { id = item.MaGV }) |
-            @Html.ActionLink("Delete", "Delete", new { id = item.MaGV })
-        </td>
-    </tr>
-}
 
-@section datatable{
-    <script>
-        $(document).ready(function () {
-            $('#dataTable').DataTable();
-        });
-    </script>
-}
+    $(document).ready(function () {
+        loadDataTable();
+    });
+</script>

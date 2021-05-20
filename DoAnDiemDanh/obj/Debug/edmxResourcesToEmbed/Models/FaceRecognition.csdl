@@ -95,7 +95,17 @@
     <Property Name="MaGV" Type="Int32" />
     <NavigationProperty Name="DIEMDANHs" Relationship="Self.FK_DIEMDANH_MONHOC" FromRole="MONHOC" ToRole="DIEMDANH" />
     <NavigationProperty Name="GIANGVIEN" Relationship="Self.FK_MONHOC_GIANGVIEN" FromRole="MONHOC" ToRole="GIANGVIEN" />
+    <NavigationProperty Name="THOIKHOABIEU" Relationship="Self.FK_TKB_MH" FromRole="MONHOC" ToRole="THOIKHOABIEU" />
     <NavigationProperty Name="SINHVIENs" Relationship="Self.SINHVIEN_MONHOC" FromRole="MONHOC" ToRole="SINHVIEN" />
+  </EntityType>
+  <EntityType Name="NGAYLE">
+    <Key>
+      <PropertyRef Name="MaNL" />
+    </Key>
+    <Property Name="MaNL" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="TenNL" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <Property Name="Ngay" Type="DateTime" Precision="0" />
+    <Property Name="GhiChu" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
   </EntityType>
   <EntityType Name="SINHVIEN">
     <Key>
@@ -121,6 +131,19 @@
     <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
     <Property Name="version" Type="Int32" />
     <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
+  </EntityType>
+  <EntityType Name="THOIKHOABIEU">
+    <Key>
+      <PropertyRef Name="MaMH" />
+    </Key>
+    <Property Name="MaMH" Type="Int32" Nullable="false" />
+    <Property Name="ThuHai" Type="Boolean" />
+    <Property Name="ThuBa" Type="Boolean" />
+    <Property Name="ThuTu" Type="Boolean" />
+    <Property Name="ThuNam" Type="Boolean" />
+    <Property Name="ThuSau" Type="Boolean" />
+    <Property Name="ThuBay" Type="Boolean" />
+    <NavigationProperty Name="MONHOC" Relationship="Self.FK_TKB_MH" FromRole="THOIKHOABIEU" ToRole="MONHOC" />
   </EntityType>
   <Association Name="FK_CTDD_DD">
     <End Role="DIEMDANH" Type="Self.DIEMDANH" Multiplicity="1">
@@ -258,6 +281,20 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
+  <Association Name="FK_TKB_MH">
+    <End Role="MONHOC" Type="Self.MONHOC" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="THOIKHOABIEU" Type="Self.THOIKHOABIEU" Multiplicity="0..1" />
+    <ReferentialConstraint>
+      <Principal Role="MONHOC">
+        <PropertyRef Name="MaMH" />
+      </Principal>
+      <Dependent Role="THOIKHOABIEU">
+        <PropertyRef Name="MaMH" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
   <Association Name="SINHVIEN_MONHOC">
     <End Role="SINHVIEN" Type="Self.SINHVIEN" Multiplicity="*" />
     <End Role="MONHOC" Type="Self.MONHOC" Multiplicity="*" />
@@ -272,8 +309,10 @@
     <EntitySet Name="KHOAs" EntityType="Self.KHOA" />
     <EntitySet Name="LOPs" EntityType="Self.LOP" />
     <EntitySet Name="MONHOCs" EntityType="Self.MONHOC" />
+    <EntitySet Name="NGAYLEs" EntityType="Self.NGAYLE" />
     <EntitySet Name="SINHVIENs" EntityType="Self.SINHVIEN" />
     <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagram" />
+    <EntitySet Name="THOIKHOABIEUx" EntityType="Self.THOIKHOABIEU" />
     <AssociationSet Name="FK_CTDD_DD" Association="Self.FK_CTDD_DD">
       <End Role="DIEMDANH" EntitySet="DIEMDANHs" />
       <End Role="CTDD" EntitySet="CTDDs" />
@@ -313,6 +352,10 @@
     <AssociationSet Name="FK_SINHVIEN_LOP" Association="Self.FK_SINHVIEN_LOP">
       <End Role="LOP" EntitySet="LOPs" />
       <End Role="SINHVIEN" EntitySet="SINHVIENs" />
+    </AssociationSet>
+    <AssociationSet Name="FK_TKB_MH" Association="Self.FK_TKB_MH">
+      <End Role="MONHOC" EntitySet="MONHOCs" />
+      <End Role="THOIKHOABIEU" EntitySet="THOIKHOABIEUx" />
     </AssociationSet>
     <AssociationSet Name="SINHVIEN_MONHOC" Association="Self.SINHVIEN_MONHOC">
       <End Role="SINHVIEN" EntitySet="SINHVIENs" />

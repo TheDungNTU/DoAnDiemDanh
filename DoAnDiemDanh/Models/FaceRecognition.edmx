@@ -86,6 +86,15 @@
           <Property Name="ThoiGianKTGD" Type="time" Precision="7" />
           <Property Name="MaGV" Type="int" />
         </EntityType>
+        <EntityType Name="NGAYLE">
+          <Key>
+            <PropertyRef Name="MaNL" />
+          </Key>
+          <Property Name="MaNL" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="TenNL" Type="varchar(max)" />
+          <Property Name="Ngay" Type="date" />
+          <Property Name="GhiChu" Type="varchar(max)" />
+        </EntityType>
         <EntityType Name="SINHVIEN">
           <Key>
             <PropertyRef Name="MaSV" />
@@ -112,6 +121,18 @@
           <Property Name="diagram_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="version" Type="int" />
           <Property Name="definition" Type="varbinary(max)" />
+        </EntityType>
+        <EntityType Name="THOIKHOABIEU">
+          <Key>
+            <PropertyRef Name="MaMH" />
+          </Key>
+          <Property Name="MaMH" Type="int" Nullable="false" />
+          <Property Name="ThuHai" Type="bit" />
+          <Property Name="ThuBa" Type="bit" />
+          <Property Name="ThuTu" Type="bit" />
+          <Property Name="ThuNam" Type="bit" />
+          <Property Name="ThuSau" Type="bit" />
+          <Property Name="ThuBay" Type="bit" />
         </EntityType>
         <Association Name="FK__DIEMDANH_T__MaSV__02084FDA">
           <End Role="SINHVIEN" Type="Self.SINHVIEN" Multiplicity="0..1">
@@ -275,6 +296,20 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_TKB_MH">
+          <End Role="MONHOC" Type="Self.MONHOC" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="THOIKHOABIEU" Type="Self.THOIKHOABIEU" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="MONHOC">
+              <PropertyRef Name="MaMH" />
+            </Principal>
+            <Dependent Role="THOIKHOABIEU">
+              <PropertyRef Name="MaMH" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <EntityContainer Name="FACE_RECOGNITIONModelStoreContainer">
           <EntitySet Name="ADMIN" EntityType="Self.ADMIN" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CTDD" EntityType="Self.CTDD" Schema="dbo" store:Type="Tables" />
@@ -285,9 +320,11 @@
           <EntitySet Name="KHOA" EntityType="Self.KHOA" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="LOP" EntityType="Self.LOP" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="MONHOC" EntityType="Self.MONHOC" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="NGAYLE" EntityType="Self.NGAYLE" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="SINHVIEN" EntityType="Self.SINHVIEN" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="SINHVIEN_MONHOC" EntityType="Self.SINHVIEN_MONHOC" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="THOIKHOABIEU" EntityType="Self.THOIKHOABIEU" Schema="dbo" store:Type="Tables" />
           <AssociationSet Name="FK__DIEMDANH_T__MaSV__02084FDA" Association="Self.FK__DIEMDANH_T__MaSV__02084FDA">
             <End Role="SINHVIEN" EntitySet="SINHVIEN" />
             <End Role="DIEMDANH_T" EntitySet="DIEMDANH_T" />
@@ -335,6 +372,10 @@
           <AssociationSet Name="FK_SINHVIEN_MONHOC_2" Association="Self.FK_SINHVIEN_MONHOC_2">
             <End Role="MONHOC" EntitySet="MONHOC" />
             <End Role="SINHVIEN_MONHOC" EntitySet="SINHVIEN_MONHOC" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TKB_MH" Association="Self.FK_TKB_MH">
+            <End Role="MONHOC" EntitySet="MONHOC" />
+            <End Role="THOIKHOABIEU" EntitySet="THOIKHOABIEU" />
           </AssociationSet>
         </EntityContainer>
       </Schema>
@@ -437,7 +478,17 @@
           <Property Name="MaGV" Type="Int32" />
           <NavigationProperty Name="DIEMDANHs" Relationship="Self.FK_DIEMDANH_MONHOC" FromRole="MONHOC" ToRole="DIEMDANH" />
           <NavigationProperty Name="GIANGVIEN" Relationship="Self.FK_MONHOC_GIANGVIEN" FromRole="MONHOC" ToRole="GIANGVIEN" />
+          <NavigationProperty Name="THOIKHOABIEU" Relationship="Self.FK_TKB_MH" FromRole="MONHOC" ToRole="THOIKHOABIEU" />
           <NavigationProperty Name="SINHVIENs" Relationship="Self.SINHVIEN_MONHOC" FromRole="MONHOC" ToRole="SINHVIEN" />
+        </EntityType>
+        <EntityType Name="NGAYLE">
+          <Key>
+            <PropertyRef Name="MaNL" />
+          </Key>
+          <Property Name="MaNL" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="TenNL" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="Ngay" Type="DateTime" Precision="0" />
+          <Property Name="GhiChu" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="SINHVIEN">
           <Key>
@@ -463,6 +514,19 @@
           <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="version" Type="Int32" />
           <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
+        </EntityType>
+        <EntityType Name="THOIKHOABIEU">
+          <Key>
+            <PropertyRef Name="MaMH" />
+          </Key>
+          <Property Name="MaMH" Type="Int32" Nullable="false" />
+          <Property Name="ThuHai" Type="Boolean" />
+          <Property Name="ThuBa" Type="Boolean" />
+          <Property Name="ThuTu" Type="Boolean" />
+          <Property Name="ThuNam" Type="Boolean" />
+          <Property Name="ThuSau" Type="Boolean" />
+          <Property Name="ThuBay" Type="Boolean" />
+          <NavigationProperty Name="MONHOC" Relationship="Self.FK_TKB_MH" FromRole="THOIKHOABIEU" ToRole="MONHOC" />
         </EntityType>
         <Association Name="FK_CTDD_DD">
           <End Role="DIEMDANH" Type="Self.DIEMDANH" Multiplicity="1">
@@ -600,6 +664,20 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_TKB_MH">
+          <End Role="MONHOC" Type="Self.MONHOC" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="THOIKHOABIEU" Type="Self.THOIKHOABIEU" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="MONHOC">
+              <PropertyRef Name="MaMH" />
+            </Principal>
+            <Dependent Role="THOIKHOABIEU">
+              <PropertyRef Name="MaMH" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="SINHVIEN_MONHOC">
           <End Role="SINHVIEN" Type="Self.SINHVIEN" Multiplicity="*" />
           <End Role="MONHOC" Type="Self.MONHOC" Multiplicity="*" />
@@ -614,8 +692,10 @@
           <EntitySet Name="KHOAs" EntityType="Self.KHOA" />
           <EntitySet Name="LOPs" EntityType="Self.LOP" />
           <EntitySet Name="MONHOCs" EntityType="Self.MONHOC" />
+          <EntitySet Name="NGAYLEs" EntityType="Self.NGAYLE" />
           <EntitySet Name="SINHVIENs" EntityType="Self.SINHVIEN" />
           <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagram" />
+          <EntitySet Name="THOIKHOABIEUx" EntityType="Self.THOIKHOABIEU" />
           <AssociationSet Name="FK_CTDD_DD" Association="Self.FK_CTDD_DD">
             <End Role="DIEMDANH" EntitySet="DIEMDANHs" />
             <End Role="CTDD" EntitySet="CTDDs" />
@@ -655,6 +735,10 @@
           <AssociationSet Name="FK_SINHVIEN_LOP" Association="Self.FK_SINHVIEN_LOP">
             <End Role="LOP" EntitySet="LOPs" />
             <End Role="SINHVIEN" EntitySet="SINHVIENs" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TKB_MH" Association="Self.FK_TKB_MH">
+            <End Role="MONHOC" EntitySet="MONHOCs" />
+            <End Role="THOIKHOABIEU" EntitySet="THOIKHOABIEUx" />
           </AssociationSet>
           <AssociationSet Name="SINHVIEN_MONHOC" Association="Self.SINHVIEN_MONHOC">
             <End Role="SINHVIEN" EntitySet="SINHVIENs" />
@@ -756,6 +840,16 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="NGAYLEs">
+            <EntityTypeMapping TypeName="FACE_RECOGNITIONModel.NGAYLE">
+              <MappingFragment StoreEntitySet="NGAYLE">
+                <ScalarProperty Name="MaNL" ColumnName="MaNL" />
+                <ScalarProperty Name="TenNL" ColumnName="TenNL" />
+                <ScalarProperty Name="Ngay" ColumnName="Ngay" />
+                <ScalarProperty Name="GhiChu" ColumnName="GhiChu" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="SINHVIENs">
             <EntityTypeMapping TypeName="FACE_RECOGNITIONModel.SINHVIEN">
               <MappingFragment StoreEntitySet="SINHVIEN">
@@ -774,6 +868,19 @@
                 <ScalarProperty Name="diagram_id" ColumnName="diagram_id" />
                 <ScalarProperty Name="version" ColumnName="version" />
                 <ScalarProperty Name="definition" ColumnName="definition" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="THOIKHOABIEUx">
+            <EntityTypeMapping TypeName="FACE_RECOGNITIONModel.THOIKHOABIEU">
+              <MappingFragment StoreEntitySet="THOIKHOABIEU">
+                <ScalarProperty Name="MaMH" ColumnName="MaMH" />
+                <ScalarProperty Name="ThuHai" ColumnName="ThuHai" />
+                <ScalarProperty Name="ThuBa" ColumnName="ThuBa" />
+                <ScalarProperty Name="ThuTu" ColumnName="ThuTu" />
+                <ScalarProperty Name="ThuNam" ColumnName="ThuNam" />
+                <ScalarProperty Name="ThuSau" ColumnName="ThuSau" />
+                <ScalarProperty Name="ThuBay" ColumnName="ThuBay" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

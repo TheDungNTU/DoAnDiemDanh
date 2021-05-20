@@ -81,6 +81,15 @@
     <Property Name="ThoiGianKTGD" Type="time" Precision="7" />
     <Property Name="MaGV" Type="int" />
   </EntityType>
+  <EntityType Name="NGAYLE">
+    <Key>
+      <PropertyRef Name="MaNL" />
+    </Key>
+    <Property Name="MaNL" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="TenNL" Type="varchar(max)" />
+    <Property Name="Ngay" Type="date" />
+    <Property Name="GhiChu" Type="varchar(max)" />
+  </EntityType>
   <EntityType Name="SINHVIEN">
     <Key>
       <PropertyRef Name="MaSV" />
@@ -107,6 +116,18 @@
     <Property Name="diagram_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="version" Type="int" />
     <Property Name="definition" Type="varbinary(max)" />
+  </EntityType>
+  <EntityType Name="THOIKHOABIEU">
+    <Key>
+      <PropertyRef Name="MaMH" />
+    </Key>
+    <Property Name="MaMH" Type="int" Nullable="false" />
+    <Property Name="ThuHai" Type="bit" />
+    <Property Name="ThuBa" Type="bit" />
+    <Property Name="ThuTu" Type="bit" />
+    <Property Name="ThuNam" Type="bit" />
+    <Property Name="ThuSau" Type="bit" />
+    <Property Name="ThuBay" Type="bit" />
   </EntityType>
   <Association Name="FK__DIEMDANH_T__MaSV__02084FDA">
     <End Role="SINHVIEN" Type="Self.SINHVIEN" Multiplicity="0..1">
@@ -270,6 +291,20 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
+  <Association Name="FK_TKB_MH">
+    <End Role="MONHOC" Type="Self.MONHOC" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="THOIKHOABIEU" Type="Self.THOIKHOABIEU" Multiplicity="0..1" />
+    <ReferentialConstraint>
+      <Principal Role="MONHOC">
+        <PropertyRef Name="MaMH" />
+      </Principal>
+      <Dependent Role="THOIKHOABIEU">
+        <PropertyRef Name="MaMH" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
   <EntityContainer Name="FACE_RECOGNITIONModelStoreContainer">
     <EntitySet Name="ADMIN" EntityType="Self.ADMIN" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="CTDD" EntityType="Self.CTDD" Schema="dbo" store:Type="Tables" />
@@ -280,9 +315,11 @@
     <EntitySet Name="KHOA" EntityType="Self.KHOA" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="LOP" EntityType="Self.LOP" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="MONHOC" EntityType="Self.MONHOC" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="NGAYLE" EntityType="Self.NGAYLE" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="SINHVIEN" EntityType="Self.SINHVIEN" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="SINHVIEN_MONHOC" EntityType="Self.SINHVIEN_MONHOC" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="THOIKHOABIEU" EntityType="Self.THOIKHOABIEU" Schema="dbo" store:Type="Tables" />
     <AssociationSet Name="FK__DIEMDANH_T__MaSV__02084FDA" Association="Self.FK__DIEMDANH_T__MaSV__02084FDA">
       <End Role="SINHVIEN" EntitySet="SINHVIEN" />
       <End Role="DIEMDANH_T" EntitySet="DIEMDANH_T" />
@@ -330,6 +367,10 @@
     <AssociationSet Name="FK_SINHVIEN_MONHOC_2" Association="Self.FK_SINHVIEN_MONHOC_2">
       <End Role="MONHOC" EntitySet="MONHOC" />
       <End Role="SINHVIEN_MONHOC" EntitySet="SINHVIEN_MONHOC" />
+    </AssociationSet>
+    <AssociationSet Name="FK_TKB_MH" Association="Self.FK_TKB_MH">
+      <End Role="MONHOC" EntitySet="MONHOC" />
+      <End Role="THOIKHOABIEU" EntitySet="THOIKHOABIEU" />
     </AssociationSet>
   </EntityContainer>
 </Schema>

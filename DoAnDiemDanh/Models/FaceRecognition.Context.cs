@@ -34,7 +34,9 @@ namespace DoAnDiemDanh.Models
         public virtual DbSet<KHOA> KHOAs { get; set; }
         public virtual DbSet<LOP> LOPs { get; set; }
         public virtual DbSet<MONHOC> MONHOCs { get; set; }
+        public virtual DbSet<NGAYLE> NGAYLEs { get; set; }
         public virtual DbSet<SINHVIEN> SINHVIENs { get; set; }
         public virtual DbSet<sysdiagram> sysdiagrams { get; set; }
+        public virtual DbSet<THOIKHOABIEU> THOIKHOABIEUx { get; set; }
     }
 }

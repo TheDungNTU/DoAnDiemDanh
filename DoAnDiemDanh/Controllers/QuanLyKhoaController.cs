@@ -14,36 +14,11 @@ namespace DoAnDiemDanh.Controllers
     {
         private FACE_RECOGNITIONEntities db = new FACE_RECOGNITIONEntities();
 
-        // GET: QuanLyKhoa
         public ActionResult Index()
         {
             return View(db.KHOAs.ToList());
         }
 
-        // GET: QuanLyKhoa/Details/5
-        public ActionResult Details(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            KHOA kHOA = db.KHOAs.Find(id);
-            if (kHOA == null)
-            {
-                return HttpNotFound();
-            }
-            return View(kHOA);
-        }
-
-        // GET: QuanLyKhoa/Create
-        public ActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: QuanLyKhoa/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public JsonResult Create([Bind(Include = "MaKhoa,TenKhoa")] KHOA kHOA)
@@ -57,7 +32,6 @@ namespace DoAnDiemDanh.Controllers
             return Json("false",JsonRequestBehavior.AllowGet);
         }
 
-        // GET: QuanLyKhoa/Edit/5
         public ActionResult Edit(int? id)
         {
             if (id == null)
@@ -72,9 +46,6 @@ namespace DoAnDiemDanh.Controllers
             return View(kHOA);
         }
 
-        // POST: QuanLyKhoa/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Edit([Bind(Include = "MaKhoa,TenKhoa")] KHOA kHOA)
@@ -88,7 +59,7 @@ namespace DoAnDiemDanh.Controllers
             return View(kHOA);
         }
 
-        // POST: QuanLyKhoa/Delete/5
+
         [HttpPost, ActionName("Delete")]
         public JsonResult DeleteConfirmed(int id)
         {
