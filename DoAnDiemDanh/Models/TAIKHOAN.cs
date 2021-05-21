@@ -12,12 +12,14 @@ namespace DoAnDiemDanh.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class sysdiagram
+    public partial class TAIKHOAN
     {
-        public string name { get; set; }
-        public int principal_id { get; set; }
-        public int diagram_id { get; set; }
-        public Nullable<int> version { get; set; }
-        public byte[] definition { get; set; }
+        public string TaiKhoan1 { get; set; }
+        public string MatKhau { get; set; }
+        public Nullable<int> MaGV { get; set; }
+        public Nullable<int> MaQuyen { get; set; }
+    
+        public virtual GIANGVIEN GIANGVIEN { get; set; }
+        public virtual QUYEN QUYEN { get; set; }
     }
 }

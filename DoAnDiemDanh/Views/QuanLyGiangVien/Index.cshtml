@@ -19,12 +19,11 @@
                 <span class="field-validation-valid text-danger" data-valmsg-for="TenGV" data-valmsg-replace="true"></span>
             </div>
         </div>
-
-        <div class="form-group">
-            <div class="h3 mb-2 ml-2 text-gray-800" style="font-size: 20px; font-weight: 600;">Mật Khẩu</div>
+         <div class="form-group">
+            <div class="h3 mb-2 ml-2 text-gray-800" style="font-size: 20px; font-weight: 600;">Email</div>
             <div class="col-md-10">
-                <input class="form-control text-box single-line" id="Password" name="Password" type="text" value="">
-                <span class="field-validation-valid text-danger" data-valmsg-for="Password" data-valmsg-replace="true"></span>
+                <input class="form-control text-box single-line" id="Email" name="Email" type="email" value="">
+                <span class="field-validation-valid text-danger" data-valmsg-for="Email" data-valmsg-replace="true"></span>
             </div>
         </div>
         <div class="form-group">
@@ -64,7 +63,7 @@
                     <tr>
                         <th>Mã Giảng Viên</th>
                         <th>Tên Giảng Viên</th>
-                        <th>Password</th>
+                        <th>Email</th>
                         <th>Khoa</th>
                         <th>Số môn học giảng dạy</th>
                         <th>Chức năng</th>
@@ -81,7 +80,7 @@
                             @Html.DisplayFor(modelItem => item.TenGV)
                         </td>
                         <td>
-                            @Html.DisplayFor(modelItem => item.Password)
+                            @Html.DisplayFor(modelItem => item.Email)
                         </td>
                         <td>
                             @Html.DisplayFor(modelItem => item.KHOA.TenKhoa)
@@ -119,22 +118,26 @@
             var node = dt.row.add([
                 data.MaGV,
                 data.TenGV,
-                data.Password,
+                data.Email,
                 data.TenKhoa,
                 `<a href="#" class="btn btn-primary btn-icon-split">
-                                <span class="icon text-white-50">
-                                    0
-                                </span>
-                                <span class="text">Môn Học</span>`,
-       
+                            <span class="icon text-white-50">
+                                0
+                            </span>
+                            <span class="text">Môn Học</span>`,
+
                 `<a href='/QuanLyGiangVien/Edit/${data.MaGV}'>Chỉnh sửa</a> |<a data-ajax="true" data-ajax-confirm="Bạn có muốn xóa bản ghi này ?" data-ajax-method="POST" data-ajax-success="deleteSuccess" href="/QuanLyGiangVien/Delete/${data.MaGV}">Xóa</a>`
             ]).draw().node();
             $(node).attr('id', `row_${data.MaGV}`);
             alertSuccess();
+            $('#TenGV').val('');
+            $('#Email').val('');
+            $('#MaKhoa').val('').change();
         }
-        $('#TenGV').val('');
-        $('#Password').val('');
-        $('#MaKhoa').val('').change();
+        else {
+            alertFail();
+        }
+       
     }
 
     function deleteSuccess(data) {
@@ -156,6 +159,25 @@
         $('.close-btn').click(function () {
             $('.alert').removeClass("show");
             $('.alert').addClass("hide");
+        });
+    }
+
+    function alertFail() {
+        $('.fail').addClass("show");
+        $('.fail').removeClass("hide");
+        $('.fail').addClass("showAlert");
+        setTimeout(function () {
+            $('.fail').removeClass("show");
+            $('.fail').addClass("hide");
+            $('.fail').removeClass("showAlert");
+        }, 5000);
+        
+        
+        $('.close-btn').click(function () {
+            $('.fail').removeClass("show");
+            $('.fail').addClass("hide");
+            $('.fail').removeClass("showAlert");
+            
         });
     }
 

@@ -25,7 +25,6 @@ namespace DoAnDiemDanh.Models
             throw new UnintentionalCodeFirstException();
         }
     
-        public virtual DbSet<ADMIN> ADMINs { get; set; }
         public virtual DbSet<CTDD> CTDDs { get; set; }
         public virtual DbSet<DIEMDANH> DIEMDANHs { get; set; }
         public virtual DbSet<DIEMDANH_T> DIEMDANH_T { get; set; }
@@ -35,8 +34,9 @@ namespace DoAnDiemDanh.Models
         public virtual DbSet<LOP> LOPs { get; set; }
         public virtual DbSet<MONHOC> MONHOCs { get; set; }
         public virtual DbSet<NGAYLE> NGAYLEs { get; set; }
+        public virtual DbSet<QUYEN> QUYENs { get; set; }
         public virtual DbSet<SINHVIEN> SINHVIENs { get; set; }
-        public virtual DbSet<sysdiagram> sysdiagrams { get; set; }
+        public virtual DbSet<TAIKHOAN> TAIKHOANs { get; set; }
         public virtual DbSet<THOIKHOABIEU> THOIKHOABIEUx { get; set; }
     }
 }

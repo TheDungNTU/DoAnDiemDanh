@@ -7,11 +7,13 @@ using System.Web.Mvc;
 
 namespace DoAnDiemDanh.Controllers
 {
-    
+    [Authorize(Roles = "Admin, User")]
     public class DiemDanhController : Controller
     {
+        
         private FACE_RECOGNITIONEntities db = new FACE_RECOGNITIONEntities();
         // GET: DiemDanh
+ 
         public ActionResult Index()
         {
             ViewBag.MonHoc = db.MONHOCs;

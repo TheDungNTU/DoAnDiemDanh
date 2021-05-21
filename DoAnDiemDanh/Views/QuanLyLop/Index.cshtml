@@ -178,6 +178,14 @@
         }, "Hãy nhập đúng định dạng tên lớp (VD: 59.CNTT-1).");
 
         $(".formLop").validate({
+            onfocusout: function (element) {
+                $(element).valid();
+            },
+            invalidHandler: function (form, validator) {
+
+                alert("Thêm môn học không thành công");
+                validator.focusInvalid();
+            },
             errorClass: "is-invalid",
             validClass: "is-valid",
             rules: {

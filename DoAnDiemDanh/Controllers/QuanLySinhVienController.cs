@@ -15,6 +15,7 @@ using Newtonsoft.Json;
 
 namespace DoAnDiemDanh.Controllers
 {
+    [Authorize(Roles = "Admin, User")]
     public class QuanLySinhVienController : Controller
     {
         private FACE_RECOGNITIONEntities db = new FACE_RECOGNITIONEntities();

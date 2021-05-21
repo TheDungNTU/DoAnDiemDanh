@@ -17,14 +17,17 @@ namespace DoAnDiemDanh.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public GIANGVIEN()
         {
+            this.TAIKHOANs = new HashSet<TAIKHOAN>();
             this.MONHOCs = new HashSet<MONHOC>();
         }
     
         public int MaGV { get; set; }
         public string TenGV { get; set; }
-        public string Password { get; set; }
+        public string Email { get; set; }
         public Nullable<int> MaKhoa { get; set; }
     
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<TAIKHOAN> TAIKHOANs { get; set; }
         public virtual KHOA KHOA { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<MONHOC> MONHOCs { get; set; }

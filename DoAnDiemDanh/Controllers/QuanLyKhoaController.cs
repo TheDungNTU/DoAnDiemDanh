@@ -10,6 +10,7 @@ using DoAnDiemDanh.Models;
 
 namespace DoAnDiemDanh.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class QuanLyKhoaController : Controller
     {
         private FACE_RECOGNITIONEntities db = new FACE_RECOGNITIONEntities();

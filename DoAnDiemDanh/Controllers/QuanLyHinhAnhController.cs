@@ -15,6 +15,7 @@ using DoAnDiemDanh.Models;
 
 namespace DoAnDiemDanh.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class QuanLyHinhAnhController : Controller
     {
         private FACE_RECOGNITIONEntities db = new FACE_RECOGNITIONEntities();

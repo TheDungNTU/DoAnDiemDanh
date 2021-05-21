@@ -10,6 +10,7 @@ using DoAnDiemDanh.Models;
 
 namespace DoAnDiemDanh.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class QuanLyGiangVienController : Controller
     {
         private FACE_RECOGNITIONEntities db = new FACE_RECOGNITIONEntities();
@@ -23,20 +24,35 @@ namespace DoAnDiemDanh.Controllers
             return View(gIANGVIENs.ToList());
         }
 
-        // POST: QuanLyGiangVien/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        public JsonResult Create([Bind(Include = "MaGV,TenGV,Password,MaKhoa")] GIANGVIEN gIANGVIEN)
-        {
-            db.GIANGVIENs.Add(gIANGVIEN);
+         [HttpPost]
+         public JsonResult Create([Bind(Include = "MaGV,TenGV,Email,MaKhoa")] GIANGVIEN gIANGVIEN)
+         {
+    
             var Khoa = db.KHOAs.Where(_ => _.MaKhoa == gIANGVIEN.MaKhoa).Single();
+
+            var check = db.GIANGVIENs.Any(_ => _.Email == gIANGVIEN.Email);
+            if (check)
+            {
+                return Json(false, JsonRequestBehavior.AllowGet);
+            }
+
+            db.GIANGVIENs.Add(gIANGVIEN);
             db.SaveChanges();
+
+            TAIKHOAN tk = new TAIKHOAN();
+            tk.MaQuyen = 2;
+            tk.MatKhau = "user123";
+            tk.MaGV = gIANGVIEN.MaGV;
+            tk.TaiKhoan1 = gIANGVIEN.Email;
+
+            db.TAIKHOANs.Add(tk);
+            db.SaveChanges();
+
             var data = new
             {
                 MaGV = gIANGVIEN.MaGV,
                 TenGV = gIANGVIEN.TenGV,
-                Password = gIANGVIEN.Password,
+                Email = gIANGVIEN.Email,
                 TenKhoa = Khoa.TenKhoa
 
             };

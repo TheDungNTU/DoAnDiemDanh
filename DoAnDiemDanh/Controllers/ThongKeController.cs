@@ -12,6 +12,7 @@ using System.Globalization;
 
 namespace DoAnDiemDanh.Controllers
 {
+    [Authorize(Roles = "Admin, User")]
     public class ThongKeController : Controller
     {
         private FACE_RECOGNITIONEntities db = new FACE_RECOGNITIONEntities();

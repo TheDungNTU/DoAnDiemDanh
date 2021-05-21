@@ -5,13 +5,6 @@
     <!-- SSDL content -->
     <edmx:StorageModels>
       <Schema Namespace="FACE_RECOGNITIONModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
-        <EntityType Name="ADMIN">
-          <Key>
-            <PropertyRef Name="TaiKhoanAdmin" />
-          </Key>
-          <Property Name="TaiKhoanAdmin" Type="varchar" MaxLength="100" Nullable="false" />
-          <Property Name="PasswordAdmin" Type="varchar" MaxLength="100" />
-        </EntityType>
         <EntityType Name="CTDD">
           <Key>
             <PropertyRef Name="MaDD" />
@@ -46,7 +39,7 @@
           </Key>
           <Property Name="MaGV" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="TenGV" Type="nvarchar" MaxLength="200" />
-          <Property Name="Password" Type="varchar" MaxLength="200" />
+          <Property Name="Email" Type="varchar" MaxLength="500" />
           <Property Name="MaKhoa" Type="int" />
         </EntityType>
         <EntityType Name="HINHANH">
@@ -95,6 +88,14 @@
           <Property Name="Ngay" Type="date" />
           <Property Name="GhiChu" Type="varchar(max)" />
         </EntityType>
+        <EntityType Name="QUYEN">
+          <Key>
+            <PropertyRef Name="MaQuyen" />
+          </Key>
+          <Property Name="MaQuyen" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="TenQuyen" Type="varchar" MaxLength="100" />
+          <Property Name="GhiChu" Type="nvarchar" MaxLength="500" />
+        </EntityType>
         <EntityType Name="SINHVIEN">
           <Key>
             <PropertyRef Name="MaSV" />
@@ -112,15 +113,14 @@
           <Property Name="MaSV" Type="int" Nullable="false" />
           <Property Name="MaMH" Type="int" Nullable="false" />
         </EntityType>
-        <EntityType Name="sysdiagrams">
+        <EntityType Name="TAIKHOAN">
           <Key>
-            <PropertyRef Name="diagram_id" />
+            <PropertyRef Name="TaiKhoan" />
           </Key>
-          <Property Name="name" Type="nvarchar" MaxLength="128" Nullable="false" />
-          <Property Name="principal_id" Type="int" Nullable="false" />
-          <Property Name="diagram_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="version" Type="int" />
-          <Property Name="definition" Type="varbinary(max)" />
+          <Property Name="TaiKhoan" Type="varchar" MaxLength="500" Nullable="false" />
+          <Property Name="MatKhau" Type="varchar" MaxLength="100" />
+          <Property Name="MaGV" Type="int" />
+          <Property Name="MaQuyen" Type="int" />
         </EntityType>
         <EntityType Name="THOIKHOABIEU">
           <Key>
@@ -134,7 +134,7 @@
           <Property Name="ThuSau" Type="bit" />
           <Property Name="ThuBay" Type="bit" />
         </EntityType>
-        <Association Name="FK__DIEMDANH_T__MaSV__02084FDA">
+        <Association Name="FK__DIEMDANH_T__MaSV__6C190EBB">
           <End Role="SINHVIEN" Type="Self.SINHVIEN" Multiplicity="0..1">
             <OnDelete Action="Cascade" />
           </End>
@@ -145,6 +145,34 @@
             </Principal>
             <Dependent Role="DIEMDANH_T">
               <PropertyRef Name="MaSV" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__TAIKHOAN__MaGV__1A14E395">
+          <End Role="GIANGVIEN" Type="Self.GIANGVIEN" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="TAIKHOAN" Type="Self.TAIKHOAN" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="GIANGVIEN">
+              <PropertyRef Name="MaGV" />
+            </Principal>
+            <Dependent Role="TAIKHOAN">
+              <PropertyRef Name="MaGV" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__TAIKHOAN__MaQuye__1B0907CE">
+          <End Role="QUYEN" Type="Self.QUYEN" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="TAIKHOAN" Type="Self.TAIKHOAN" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="QUYEN">
+              <PropertyRef Name="MaQuyen" />
+            </Principal>
+            <Dependent Role="TAIKHOAN">
+              <PropertyRef Name="MaQuyen" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -311,7 +339,6 @@
           </ReferentialConstraint>
         </Association>
         <EntityContainer Name="FACE_RECOGNITIONModelStoreContainer">
-          <EntitySet Name="ADMIN" EntityType="Self.ADMIN" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CTDD" EntityType="Self.CTDD" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="DIEMDANH" EntityType="Self.DIEMDANH" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="DIEMDANH_T" EntityType="Self.DIEMDANH_T" Schema="dbo" store:Type="Tables" />
@@ -321,13 +348,22 @@
           <EntitySet Name="LOP" EntityType="Self.LOP" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="MONHOC" EntityType="Self.MONHOC" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="NGAYLE" EntityType="Self.NGAYLE" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="QUYEN" EntityType="Self.QUYEN" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="SINHVIEN" EntityType="Self.SINHVIEN" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="SINHVIEN_MONHOC" EntityType="Self.SINHVIEN_MONHOC" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="TAIKHOAN" EntityType="Self.TAIKHOAN" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="THOIKHOABIEU" EntityType="Self.THOIKHOABIEU" Schema="dbo" store:Type="Tables" />
-          <AssociationSet Name="FK__DIEMDANH_T__MaSV__02084FDA" Association="Self.FK__DIEMDANH_T__MaSV__02084FDA">
+          <AssociationSet Name="FK__DIEMDANH_T__MaSV__6C190EBB" Association="Self.FK__DIEMDANH_T__MaSV__6C190EBB">
             <End Role="SINHVIEN" EntitySet="SINHVIEN" />
             <End Role="DIEMDANH_T" EntitySet="DIEMDANH_T" />
+          </AssociationSet>
+          <AssociationSet Name="FK__TAIKHOAN__MaGV__1A14E395" Association="Self.FK__TAIKHOAN__MaGV__1A14E395">
+            <End Role="GIANGVIEN" EntitySet="GIANGVIEN" />
+            <End Role="TAIKHOAN" EntitySet="TAIKHOAN" />
+          </AssociationSet>
+          <AssociationSet Name="FK__TAIKHOAN__MaQuye__1B0907CE" Association="Self.FK__TAIKHOAN__MaQuye__1B0907CE">
+            <End Role="QUYEN" EntitySet="QUYEN" />
+            <End Role="TAIKHOAN" EntitySet="TAIKHOAN" />
           </AssociationSet>
           <AssociationSet Name="FK_CTDD_DD" Association="Self.FK_CTDD_DD">
             <End Role="DIEMDANH" EntitySet="DIEMDANH" />
@@ -383,13 +419,6 @@
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="FACE_RECOGNITIONModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
-        <EntityType Name="ADMIN">
-          <Key>
-            <PropertyRef Name="TaiKhoanAdmin" />
-          </Key>
-          <Property Name="TaiKhoanAdmin" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="PasswordAdmin" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
-        </EntityType>
         <EntityType Name="CTDD">
           <Key>
             <PropertyRef Name="MaDD" />
@@ -421,7 +450,7 @@
           <Property Name="MaSV" Type="Int32" />
           <Property Name="Ngay" Type="DateTime" Precision="0" />
           <Property Name="Gio" Type="Time" Precision="7" />
-          <NavigationProperty Name="SINHVIEN" Relationship="Self.FK__DIEMDANH_T__MaSV__02084FDA" FromRole="DIEMDANH_T" ToRole="SINHVIEN" />
+          <NavigationProperty Name="SINHVIEN" Relationship="Self.FK__DIEMDANH_T__MaSV__6C190EBB" FromRole="DIEMDANH_T" ToRole="SINHVIEN" />
         </EntityType>
         <EntityType Name="GIANGVIEN">
           <Key>
@@ -429,8 +458,9 @@
           </Key>
           <Property Name="MaGV" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="TenGV" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
-          <Property Name="Password" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="Email" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
           <Property Name="MaKhoa" Type="Int32" />
+          <NavigationProperty Name="TAIKHOANs" Relationship="Self.FK__TAIKHOAN__MaGV__1A14E395" FromRole="GIANGVIEN" ToRole="TAIKHOAN" />
           <NavigationProperty Name="KHOA" Relationship="Self.FK_GIANGVIEN_KHOA" FromRole="GIANGVIEN" ToRole="KHOA" />
           <NavigationProperty Name="MONHOCs" Relationship="Self.FK_MONHOC_GIANGVIEN" FromRole="GIANGVIEN" ToRole="MONHOC" />
         </EntityType>
@@ -490,6 +520,15 @@
           <Property Name="Ngay" Type="DateTime" Precision="0" />
           <Property Name="GhiChu" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
         </EntityType>
+        <EntityType Name="QUYEN">
+          <Key>
+            <PropertyRef Name="MaQuyen" />
+          </Key>
+          <Property Name="MaQuyen" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="TenQuyen" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="GhiChu" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="TAIKHOANs" Relationship="Self.FK__TAIKHOAN__MaQuye__1B0907CE" FromRole="QUYEN" ToRole="TAIKHOAN" />
+        </EntityType>
         <EntityType Name="SINHVIEN">
           <Key>
             <PropertyRef Name="MaSV" />
@@ -499,21 +538,22 @@
           <Property Name="MaKhoa" Type="Int32" />
           <Property Name="MaLop" Type="Int32" />
           <NavigationProperty Name="CTDDs" Relationship="Self.FK_CTDD_SINHVIEN" FromRole="SINHVIEN" ToRole="CTDD" />
-          <NavigationProperty Name="DIEMDANH_T" Relationship="Self.FK__DIEMDANH_T__MaSV__02084FDA" FromRole="SINHVIEN" ToRole="DIEMDANH_T" />
+          <NavigationProperty Name="DIEMDANH_T" Relationship="Self.FK__DIEMDANH_T__MaSV__6C190EBB" FromRole="SINHVIEN" ToRole="DIEMDANH_T" />
           <NavigationProperty Name="HINHANHs" Relationship="Self.FK_HINHANH_SINHVIEN" FromRole="SINHVIEN" ToRole="HINHANH" />
           <NavigationProperty Name="KHOA" Relationship="Self.FK_SINHVIEN_KHOA" FromRole="SINHVIEN" ToRole="KHOA" />
           <NavigationProperty Name="LOP" Relationship="Self.FK_SINHVIEN_LOP" FromRole="SINHVIEN" ToRole="LOP" />
           <NavigationProperty Name="MONHOCs" Relationship="Self.SINHVIEN_MONHOC" FromRole="SINHVIEN" ToRole="MONHOC" />
         </EntityType>
-        <EntityType Name="sysdiagram">
+        <EntityType Name="TAIKHOAN">
           <Key>
-            <PropertyRef Name="diagram_id" />
+            <PropertyRef Name="TaiKhoan1" />
           </Key>
-          <Property Name="name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="principal_id" Type="Int32" Nullable="false" />
-          <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="version" Type="Int32" />
-          <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
+          <Property Name="TaiKhoan1" Type="String" MaxLength="500" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="MatKhau" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="MaGV" Type="Int32" />
+          <Property Name="MaQuyen" Type="Int32" />
+          <NavigationProperty Name="GIANGVIEN" Relationship="Self.FK__TAIKHOAN__MaGV__1A14E395" FromRole="TAIKHOAN" ToRole="GIANGVIEN" />
+          <NavigationProperty Name="QUYEN" Relationship="Self.FK__TAIKHOAN__MaQuye__1B0907CE" FromRole="TAIKHOAN" ToRole="QUYEN" />
         </EntityType>
         <EntityType Name="THOIKHOABIEU">
           <Key>
@@ -568,7 +608,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__DIEMDANH_T__MaSV__02084FDA">
+        <Association Name="FK__DIEMDANH_T__MaSV__6C190EBB">
           <End Role="SINHVIEN" Type="Self.SINHVIEN" Multiplicity="0..1">
             <OnDelete Action="Cascade" />
           </End>
@@ -579,6 +619,20 @@
             </Principal>
             <Dependent Role="DIEMDANH_T">
               <PropertyRef Name="MaSV" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__TAIKHOAN__MaGV__1A14E395">
+          <End Role="GIANGVIEN" Type="Self.GIANGVIEN" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="TAIKHOAN" Type="Self.TAIKHOAN" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="GIANGVIEN">
+              <PropertyRef Name="MaGV" />
+            </Principal>
+            <Dependent Role="TAIKHOAN">
+              <PropertyRef Name="MaGV" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -678,12 +732,25 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK__TAIKHOAN__MaQuye__1B0907CE">
+          <End Role="QUYEN" Type="Self.QUYEN" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="TAIKHOAN" Type="Self.TAIKHOAN" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="QUYEN">
+              <PropertyRef Name="MaQuyen" />
+            </Principal>
+            <Dependent Role="TAIKHOAN">
+              <PropertyRef Name="MaQuyen" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="SINHVIEN_MONHOC">
           <End Role="SINHVIEN" Type="Self.SINHVIEN" Multiplicity="*" />
           <End Role="MONHOC" Type="Self.MONHOC" Multiplicity="*" />
         </Association>
         <EntityContainer Name="FACE_RECOGNITIONEntities" annotation:LazyLoadingEnabled="true">
-          <EntitySet Name="ADMINs" EntityType="Self.ADMIN" />
           <EntitySet Name="CTDDs" EntityType="Self.CTDD" />
           <EntitySet Name="DIEMDANHs" EntityType="Self.DIEMDANH" />
           <EntitySet Name="DIEMDANH_T" EntityType="Self.DIEMDANH_T" />
@@ -693,8 +760,9 @@
           <EntitySet Name="LOPs" EntityType="Self.LOP" />
           <EntitySet Name="MONHOCs" EntityType="Self.MONHOC" />
           <EntitySet Name="NGAYLEs" EntityType="Self.NGAYLE" />
+          <EntitySet Name="QUYENs" EntityType="Self.QUYEN" />
           <EntitySet Name="SINHVIENs" EntityType="Self.SINHVIEN" />
-          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagram" />
+          <EntitySet Name="TAIKHOANs" EntityType="Self.TAIKHOAN" />
           <EntitySet Name="THOIKHOABIEUx" EntityType="Self.THOIKHOABIEU" />
           <AssociationSet Name="FK_CTDD_DD" Association="Self.FK_CTDD_DD">
             <End Role="DIEMDANH" EntitySet="DIEMDANHs" />
@@ -708,9 +776,13 @@
             <End Role="MONHOC" EntitySet="MONHOCs" />
             <End Role="DIEMDANH" EntitySet="DIEMDANHs" />
           </AssociationSet>
-          <AssociationSet Name="FK__DIEMDANH_T__MaSV__02084FDA" Association="Self.FK__DIEMDANH_T__MaSV__02084FDA">
+          <AssociationSet Name="FK__DIEMDANH_T__MaSV__6C190EBB" Association="Self.FK__DIEMDANH_T__MaSV__6C190EBB">
             <End Role="SINHVIEN" EntitySet="SINHVIENs" />
             <End Role="DIEMDANH_T" EntitySet="DIEMDANH_T" />
+          </AssociationSet>
+          <AssociationSet Name="FK__TAIKHOAN__MaGV__1A14E395" Association="Self.FK__TAIKHOAN__MaGV__1A14E395">
+            <End Role="GIANGVIEN" EntitySet="GIANGVIENs" />
+            <End Role="TAIKHOAN" EntitySet="TAIKHOANs" />
           </AssociationSet>
           <AssociationSet Name="FK_GIANGVIEN_KHOA" Association="Self.FK_GIANGVIEN_KHOA">
             <End Role="KHOA" EntitySet="KHOAs" />
@@ -740,6 +812,10 @@
             <End Role="MONHOC" EntitySet="MONHOCs" />
             <End Role="THOIKHOABIEU" EntitySet="THOIKHOABIEUx" />
           </AssociationSet>
+          <AssociationSet Name="FK__TAIKHOAN__MaQuye__1B0907CE" Association="Self.FK__TAIKHOAN__MaQuye__1B0907CE">
+            <End Role="QUYEN" EntitySet="QUYENs" />
+            <End Role="TAIKHOAN" EntitySet="TAIKHOANs" />
+          </AssociationSet>
           <AssociationSet Name="SINHVIEN_MONHOC" Association="Self.SINHVIEN_MONHOC">
             <End Role="SINHVIEN" EntitySet="SINHVIENs" />
             <End Role="MONHOC" EntitySet="MONHOCs" />
@@ -751,14 +827,6 @@
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
         <EntityContainerMapping StorageEntityContainer="FACE_RECOGNITIONModelStoreContainer" CdmEntityContainer="FACE_RECOGNITIONEntities">
-          <EntitySetMapping Name="ADMINs">
-            <EntityTypeMapping TypeName="FACE_RECOGNITIONModel.ADMIN">
-              <MappingFragment StoreEntitySet="ADMIN">
-                <ScalarProperty Name="TaiKhoanAdmin" ColumnName="TaiKhoanAdmin" />
-                <ScalarProperty Name="PasswordAdmin" ColumnName="PasswordAdmin" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="CTDDs">
             <EntityTypeMapping TypeName="FACE_RECOGNITIONModel.CTDD">
               <MappingFragment StoreEntitySet="CTDD">
@@ -794,7 +862,7 @@
               <MappingFragment StoreEntitySet="GIANGVIEN">
                 <ScalarProperty Name="MaGV" ColumnName="MaGV" />
                 <ScalarProperty Name="TenGV" ColumnName="TenGV" />
-                <ScalarProperty Name="Password" ColumnName="Password" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
                 <ScalarProperty Name="MaKhoa" ColumnName="MaKhoa" />
               </MappingFragment>
             </EntityTypeMapping>
@@ -850,6 +918,15 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="QUYENs">
+            <EntityTypeMapping TypeName="FACE_RECOGNITIONModel.QUYEN">
+              <MappingFragment StoreEntitySet="QUYEN">
+                <ScalarProperty Name="MaQuyen" ColumnName="MaQuyen" />
+                <ScalarProperty Name="TenQuyen" ColumnName="TenQuyen" />
+                <ScalarProperty Name="GhiChu" ColumnName="GhiChu" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="SINHVIENs">
             <EntityTypeMapping TypeName="FACE_RECOGNITIONModel.SINHVIEN">
               <MappingFragment StoreEntitySet="SINHVIEN">
@@ -860,14 +937,13 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="sysdiagrams">
-            <EntityTypeMapping TypeName="FACE_RECOGNITIONModel.sysdiagram">
-              <MappingFragment StoreEntitySet="sysdiagrams">
-                <ScalarProperty Name="name" ColumnName="name" />
-                <ScalarProperty Name="principal_id" ColumnName="principal_id" />
-                <ScalarProperty Name="diagram_id" ColumnName="diagram_id" />
-                <ScalarProperty Name="version" ColumnName="version" />
-                <ScalarProperty Name="definition" ColumnName="definition" />
+          <EntitySetMapping Name="TAIKHOANs">
+            <EntityTypeMapping TypeName="FACE_RECOGNITIONModel.TAIKHOAN">
+              <MappingFragment StoreEntitySet="TAIKHOAN">
+                <ScalarProperty Name="TaiKhoan1" ColumnName="TaiKhoan" />
+                <ScalarProperty Name="MatKhau" ColumnName="MatKhau" />
+                <ScalarProperty Name="MaGV" ColumnName="MaGV" />
+                <ScalarProperty Name="MaQuyen" ColumnName="MaQuyen" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

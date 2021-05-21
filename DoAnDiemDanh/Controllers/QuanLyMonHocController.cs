@@ -13,6 +13,7 @@ using DoAnDiemDanh.Models;
 
 namespace DoAnDiemDanh.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class QuanLyMonHocController : Controller
     {
 
