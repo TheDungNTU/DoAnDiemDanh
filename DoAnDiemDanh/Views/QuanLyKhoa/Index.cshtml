@@ -3,7 +3,7 @@
 @{
     ViewBag.Title = "Index";
     Layout = "~/Views/Layout/_LayoutAdmin.cshtml";
-   
+
     <style>
         .is-invalid {
             color: #E84C3D;
@@ -11,15 +11,20 @@
         }
     </style>
 }
-
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="@Url.Action("Index","DiemDanh")">Trang Chủ</a></li>
+        <li class="breadcrumb-item " aria-current="page">Quản lý khoa</li>
+    </ol>
+</nav>
 <div>
-    @using (Ajax.BeginForm("Create", "QuanLyKhoa", new AjaxOptions { HttpMethod = "POST", OnSuccess = "FnSuccess" }, new{@class = "formKhoa"}))
+    @using (Ajax.BeginForm("Create", "QuanLyKhoa", new AjaxOptions { HttpMethod = "POST", OnSuccess = "FnSuccess" }, new { @class = "formKhoa" }))
     {
         @Html.AntiForgeryToken()
 
         <div class="form-horizontal shadow p-3 mb-2 card">
             <div class="form-group">
-                <label class="h3 mb-2 ml-2 text-gray-800" for="TenKhoa" style="font-size: 20px; font-weight: 600;">Tên Khoa</label>
+                <label class="control-label col-md-2" for="TenSV" style="font-size: 17px; font-weight:bold">Tên Khoa</label>
                 <div class="col-md-10">
                     <input class="form-control text-box single-line " id="TenKhoa" name="TenKhoa" type="text" value="" required>
                 </div>
@@ -91,7 +96,7 @@
             $(node).attr('id', `row_${data.MaKhoa}`);
             alertSuccess();
         }
-        $('#TenKhoa').val(''); 
+        $('#TenKhoa').val('');
     }
 
     function deleteSuccess(data) {

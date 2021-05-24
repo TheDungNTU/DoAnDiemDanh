@@ -290,7 +290,6 @@
     <Content Include="Content\data\lbpcascade_frontalface.xml" />
     <Content Include="Content\img\add-user.png" />
     <Content Include="Content\img\Ellipsis-1s-200px.gif" />
-    <Content Include="Content\img\hacker.png" />
     <Content Include="Content\img\face-recognition.png" />
     <Content Include="Content\img\photo.png" />
     <Content Include="Content\img\undraw_posting_photo.svg" />
@@ -306,6 +305,7 @@
     <Content Include="Content\js\sb-admin-2.js" />
     <Content Include="Content\js\sb-admin-2.min.js" />
     <Content Include="Content\img\new.png" />
+    <Content Include="Content\img\logo.jpg" />
     <Content Include="Content\select2.min.css" />
     <Content Include="Content\sql\face.sql" />
     <Content Include="Content\vendor\bootstrap\js\bootstrap.bundle.js" />
@@ -2203,7 +2203,6 @@
     <Content Include="Views\QuanLyKhoa\Index.cshtml" />
     <Content Include="Views\QuanLyLop\Edit.cshtml" />
     <Content Include="Views\QuanLyLop\Index.cshtml" />
-    <Content Include="Views\QuanLySinhVien\Create.cshtml" />
     <Content Include="Views\QuanLySinhVien\Edit.cshtml" />
     <Content Include="Views\QuanLySinhVien\Index.cshtml" />
     <Content Include="Views\QuanLyHinhAnh\Details_SinhVien_HinhAnh.cshtml" />
@@ -2221,6 +2220,7 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Content\doc\" />
+    <Folder Include="Properties\PublishProfiles\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />

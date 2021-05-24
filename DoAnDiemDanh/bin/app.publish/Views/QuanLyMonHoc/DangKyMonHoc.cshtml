@@ -1,0 +1,95 @@
+﻿@using DoAnDiemDanh.Models
+
+@{
+    ViewBag.Title = "DangKyMonHoc";
+    Layout = "~/Views/Layout/_LayoutAdmin.cshtml";
+    IEnumerable<MONHOC> MONHOC = (IEnumerable<MONHOC>)ViewBag.MaMH;
+    IEnumerable<SINHVIEN> SINHVIEN = (IEnumerable<SINHVIEN>)ViewBag.MaSV;
+}
+
+@using (Ajax.BeginForm("DangKyMonHoc", "QuanLyMonHoc", new AjaxOptions { HttpMethod = "POST", OnSuccess = "FnSuccess" }))
+{
+    @Html.AntiForgeryToken()
+    <div class="form-horizontal shadow p-3 mb-2 card">
+        <div class="form-group">
+            <div class="h3 mb-2 ml-2 text-gray-800" style="font-size: 20px; font-weight: 600;">Tên Môn Học</div>
+            <div class="col-md-12">
+                <select class="form-control" id="MaMH" name="MaMH" required>
+                    <option value="">Mời bạn chọn Môn Học</option>
+                    @foreach (var item in MONHOC)
+                    {
+                        <option value="@item.MaMH">@item.TenMH</option>
+                    }
+                </select>
+                <span class="field-validation-valid text-danger" data-valmsg-for="MaKhoa" data-valmsg-replace="true"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="h3 mb-2 ml-2 text-gray-800" style="font-size: 20px; font-weight: 600;">Tên Sinh Viên</div>
+            <div class="col-md-12">
+                <select class="form-control" id="MaSV" name="MaSV" required>
+                    <option value="">Mời bạn chọn Sinh Viên</option>
+                    @foreach (var item in SINHVIEN)
+                    {
+                        <option value="@item.MaSV">@item.TenSV</option>
+                    }
+                </select>
+                <span class="field-validation-valid text-danger" data-valmsg-for="MaKhoa" data-valmsg-replace="true"></span>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Thêm mới" class="btn btn-success btn-icon-split p-2 border">
+            </div>
+        </div>
+    </div>
+}
+
+<script>
+    function FnSuccess(data) {
+        console.log(data)
+        if (data != false) {
+
+            //var row = `<tr role='row' class='odd' id='row_${data.MaLop}'>
+            //                    <td>${data.MaLop}</td >
+            //                    <td>${data.TenLop}</td >
+            //                    <td>${data.TenKhoa}</td >
+            //                    <td>0</td>
+            //                    <td><a href='/QuanLyKhoa/Edit/${data.MaKhoa}'>Chỉnh sửa</a> |<a data-ajax='true' data-ajax-confirm='Bạn có muốn xóa bản ghi này ?' data-ajax-method='POST' data-ajax-success='deleteSuccess' href='/QuanLyLop/Delete/${data.MaLop}'>Xóa</a></td>
+            //               </tr >`;
+            //$('#data_table tr:first').before(row)
+
+            alertSuccess();
+        }
+        //$('#TenLop').val('');
+    }
+
+    function deleteSuccess(data) {
+        console.log(data)
+        $(`#row_${data}`).remove()
+        $('#TenKhoa').val('');
+        alertSuccess();
+    }
+
+    function alertSuccess() {
+        $('.alert').addClass("show");
+        $('.alert').removeClass("hide");
+        $('.alert').addClass("showAlert");
+        setTimeout(function () {
+            $('.alert').removeClass("show");
+            $('.alert').addClass("hide");
+        }, 5000);
+        $('.close-btn').click(function () {
+            $('.alert').removeClass("show");
+            $('.alert').addClass("hide");
+        });
+    }
+
+    $("#MaKhoa").change(function () {
+        var tenkhoa = $("#MaKhoa option:selected").html();
+        $("#TenKhoa").val(tenkhoa);
+    })
+</script>
+
+

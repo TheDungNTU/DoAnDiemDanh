@@ -3,31 +3,89 @@
 @{
     ViewBag.Title = "Edit";
     Layout = "~/Views/Layout/_LayoutAdmin.cshtml";
+    <style>
+        .is-invalid {
+            color: #E84C3D;
+            margin-top: 5px;
+        }
+    </style>
 }
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="@Url.Action("Index","DiemDanh")">Trang chủ</a></li>
+        <li class="breadcrumb-item"><a href="@Url.Action("Index","QuanLyKhoa")">Quản lý khoa</a></li>
+        <li class="breadcrumb-item " aria-current="page">Chỉnh sửa</li>
+    </ol>
+</nav>
 
-@using (Html.BeginForm())
+
+@using (Html.BeginForm("Edit", "QuanLyLop", FormMethod.Post, new { @class = "formKhoa" }))
 {
     @Html.AntiForgeryToken()
 
-<div class="form-horizontal shadow p-3 mb-2 card">
-    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-    @Html.HiddenFor(model => model.MaKhoa)
-    <div class="form-group">
-        <label class="h3 mb-2 ml-2 text-gray-800" for="TenKhoa" style="font-size: 20px; font-weight: 600;">Tên Khoa</label>
-        <div class="col-md-10">
-            @Html.EditorFor(model => model.TenKhoa, new { htmlAttributes = new { @class = "form-control" } })
-            @Html.ValidationMessageFor(model => model.TenKhoa, "", new { @class = "text-danger" })
+    <div class="form-horizontal shadow p-3 mb-2 card">
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(model => model.MaKhoa)
+        <div class="form-group">
+            <label class="control-label col-md-2" for="TenSV" style="font-size: 17px; font-weight:bold">Tên Khoa</label>
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.TenKhoa, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.TenKhoa, "", new { @class = "text-danger" })
+            </div>
         </div>
-    </div>
 
-    <div class="form-group">
-        <div class="col-md-offset-2 col-md-10">
-            <input type="submit" value="Thêm mới" class="btn btn-success btn-icon-split p-2 border">
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Thêm mới" class="btn btn-success btn-icon-split p-2 border">
+            </div>
         </div>
     </div>
-</div>
 }
 
 <div>
     @Html.ActionLink("Quay lại danh sách", "Index")
 </div>
+
+
+<script>
+
+    $(document).ready(function () {
+
+        jQuery.validator.addMethod("NotAllowNumber", function (value, element) {
+            return this.optional(element) || /^([^0-9]*)$/.test(value);
+        }, "Không được phép có chữ số.");
+
+        jQuery.validator.addMethod("NotAllowFirstSpace", function (value, element) {
+            return this.optional(element) || /^\S{1}/.test(value);
+        }, "Kí tự đầu tiên không được có khoảng trắng.");
+
+        jQuery.validator.addMethod("NotAllowSpecial", function (value, element) {
+            return this.optional(element) || /^([^*\u0040.!/'#$%^&(){}[:;<>,.?/~_+-=|]*)$/.test(value);
+        }, "Không được phép có kí tự đặc biệt.");
+
+        $(".formKhoa").validate({
+            onfocusout: function (element) {
+                $(element).valid();
+            },
+
+            errorClass: "is-invalid",
+            validClass: "is-valid",
+            rules: {
+                TenKhoa: {
+                    required: true,
+                    NotAllowNumber: true,
+                    NotAllowSpecial: true,
+                    NotAllowFirstSpace: true,
+                },
+            },
+            messages: {
+                TenKhoa: {
+                    required: "Tên Khoa không được để trống.",
+
+                },
+            }
+        });
+
+    });
+
+</script>

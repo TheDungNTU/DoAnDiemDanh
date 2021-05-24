@@ -3,11 +3,25 @@
 @{
     ViewBag.Title = "Edit";
     Layout = "~/Views/Layout/_LayoutAdmin.cshtml";
+
+    <style>
+        .is-invalid {
+            color: #E84C3D;
+            margin-top: 5px;
+        }
+    </style>
 }
 
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="@Url.Action("Index","DiemDanh")">Trang chủ</a></li>
+        <li class="breadcrumb-item"><a href="@Url.Action("Index","QuanLyLop")">Quản lý lớp học</a></li>
+        <li class="breadcrumb-item " aria-current="page">Chỉnh sửa</li>
+    </ol>
+</nav>
 
 
-@using (Html.BeginForm())
+@using (Html.BeginForm("Edit", "QuanLyLop", FormMethod.Post, new { @class = "formLop" }))
 {
     @Html.AntiForgeryToken()
     <div class="form-horizontal shadow p-3 mb-2 card">
@@ -17,7 +31,7 @@
             <label class="h3 mb-2 ml-2 text-gray-800" for="TenLop" style="font-size: 20px; font-weight: 600;">Tên Lớp</label>
             <div class="col-md-10">
                 @Html.EditorFor(model => model.TenLop, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.TenLop, "", new { @class = "text-danger" })
+
             </div>
         </div>
         <div class="form-group">
@@ -26,7 +40,7 @@
             <span id="TenKhoa"></span>
             <div class="col-md-10">
                 @Html.DropDownList("MaKhoa", null, htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.MaKhoa, "", new { @class = "text-danger" })
+
             </div>
         </div>
         <div class="form-group">
@@ -41,5 +55,53 @@
     @Html.ActionLink("Quay lại danh sách", "Index")
 </div>
 
+<script>
+
+
+
+
+    $(document).ready(function () {
+        ;
+
+        jQuery.validator.addMethod("NotAllowFirstSpace", function (value, element) {
+            return this.optional(element) || /^\S{1}/.test(value);
+        }, "Kí tự đầu tiên không được có khoảng trắng.");
+
+        jQuery.validator.addMethod("RequireClass", function (value, element) {
+            return this.optional(element) || /^\d{2}[.]{1}[a-zA-Z]+[-]{1}\d+/.test(value);
+        }, "Hãy nhập đúng định dạng tên lớp (VD: 59.CNTT-1).");
+
+        $(".formLop").validate({
+            onfocusout: function (element) {
+                $(element).valid();
+            },
+            invalidHandler: function (form, validator) {
+
+                alert("Thêm môn học không thành công");
+                validator.focusInvalid();
+            },
+            errorClass: "is-invalid",
+            validClass: "is-valid",
+            rules: {
+                TenLop: {
+                    required: true,
+                    NotAllowFirstSpace: true,
+                    RequireClass: true,
+                },
+                MaKhoa: "required"
+            },
+            messages: {
+                TenLop: {
+                    required: "Tên Lớp không được để trống.",
+                },
+                MaKhoa: {
+                    required: "Bạn chưa chọn Khoa, hãy chọn 1.",
+                }
+            }
+        });
+    });
+
+
+</script>
 
 

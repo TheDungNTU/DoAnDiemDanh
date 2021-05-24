@@ -9,18 +9,33 @@
     var DS_Khoa = (IEnumerable<KHOA>)ViewBag.Khoa;
     var DS_Khoa_Filter = (IEnumerable<KHOA>)ViewBag.Khoa_Filter;
     var DS_Lop_Filter = (IEnumerable<LOP>)ViewBag.Lop_Filter;
+
     <style>
-        .table_filter tr{
+        .table_filter tr {
             height: 50px;
+        }
+
+        .is-invalid {
+            color: #E84C3D;
+            margin-top: 5px;
         }
     </style>
 }
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="@Url.Action("Index","DiemDanh")">Trang Chủ</a></li>
+
+        <li class="breadcrumb-item " aria-current="page">Quản lý sinh viên</li>
+    </ol>
+</nav>
+
 
 <div class="modal fade" id="exampleModalLong1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content" style="width: 568px;">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLongTitle">Thêm Sinh Viên</h5>
+                <h5 class="modal-title font-weight-bold" id="exampleModalLongTitle">Thêm Sinh Viên Mới</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -31,7 +46,7 @@
 
                 <div class="form-horizontal p-3 mb-2">
                     <div class="form-group">
-                        <label class="control-label col-md-4" for="TenMH">Tên Sinh Viên</label>
+                        <label class="control-label col-md-4" style="font-size: 17px; font-weight:bold">Tên Sinh Viên</label>
                         <div class="col-md-12">
                             <input class="form-control text-box single-line" id="TenSV" name="TenSV" type="text" value="">
                             <span class="field-validation-valid text-danger" data-valmsg-for="TenSV" data-valmsg-replace="true"></span>
@@ -39,7 +54,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label class="control-label col-md-4" for="SoTC">Tên Khoa</label>
+                        <label class="control-label col-md-4" style="font-size: 17px; font-weight:bold">Tên Khoa</label>
                         <div class="col-md-12">
                             <select class="form-control" data-val="true" data-val-number="The field MaKhoa must be a number." id="MaKhoa" name="MaKhoa">
                                 <option value="">Mời bạn chọn Khoa</option>
@@ -53,7 +68,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label class="control-label col-md-4" for="NgayBD">Tên Lớp</label>
+                        <label class="control-label col-md-2" style="font-size: 17px; font-weight:bold">Tên Lớp</label>
                         <div class="col-md-12">
                             <select class="form-control" data-val="true" data-val-number="The field MaLop must be a number." id="MaLop" name="MaLop">
                                 <option value="">Mời bạn chọn Lớp Học</option>
@@ -63,7 +78,7 @@
                     </div>
                     <div class="form-group">
                         <div class="col-md-offset-2 col-md-12 text-left d-flex justify-content-lg-end">
-                            <button type="button" class="btn btn-secondary mr-2" data-dismiss="modal">Đóng</button>
+                            <button type="button" class="btn btn-secondary mr-2 close1" data-dismiss="modal">Đóng</button>
                             <button type="submit" class="btn btn-success btn-icon-split p-2 border">Thêm mới</button>
                         </div>
                     </div>
@@ -106,20 +121,19 @@
 
 
 <p>
-    <h1 class="h3 mb-4 text-gray-800">Quản lí Sinh Viên</h1>
-    <button class="btn btn-success btn-icon-split shadow" style="position: absolute; top: 0px; right: 25px" data-toggle="modal" data-target="#exampleModalLong1">
+    <button class="btn btn-success btn-icon-split shadow" style="position: absolute; top: 5px; right: 25px" data-toggle="modal" data-target="#exampleModalLong1">
         <span class="icon text-white-50">
             <i class="fas fa-plus"></i>
         </span>
         <span class="text">Thêm Sinh Viên Mới</span>
     </button>
-    <button class="btn btn-success btn-icon-split shadow" style="position: absolute; top: 0px; right: 475px" id="train_model">
+    <button class="btn btn-success btn-icon-split shadow" style="position: absolute; top: 5px; right: 475px" id="train_model">
         <span class="icon text-white-50">
             <i class="fas fa-cloud-upload-alt"></i>
         </span>
         <span class="text">Train Model</span>
     </button>
-    <button class="btn btn-success btn-icon-split shadow" style="position: absolute; top: 0px; right: 260px" data-toggle="modal" data-target="#exampleModalLong">
+    <button class="btn btn-success btn-icon-split shadow" style="position: absolute; top: 5px; right: 260px" data-toggle="modal" data-target="#exampleModalLong">
         <span class="icon text-white-50">
             <i class="fas fa-file-excel"></i>
         </span>
@@ -128,226 +142,290 @@
 </p>
 
 
-    <!-- DataTales Example -->
-    <div class="card shadow mb-4">
-        <div>
-            <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">DANH SÁCH TẤT CẢ SINH VIÊN</h6>
-            </div>
-        </div>
-        <div class="card-body">
-            <div style="position: absolute; top: 72px; right: 339px; z-index: 999;">
-                <select class="form-control form-control-sm" id="Filter_TenKhoa" name="Filter_TenKhoa">
-                    <option value=" ">Tất cả các khoa</option>
-                    @foreach (var item in DS_Khoa_Filter)
-                    {
-                        <option value="@item.TenKhoa">@item.TenKhoa</option>
-                    }
-                </select>
-            </div>
-            <div style="position: absolute; top: 72px; right: 206px; z-index: 999;">
-                <select class="form-control form-control-sm" id="Filter_TenLop" name="Filter_TenLop">
-                    <option value=".">Tất cả các lớp</option>
-                    @foreach (var item in DS_Lop_Filter)
-                    {
-                        <option value="@item.TenLop">@item.TenLop</option>
-                    }
-                </select>
-            </div>
-            <div class="table-responsive">
-                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                    <thead>
-                        <tr>
-                            <th style=" width: 120px;">Mã sinh viên</th>
-                            <th style=" width: 188px;">Tên Sinh Viên</th>
-                            <th style=" width: 264px;">Tên Khoa</th>
-                            <th style=" width: 101px;">Tên Lớp</th>
-                            <th style=" width: 237px;">Số lượng Avatar Train</th>
-                            <th style=" width: 201px;">Chức năng</th>
-                        </tr>
-                    </thead>
-                    <tbody id="data_table">
-                        @foreach (var item in Model)
-                        {
-                            <tr id="row_@item.MaSV">
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.MaSV)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.TenSV)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.KHOA.TenKhoa)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.LOP.TenLop)
-                                </td>
-                                <td>
-                                    <a href="@Url.Action("Details_SinhVien_HinhAnh","QuanLyHinhAnh", new{id = item.MaSV})" class="btn btn-primary btn-icon-split">
-                                        <span class="icon text-white-50">
-                                            @{
-                                                HinhAnhCount hac = (HinhAnhCount)list.Find(s => s.masv == item.MaSV);
-                                                if (hac == null)
-                                                {
-                                                    <span>0</span>
-                                                }
-                                                else
-                                                {
-                                                    <span>@hac.soluong</span>
-                                                }
-
-                                            }
-                                        </span>
-                                        <span class="text">Hình ảnh</span>
-                                    </a>
-                                </td>
-                                <td>
-                                    @Html.ActionLink("Chỉnh sửa", "Edit", new { id = item.MaSV }) |
-                                    @Ajax.ActionLink("Xóa", "Delete", new { id = item.MaSV }, new AjaxOptions { HttpMethod = "POST", OnSuccess = "deleteSuccess", Confirm = "Bạn có muốn xóa bản ghi này ?" })
-                                </td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
-            </div>
+<!-- DataTales Example -->
+<div class="card shadow mb-4">
+    <div>
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">DANH SÁCH TẤT CẢ SINH VIÊN</h6>
         </div>
     </div>
-    <script>
+    <div class="card-body">
+        <div style="position: absolute; top: 72px; right: 339px; z-index: 999;">
+            <select class="form-control form-control-sm" id="Filter_TenKhoa" name="Filter_TenKhoa">
+                <option value=" ">Tất cả các khoa</option>
+                @foreach (var item in DS_Khoa_Filter)
+                {
+                    <option value="@item.TenKhoa">@item.TenKhoa</option>
+                }
+            </select>
+        </div>
+        <div style="position: absolute; top: 72px; right: 206px; z-index: 999;">
+            <select class="form-control form-control-sm" id="Filter_TenLop" name="Filter_TenLop">
+                <option value=".">Tất cả các lớp</option>
+                @foreach (var item in DS_Lop_Filter)
+                {
+                    <option value="@item.TenLop">@item.TenLop</option>
+                }
+            </select>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th style=" width: 120px;">Mã sinh viên</th>
+                        <th style=" width: 188px;">Tên Sinh Viên</th>
+                        <th style=" width: 264px;">Tên Khoa</th>
+                        <th style=" width: 101px;">Tên Lớp</th>
+                        <th style=" width: 237px;">Số lượng Avatar Train</th>
+                        <th style=" width: 201px;">Chức năng</th>
+                    </tr>
+                </thead>
+                <tbody id="data_table">
+                    @foreach (var item in Model)
+                    {
+                        <tr id="row_@item.MaSV">
+                            <td>
+                                @Html.DisplayFor(modelItem => item.MaSV)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.TenSV)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.KHOA.TenKhoa)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.LOP.TenLop)
+                            </td>
+                            <td>
+                                <a href="@Url.Action("Details_SinhVien_HinhAnh","QuanLyHinhAnh", new{id = item.MaSV})" class="btn btn-primary btn-icon-split">
+                                    <span class="icon text-white-50">
+                                        @{
+                                            HinhAnhCount hac = (HinhAnhCount)list.Find(s => s.masv == item.MaSV);
+                                            if (hac == null)
+                                            {
+                                                <span>0</span>
+                                            }
+                                            else
+                                            {
+                                                <span>@hac.soluong</span>
+                                            }
 
-        $("#MaKhoa").change(function () {
-            $.get("/QuanLySinhVien/GetLopHoc", { id: $(this).val() }, function (data) {
-                $("#MaLop").empty()
-                $.each(data, function (index, row) {
-                    $("#MaLop").append("<option value='" + row.MaLop + "'>" + row.TenLop + "</option>")
-                })
+                                        }
+                                    </span>
+                                    <span class="text">Hình ảnh</span>
+                                </a>
+                            </td>
+                            <td>
+                                @Html.ActionLink("Chỉnh sửa", "Edit", new { id = item.MaSV }) |
+                                @Ajax.ActionLink("Xóa", "Delete", new { id = item.MaSV }, new AjaxOptions { HttpMethod = "POST", OnSuccess = "deleteSuccess", Confirm = "Bạn có muốn xóa bản ghi này ?", OnFailure = "deleteFail" })
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<script>
+
+    $("#MaKhoa").change(function () {
+        $.get("/QuanLySinhVien/GetLopHoc", { id: $(this).val() }, function (data) {
+            $("#MaLop").empty()
+            $.each(data, function (index, row) {
+                $("#MaLop").append("<option value='" + row.MaLop + "'>" + row.TenLop + "</option>")
             })
         })
+    })
 
-        var dt;
+    var dt;
 
-        function loadDataTable() {
+    function loadDataTable() {
 
-            $.fn.dataTable.ext.search.push(
-                function (settings, data, dataIndex) {
-                    
-                    var TenKhoa = $('#Filter_TenKhoa option:selected').val();
-                    var TenLop = $('#Filter_TenLop option:selected').val();
+        $.fn.dataTable.ext.search.push(
+            function (settings, data, dataIndex) {
 
-                    var Data_TenKhoa = data[2];
-                    var Data_TenLop = data[3];
+                var TenKhoa = $('#Filter_TenKhoa option:selected').val();
+                var TenLop = $('#Filter_TenLop option:selected').val();
 
-                    if (Data_TenLop.includes(TenLop) && Data_TenKhoa.includes(TenKhoa))  
-                    {
-                        return true;
-                    }
-                    return false;
+                var Data_TenKhoa = data[2];
+                var Data_TenLop = data[3];
+
+                if (Data_TenLop.includes(TenLop) && Data_TenKhoa.includes(TenKhoa)) {
+                    return true;
                 }
-            );
-
-            dt = $("#dataTable").DataTable({
-                language: {
-                    searchPlaceholder: "Mã số sinh viên...",
-                    zeroRecords: "Không tìm thấy sinh viên",
-                },
-                "lengthMenu": [[5,10, 25, 50, -1], [5,10, 25, 50, "All"]]
-            });
-
-
-            $("#Filter_TenKhoa").change(function (){
-                dt.draw();
-            });
-
-            $("#Filter_TenLop").change(function () {
-                dt.draw();
-            });       
-        }
-
-        function FnSuccess(data) {
-            $('.close').click();
-            if (data != false) {
-
-                var node = dt.row.add([
-                    data.MaSV,
-                    data.TenSV,
-                    data.TenKhoa,
-                    data.TenLop,
-                    `<a href="/QuanLyHinhAnh/Details_SinhVien_HinhAnh/${data.MaSV}" class="btn btn-primary btn-icon-split">
-                                        <span class="icon text-white-50">
-                                            0
-                                        </span>
-                                        <span class="text">Hình ảnh</span>
-                                    </a>`,
-                    `<a href='/QuanLySinhVien/Edit/${data.MaSV}'>Chỉnh sửa</a> |<a data-ajax='true' data-ajax-confirm='Bạn có muốn xóa bản ghi này ?' data-ajax-method='POST' data-ajax-success='deleteSuccess' href='/QuanLySinhVien/Delete/${data.MaSV}'>Xóa</a>`
-                ]).draw().node();
-                $(node).attr('id', `row_${data.MaLop}`);
-                alertSuccess();
+                return false;
             }
-            $('#TenLop').val('');
-            $("#MaKhoa").val("").change(); s
-        }
+        );
 
-        function deleteSuccess(data) {
-
-            dt.rows(`#row_${data}`)
-                .remove()
-                .draw();
-            alertSuccess();
-        }
+        dt = $("#dataTable").DataTable({
+            language: {
+                searchPlaceholder: "Mã số sinh viên...",
+                zeroRecords: "Không tìm thấy sinh viên",
+            },
+            "lengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]]
+        });
 
 
-        function FnBeginImport() {
-            $('.close').click();
-            $('.loader-wrapper').show();
-        }
+        $("#Filter_TenKhoa").change(function () {
+            dt.draw();
+        });
 
-        function FnSuccessImport(data) {
-            $.each(data, function (index, value) {
-                var node = dt.row.add([
-                    value.MaSV,
-                    value.TenSV,
-                    value.TenKhoa,
-                    value.TenLop,
-                    `<a href="/QuanLyHinhAnh/Details_SinhVien_HinhAnh/${value.MaSV}" class="btn btn-primary btn-icon-split">
+        $("#Filter_TenLop").change(function () {
+            dt.draw();
+        });
+    }
+
+    function FnSuccess(data) {
+        $('.close').click();
+        if (data != false) {
+
+            var node = dt.row.add([
+                data.MaSV,
+                data.TenSV,
+                data.TenKhoa,
+                data.TenLop,
+                `<a href="/QuanLyHinhAnh/Details_SinhVien_HinhAnh/${data.MaSV}" class="btn btn-primary btn-icon-split">
                                         <span class="icon text-white-50">
                                             0
                                         </span>
                                         <span class="text">Hình ảnh</span>
                                     </a>`,
-                    `<a href='/QuanLySinhVien/Edit/${value.MaSV}'>Chỉnh sửa</a> |<a data-ajax='true' data-ajax-confirm='Bạn có muốn xóa bản ghi này ?' data-ajax-method='POST' data-ajax-success='deleteSuccess' href='/QuanLySinhVien/Delete/${value.MaSV}'>Xóa</a>`
-                ]).draw().node();
-                $(node).attr('id', `row_${value.MaLop}`);
-            })
-            
-        }
-
-        function FnCompleteImport() {
-            $('.loader-wrapper').hide();
+                `<a href='/QuanLySinhVien/Edit/${data.MaSV}'>Chỉnh sửa</a> |<a data-ajax='true' data-ajax-confirm='Bạn có muốn xóa bản ghi này ?' data-ajax-method='POST' data-ajax-success='deleteSuccess' href='/QuanLySinhVien/Delete/${data.MaSV}'>Xóa</a>`
+            ]).draw().node();
+            $(node).attr('id', `row_${data.MaLop}`);
             alertSuccess();
         }
+        $('#TenLop').val('');
+        $("#MaKhoa").val("").change(); s
+    }
 
-        function alertSuccess() {
-            $('.alert').addClass("show");
-            $('.alert').removeClass("hide");
-            $('.alert').addClass("showAlert");
-            setTimeout(function () {
-                $('.alert').removeClass("show");
-                $('.alert').addClass("hide");
-            }, 5000);
-            $('.close-btn').click(function () {
-                $('.alert').removeClass("show");
-                $('.alert').addClass("hide");
-            });
-        }
+    function deleteSuccess(data) {
 
-        $('#train_model').click(function () {
-            $.post("http://127.0.0.1:6868/train", function (data) {
-                $(".close").click();
-                $('#hinhanh_cam').empty();
-                alertSuccess();
-            })
+        dt.rows(`#row_${data}`)
+            .remove()
+            .draw();
+        alertSuccess();
+    }
+
+    function deleteFail(data) {
+
+        alert("Sinh viên này không thể xóa, vì đã đăng kí môn học")
+    }
+
+
+    function FnBeginImport() {
+        $('.close').click();
+        $('.loader-wrapper').show();
+    }
+
+    function FnSuccessImport(data) {
+        $.each(data, function (index, value) {
+            var node = dt.row.add([
+                value.MaSV,
+                value.TenSV,
+                value.TenKhoa,
+                value.TenLop,
+                `<a href="/QuanLyHinhAnh/Details_SinhVien_HinhAnh/${value.MaSV}" class="btn btn-primary btn-icon-split">
+                                        <span class="icon text-white-50">
+                                            0
+                                        </span>
+                                        <span class="text">Hình ảnh</span>
+                                    </a>`,
+                `<a href='/QuanLySinhVien/Edit/${value.MaSV}'>Chỉnh sửa</a> |<a data-ajax='true' data-ajax-confirm='Bạn có muốn xóa bản ghi này ?' data-ajax-method='POST' data-ajax-success='deleteSuccess' href='/QuanLySinhVien/Delete/${value.MaSV}'>Xóa</a>`
+            ]).draw().node();
+            $(node).attr('id', `row_${value.MaLop}`);
+        })
+
+    }
+
+    function FnCompleteImport() {
+        $('.loader-wrapper').hide();
+        alertSuccess();
+    }
+
+    function alertSuccess() {
+        $('.alert').addClass("show");
+        $('.alert').removeClass("hide");
+        $('.alert').addClass("showAlert");
+        setTimeout(function () {
+            $('.alert').removeClass("show");
+            $('.alert').addClass("hide");
+        }, 5000);
+        $('.close-btn').click(function () {
+            $('.alert').removeClass("show");
+            $('.alert').addClass("hide");
+        });
+    }
+
+    $('#train_model').click(function () {
+        $.post("http://127.0.0.1:6868/train", function (data) {
+            $(".close").click();
+            $('#hinhanh_cam').empty();
+            alertSuccess();
+        })
+    });
+
+    $(document).ready(function () {
+        loadDataTable();
+
+        jQuery.validator.addMethod("NotAllowNumber", function (value, element) {
+            return this.optional(element) || /^([^0-9]*)$/.test(value);
+        }, "Không được phép có chữ số.");
+
+        jQuery.validator.addMethod("NotAllowFirstSpace", function (value, element) {
+            return this.optional(element) || /^\S{1}/.test(value);
+        }, "Kí tự đầu tiên không được có khoảng trắng.");
+
+        jQuery.validator.addMethod("NotAllowSpecial", function (value, element) {
+            return this.optional(element) || /^([^*\u0040.!/'#$%^&(){}[:;<>,.?/~_+-=|]*)$/.test(value);
+        }, "Không được phép có kí tự đặc biệt.");
+
+
+        var form = $(".formSinhVien").validate({
+            onfocusout: function (element) {
+                $(element).valid();
+            },
+
+            errorClass: "is-invalid",
+            validClass: "is-valid",
+            rules: {
+                TenSV: {
+                    required: true,
+                    NotAllowNumber: true,
+                    NotAllowSpecial: true,
+                    NotAllowFirstSpace: true,
+                },
+
+                MaKhoa: {
+                    required: true,
+                },
+                MaLop: {
+                    required: true,
+                }
+            },
+            messages: {
+                TenSV: {
+                    required: "Tên sinh viên không được để trống.",
+
+                },
+
+                MaKhoa: {
+                    required: "Bạn chưa chọn Khoa, hãy chọn 1.",
+                },
+
+                MaLop: {
+                    required: "Bạn chưa chọn Khoa, hãy chọn 1.",
+
+                },
+            }
         });
 
-        $(document).ready(function () {
-            loadDataTable();
-        });
-    </script>
+        $(".close").click(function () {
+            form.resetForm();
+        })
+
+        $(".close1").click(function () {
+            form.resetForm();
+        })
+    });
+</script>

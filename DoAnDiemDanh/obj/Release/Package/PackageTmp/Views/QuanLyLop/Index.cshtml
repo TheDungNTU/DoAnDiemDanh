@@ -1,0 +1,211 @@
+﻿@model IEnumerable<DoAnDiemDanh.Models.LOP>
+@using DoAnDiemDanh.Models
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Layout/_LayoutAdmin.cshtml";
+    var Khoa = (IEnumerable<DoAnDiemDanh.Models.KHOA>)ViewBag.MaKhoa;
+    var list = (List<LopHocCount>)ViewBag.danhsach;
+
+    <style>
+        .is-invalid {
+            color: #E84C3D;
+            margin-top: 5px;
+        }
+    </style>
+
+}
+
+@using (Ajax.BeginForm("Create", "QuanLyLop", new AjaxOptions { HttpMethod = "POST", OnSuccess = "FnSuccess" }, new { @class = "formLop" }))
+{
+    @Html.AntiForgeryToken()
+    <div class="form-horizontal shadow p-3 mb-2 card">
+        <div class="form-group">
+            <label class="h3 mb-2 ml-2 text-gray-800" for="TenLop" style="font-size: 20px; font-weight: 600;">Tên Lớp</label>
+            <div class="col-md-10">
+                <input class="form-control text-box single-line" id="TenLop" name="TenLop" type="text" value="" placeholder="Nhập tên Lớp học" required>
+                <span class="field-validation-valid text-danger" data-valmsg-for="TenLop" data-valmsg-replace="true"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <input class="form-control text-box single-line" id="TenKhoa" name="TenKhoa" type="text" value="" style="display: none;">
+            <div class="h3 mb-2 ml-2 text-gray-800" style="font-size: 20px; font-weight: 600;">Tên Khoa</div>
+            <span id="TenKhoa"></span>
+            <div class="col-md-10">
+                <select class="form-control" id="MaKhoa" name="MaKhoa" required>
+                    <option value="">Mời bạn chọn Khoa</option>
+                    @foreach (var item in Khoa)
+                    {
+                        <option value="@item.MaKhoa">@item.TenKhoa</option>
+                    }
+                </select>
+                <span class="field-validation-valid text-danger" data-valmsg-for="MaKhoa" data-valmsg-replace="true"></span>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Thêm mới" class="btn btn-success btn-icon-split p-2 border">
+            </div>
+        </div>
+    </div>
+}
+
+
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">DANH SÁCH TẤT CẢ LỚP</h6>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                <thead>
+                    <tr> 
+                        <th style="width: 60px;">Mã Lớp</th>
+                        <th>Tên Lớp</th>
+                        <th>Tên Khoa</th>
+                        <th>Sĩ Số</th>
+                        <th>Chức năng</th>
+                    </tr>
+                </thead>
+                <tbody id="data_table">
+                    @foreach (var item in Model)
+                    {
+                        <tr id="row_@item.MaLop">
+                            <td>
+                                @Html.DisplayFor(modelItem => item.MaLop)
+                            <td>
+                                @Html.DisplayFor(modelItem => item.TenLop)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.KHOA.TenKhoa)
+                            </td>
+                            <td>
+                                <a href="#" class="btn btn-primary btn-icon-split">
+                                    <span class="icon text-white-50">
+                                        @{
+                                            LopHocCount lhc = (LopHocCount)list.Find(s => s.malh == item.MaLop);
+                                            if (lhc == null)
+                                            {
+                                                <span>0</span>
+                                            }
+                                            else
+                                            {
+                                                <span>@lhc.soluong</span>
+                                            }
+
+                                        }
+                                    </span>
+                                    <span class="text">Sinh viên</span>
+                                </a>
+                            <td>
+                                @Html.ActionLink("Chỉnh sửa", "Edit", new { id = item.MaLop }) |
+                                @Ajax.ActionLink("Xóa", "Delete", new { id = item.MaLop }, new AjaxOptions { HttpMethod = "POST", OnSuccess = "deleteSuccess", Confirm = "Bạn có muốn xóa bản ghi này ?" })
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    var dt;
+
+    function loadDataTable() {
+        dt = $("#dataTable").DataTable();
+    }
+
+    function FnSuccess(data) {
+        if (data != false) {
+
+            var node = dt.row.add([
+                data.MaLop,
+                data.TenLop,
+                data.TenKhoa,
+                `<a href="#" class="btn btn-primary btn-icon-split">
+                                    <span class="icon text-white-50">
+                                                <span>0</span>
+
+                                    </span>
+                                    <span class="text">Sinh viên</span>
+                                </a>`,
+                `<a href='/QuanLyKhoa/Edit/${data.MaKhoa}'>Chỉnh sửa</a> |<a data-ajax='true' data-ajax-confirm='Bạn có muốn xóa bản ghi này ?' data-ajax-method='POST' data-ajax-success='deleteSuccess' href='/QuanLyLop/Delete/${data.MaLop}'>Xóa</a>`
+            ]).draw().node();
+            $(node).attr('id', `row_${data.MaLop}`);
+            alertSuccess();
+        }
+        $('#TenLop').val('');
+        $("#MaKhoa").val("").change();
+    }
+
+    function deleteSuccess(data) {
+        dt.rows(`#row_${data}`)
+            .remove()
+            .draw();
+        alertSuccess();
+    }
+
+    function alertSuccess() {
+        $('.alert').addClass("show");
+        $('.alert').removeClass("hide");
+        $('.alert').addClass("showAlert");
+        setTimeout(function () {
+            $('.alert').removeClass("show");
+            $('.alert').addClass("hide");
+        }, 5000);
+        $('.close-btn').click(function () {
+            $('.alert').removeClass("show");
+            $('.alert').addClass("hide");
+        });
+    }
+
+    $("#MaKhoa").change(function () {
+        var tenkhoa = $("#MaKhoa option:selected").html();
+        $("#TenKhoa").val(tenkhoa);
+    })
+
+    $(document).ready(function () {
+        loadDataTable();
+
+        jQuery.validator.addMethod("NotAllowFirstSpace", function (value, element) {
+            return this.optional(element) || /^\S{1}/.test(value);
+        }, "Kí tự đầu tiên không được có khoảng trắng.");
+
+        jQuery.validator.addMethod("RequireClass", function (value, element) {
+            return this.optional(element) || /^\d{2}[.]{1}[a-zA-Z]+[-]{1}\d+/.test(value);
+        }, "Hãy nhập đúng định dạng tên lớp (VD: 59.CNTT-1).");
+
+        $(".formLop").validate({
+            onfocusout: function (element) {
+                $(element).valid();
+            },
+            invalidHandler: function (form, validator) {
+
+                alert("Thêm môn học không thành công");
+                validator.focusInvalid();
+            },
+            errorClass: "is-invalid",
+            validClass: "is-valid",
+            rules: {
+                TenLop: {
+                    required: true,
+                    NotAllowFirstSpace: true,
+                    RequireClass: true,
+                },
+                MaKhoa: "required"
+            },
+            messages: {
+                TenLop: {
+                    required: "Tên Lớp không được để trống.",
+                },
+                MaKhoa: {
+                    required: "Bạn chưa chọn Khoa, hãy chọn 1.",
+                }
+            }
+        });
+    });
+
+
+</script>

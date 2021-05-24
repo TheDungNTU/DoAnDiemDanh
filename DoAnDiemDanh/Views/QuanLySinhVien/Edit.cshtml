@@ -3,22 +3,33 @@
 @{
     ViewBag.Title = "Edit";
     Layout = "~/Views/Layout/_LayoutAdmin.cshtml";
+    <style>
+        .is-invalid {
+            color: #E84C3D;
+            margin-top: 5px;
+        }
+    </style>
 }
 
-<h2>Edit</h2>
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="@Url.Action("Index","DiemDanh")">Trang Chủ</a></li>
+        <li class="breadcrumb-item"><a href="@Url.Action("Index","QuanLySinhVien")">Quản lý sinh viên</a></li>
+        <li class="breadcrumb-item " aria-current="page">Chỉnh sửa</li>
+    </ol>
+</nav>
 
-@using (Html.BeginForm())
+@using (Html.BeginForm("Edit", "QuanLyLop", FormMethod.Post, new { @class = "formSinhVien" }))
 {
     @Html.AntiForgeryToken()
-    
-    <div class="form-horizontal">
-        <h4>SINHVIEN</h4>
-        <hr />
+
+    <div class="form-horizontal shadow p-3 mb-2 card">
+
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
         @Html.HiddenFor(model => model.MaSV)
 
         <div class="form-group">
-            @Html.LabelFor(model => model.TenSV, htmlAttributes: new { @class = "control-label col-md-2" })
+            <label class="control-label col-md-2" style="font-size: 17px; font-weight:bold">Tên Sinh Viên</label>
             <div class="col-md-10">
                 @Html.EditorFor(model => model.TenSV, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(model => model.TenSV, "", new { @class = "text-danger" })
@@ -26,7 +37,7 @@
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.MaKhoa, "MaKhoa", htmlAttributes: new { @class = "control-label col-md-2" })
+            <label class="control-label col-md-2" style="font-size: 17px; font-weight:bold">Tên Khoa</label>
             <div class="col-md-10">
                 @Html.DropDownList("MaKhoa", null, htmlAttributes: new { @class = "form-control" })
                 @Html.ValidationMessageFor(model => model.MaKhoa, "", new { @class = "text-danger" })
@@ -34,7 +45,7 @@
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.MaLop, "MaLop", htmlAttributes: new { @class = "control-label col-md-2" })
+            <label class="control-label col-md-2" style="font-size: 17px; font-weight:bold">Tên Lớp</label>
             <div class="col-md-10">
                 @Html.DropDownList("MaLop", null, htmlAttributes: new { @class = "form-control" })
                 @Html.ValidationMessageFor(model => model.MaLop, "", new { @class = "text-danger" })
@@ -43,12 +54,71 @@
 
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Save" class="btn btn-default" />
+                <input type="submit" value="Lưu Lại" class="btn btn-success btn-icon-split p-2 border" />
             </div>
         </div>
     </div>
 }
 
 <div>
-    @Html.ActionLink("Back to List", "Index")
+    @Html.ActionLink("Quay lại danh sách", "Index")
 </div>
+
+<script>
+
+    $(document).ready(function () {
+
+
+        jQuery.validator.addMethod("NotAllowNumber", function (value, element) {
+            return this.optional(element) || /^([^0-9]*)$/.test(value);
+        }, "Không được phép có chữ số.");
+
+        jQuery.validator.addMethod("NotAllowFirstSpace", function (value, element) {
+            return this.optional(element) || /^\S{1}/.test(value);
+        }, "Kí tự đầu tiên không được có khoảng trắng.");
+
+        jQuery.validator.addMethod("NotAllowSpecial", function (value, element) {
+            return this.optional(element) || /^([^*\u0040.!/'#$%^&(){}[:;<>,.?/~_+-=|]*)$/.test(value);
+        }, "Không được phép có kí tự đặc biệt.");
+
+
+        var form = $(".formSinhVien").validate({
+            onfocusout: function (element) {
+                $(element).valid();
+            },
+
+            errorClass: "is-invalid",
+            validClass: "is-valid",
+            rules: {
+                TenSV: {
+                    required: true,
+                    NotAllowNumber: true,
+                    NotAllowSpecial: true,
+                    NotAllowFirstSpace: true,
+                },
+
+                MaKhoa: {
+                    required: true,
+                },
+                MaLop: {
+                    required: true,
+                }
+            },
+            messages: {
+                TenSV: {
+                    required: "Tên sinh viên không được để trống.",
+
+                },
+
+                MaKhoa: {
+                    required: "Bạn chưa chọn Khoa, hãy chọn 1.",
+                },
+
+                MaLop: {
+                    required: "Bạn chưa chọn Khoa, hãy chọn 1.",
+
+                },
+            }
+        });
+    });
+</script>

@@ -5,6 +5,13 @@
     IEnumerable<MONHOC> MONHOC = (IEnumerable<MONHOC>)ViewBag.MonHoc;
 }
 
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="@Url.Action("Index","DiemDanh")">Trang chủ</a></li>
+        <li class="breadcrumb-item " aria-current="page">Xuất báo cáo</li>
+    </ol>
+</nav>
+
 <div class="row">
     <div class="form-horizontal shadow p-3 mb-2 card col-4" style="margin-left: 13px;">
         <div class="form-group">
@@ -21,14 +28,14 @@
     </div>
 </div>
 
-<a class="btn btn-success btn-icon-split shadow" style="position: absolute; top: 3px; right: 614px" id="export1" href="">
+<a class="btn btn-success btn-icon-split shadow" style="position: absolute; top: 78px; right: 614px" id="export1" href="">
     <span class="icon text-white-50">
         <i class="fas fa-file-excel"></i>
     </span>
     <span class="text">Danh Sách Điểm Danh</span>
 </a>
 
-<a class="btn btn-success btn-icon-split shadow" style="position: absolute; top: 55px; right: 614px; padding-right: 23px;" id="export1" href="">
+<a class="btn btn-success btn-icon-split shadow" style="position: absolute; top: 130px; right: 614px; padding-right: 23px;" id="export1" href="">
     <span class="icon text-white-50">
         <i class="fas fa-file-excel"></i>
     </span>

@@ -5,30 +5,42 @@
     Layout = "~/Views/Layout/_LayoutAdmin.cshtml";
     IEnumerable<DoAnDiemDanh.Models.MONHOC> MONHOC = (IEnumerable<DoAnDiemDanh.Models.MONHOC>)ViewBag.MONHOC;
     var Khoa = (IEnumerable<DoAnDiemDanh.Models.KHOA>)ViewBag.MaKhoa;
+    <style>
+        .is-invalid {
+            color: #E84C3D;
+            margin-top: 5px;
+        }
+    </style>
 }
 
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="@Url.Action("Index","DiemDanh")">Trang chủ</a></li>
+        
+        <li class="breadcrumb-item active" aria-current="page">Quản lý giảng viên</li>
+    </ol>
+</nav>
 
 @using (Ajax.BeginForm("Create", "QuanLyGiangVien", new AjaxOptions { HttpMethod = "POST", OnSuccess = "FnSuccess" }, new { @class = "formGiangVien" }))
 {
     @Html.AntiForgeryToken()
     <div class="form-horizontal shadow p-3 mb-2 card">
         <div class="form-group">
-            <div class="h3 mb-2 ml-2 text-gray-800" style="font-size: 20px; font-weight: 600;">Tên Giảng Viên</div>
+            <label class="control-label col-md-2" style="font-size: 17px; font-weight:bold">Tên Giảng Viên</label>
             <div class="col-md-10">
                 <input class="form-control text-box single-line" id="TenGV" name="TenGV" type="text" value="">
                 <span class="field-validation-valid text-danger" data-valmsg-for="TenGV" data-valmsg-replace="true"></span>
             </div>
         </div>
-         <div class="form-group">
-            <div class="h3 mb-2 ml-2 text-gray-800" style="font-size: 20px; font-weight: 600;">Email</div>
+        <div class="form-group">
+            <label class="control-label col-md-2" style="font-size: 17px; font-weight:bold">Email</label>
             <div class="col-md-10">
-                <input class="form-control text-box single-line" id="Email" name="Email" type="email" value="">
-                <span class="field-validation-valid text-danger" data-valmsg-for="Email" data-valmsg-replace="true"></span>
+                <input class="form-control text-box single-line" id="Email" name="Email" type="text" value="">
             </div>
         </div>
         <div class="form-group">
             <input class="form-control text-box single-line" id="TenKhoa" name="TenKhoa" type="text" value="" style="display: none;">
-            <div class="h3 mb-2 ml-2 text-gray-800" style="font-size: 20px; font-weight: 600;">Tên Khoa</div>
+            <label class="control-label col-md-2" style="font-size: 17px; font-weight:bold">Tên Khoa</label>
             <span id="TenKhoa"></span>
             <div class="col-md-10">
                 <select class="form-control" id="MaKhoa" name="MaKhoa" required>
@@ -72,32 +84,32 @@
                 <tbody id="data_table">
                     @foreach (var item in Model)
                     {
-                    <tr id="row_@item.MaGV">
-                        <td>
-                            @Html.DisplayFor(modelItem => item.MaGV)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.TenGV)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Email)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.KHOA.TenKhoa)
-                        </td>
-                        <td>
-                            <a href="#" class="btn btn-primary btn-icon-split">
-                                <span class="icon text-white-50">
-                                    @MONHOC.ToList().Where(_ => _.MaGV == item.MaGV).Count()
-                                </span>
-                                <span class="text">Môn Học</span>
-                            </a>
-                        </td>
-                        <td>
-                            <a href='/QuanLyGiangVien/Edit/@item.MaGV'>Chỉnh sửa</a> |
-                            @Ajax.ActionLink("Xóa", "Delete", new { id = item.MaGV }, new AjaxOptions { HttpMethod = "POST", OnSuccess = "deleteSuccess", Confirm = "Bạn có muốn xóa bản ghi này ?" })
-                        </td>
-                    </tr>
+                        <tr id="row_@item.MaGV">
+                            <td>
+                                @Html.DisplayFor(modelItem => item.MaGV)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.TenGV)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Email)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.KHOA.TenKhoa)
+                            </td>
+                            <td>
+                                <a href="#" class="btn btn-primary btn-icon-split">
+                                    <span class="icon text-white-50">
+                                        @MONHOC.ToList().Where(_ => _.MaGV == item.MaGV).Count()
+                                    </span>
+                                    <span class="text">Môn Học</span>
+                                </a>
+                            </td>
+                            <td>
+                                <a href='/QuanLyGiangVien/Edit/@item.MaGV'>Chỉnh sửa</a> |
+                                @Ajax.ActionLink("Xóa", "Delete", new { id = item.MaGV }, new AjaxOptions { HttpMethod = "POST", OnSuccess = "deleteSuccess", Confirm = "Bạn có muốn xóa bản ghi này ?" })
+                            </td>
+                        </tr>
                     }
                 </tbody>
             </table>
@@ -137,7 +149,7 @@
         else {
             alertFail();
         }
-       
+
     }
 
     function deleteSuccess(data) {
@@ -171,18 +183,72 @@
             $('.fail').addClass("hide");
             $('.fail').removeClass("showAlert");
         }, 5000);
-        
-        
+
+
         $('.close-btn').click(function () {
             $('.fail').removeClass("show");
             $('.fail').addClass("hide");
             $('.fail').removeClass("showAlert");
-            
+
         });
     }
 
 
     $(document).ready(function () {
         loadDataTable();
+
+        jQuery.validator.addMethod("NotAllowNumber", function (value, element) {
+            return this.optional(element) || /^([^0-9]*)$/.test(value);
+        }, "Không được phép có chữ số.");
+
+        jQuery.validator.addMethod("NotAllowFirstSpace", function (value, element) {
+            return this.optional(element) || /^\S{1}/.test(value);
+        }, "Kí tự đầu tiên không được có khoảng trắng.");
+
+        jQuery.validator.addMethod("NotAllowSpecial", function (value, element) {
+            return this.optional(element) || /^([^*\u0040.!/'#$%^&(){}[:;<>,.?/~_+-=|]*)$/.test(value);
+        }, "Không được phép có kí tự đặc biệt.");
+
+
+
+        $(".formGiangVien").validate({
+            onfocusout: function (element) {
+                $(element).valid();
+            },
+
+            errorClass: "is-invalid",
+            validClass: "is-valid",
+            rules: {
+                TenGV: {
+                    required: true,
+                    NotAllowNumber: true,
+                    NotAllowSpecial: true,
+                    NotAllowFirstSpace: true,
+                },
+                Email: {
+                    required: true,
+                    email: true,
+                    
+                },
+                MaKhoa: {
+                    required: true,
+                }
+            },
+            messages: {
+                TenGV: {
+                    required: "Tên giảng viên không được để trống.",
+
+                },
+                Email: {
+                    required: "Email không được để trống.",
+                    email: "Email không hợp lệ."
+
+                },
+                MaKhoa: {
+                    required: "Bạn chưa chọn Khoa, hãy chọn 1.",
+
+                },
+            }
+        });
     });
 </script>

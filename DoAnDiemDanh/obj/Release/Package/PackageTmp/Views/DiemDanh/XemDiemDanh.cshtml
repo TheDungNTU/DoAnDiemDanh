@@ -1,0 +1,178 @@
+﻿@using DoAnDiemDanh.Models
+@{
+    ViewBag.Title = "XemDiemDanh";
+    Layout = "~/Views/Layout/_LayoutAdmin.cshtml";
+    IEnumerable<MONHOC> MONHOC = (IEnumerable<MONHOC>)ViewBag.MonHoc;
+}
+
+<div class="card shadow mb-4">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>Tên Môn Học</th>
+                        <th>Số Tín Chỉ</th>
+                        <th>Ngày Bắt Đầu</th>
+                        <th>Ngày Kết Thúc</th>
+                        <th>Thời gian giảng dạy</th>
+                        <th>Giảng Viên Dạy</th>
+                    </tr>
+                </thead>
+                <tbody id="data_table">
+                    @foreach (var item in MONHOC)
+                    {
+                    <tr>
+                        <td style="display: none;" id="MaMH">
+                            @Html.DisplayFor(modelItem => item.MaMH)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.TenMH)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.SoTC)
+                        </td>
+                        <td>
+                            @Convert.ToDateTime(item.NgayBD).ToString("dd/MM/yyyy")
+                        </td>
+                        <td>
+                            @Convert.ToDateTime(item.NgayKT).ToString("dd/MM/yyyy")
+                        </td>
+                        <td>
+                            @{
+                                TimeSpan a = (TimeSpan)item.ThoiGianKTGD - (TimeSpan)@item.ThoiGianBDGD;
+                                var s = a.Hours + " Giờ " + a.Minutes + " Phút";
+                            }
+                            @s
+                        </td>
+
+                        <td>
+                            @Html.DisplayFor(modelItem => item.GIANGVIEN.TenGV)
+                        </td>
+                    </tr>
+                    }
+                </tbody>
+            </table>
+            <div class="form-group" style="margin-left: -9px;">
+                <div class="col-md-4">
+                    <input class="form-control text-box single-line date" data-val="true" data-val-date="The field NgayBD must be a date." id="Ngay" name="Ngay" type="date" value="@DateTime.Now.ToString("yyyy-MM-dd")" max="@DateTime.Now.ToString("yyyy-MM-dd")" required>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card shadow mb-4">
+    <div>
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">DANH SÁCH SINH VIÊN</h6>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>STT</th>
+                        <th>Tên Sinh Viên</th>
+                        <th>Điểm danh đầu giờ</th>
+                        <th>Điểm danh cuối giờ</th>
+                        <th>Trạng Thái</th>
+                    </tr>
+                </thead>
+                <tbody id="data">
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+
+        var date = new Date($('#Ngay').val());
+        var day = ("0" + date.getDate()).slice(-2);
+        var month = ("0" + (date.getMonth() + 1)).slice(-2)
+        var year = date.getFullYear();
+        var datec = `${day}/${month}/${year}`
+        var mamh = $("#MaMH").html();
+
+        $.get("/DiemDanh/GetSinhVien", { MaMH: mamh, d1: datec }, function (data) {
+            $("#data").empty()
+            console.log(data)
+            var i = 1;
+            $.each(data, function (index, row) {
+                var tt = (row.TrangThai) ? "Có mặt" : "Vắng mặt";
+                var thoigianvao = "Chưa có";
+                var thoigianra = "Chưa có";
+
+                if (row.ThoiGianVao != null) {
+                    var hours = ("0" + row.ThoiGianVao.Hours).slice(-2);
+                    var minutes = ("0" + row.ThoiGianVao.Minutes).slice(-2);
+                    var seconds = ("0" + row.ThoiGianVao.Seconds).slice(-2);
+                    thoigianvao = `${hours}:${minutes}:${seconds}`
+                }
+
+                if (row.ThoiGianRa != null) {
+                    var hours = ("0" + row.ThoiGianRa.Hours).slice(-2);
+                    var minutes = ("0" + row.ThoiGianRa.Minutes).slice(-2);
+                    var seconds = ("0" + row.ThoiGianRa.Seconds).slice(-2);
+                    thoigianra = `${hours}:${minutes}:${seconds}`
+                }
+
+                $("#data").append(`<tr>
+                                        <td>${i++}</td>
+                                        <td>${row.TenSV}</td>
+                                        <td>${thoigianvao}</td>
+                                        <td>${thoigianra}</td>
+                                        <td>${tt}</td>
+                                    </tr>`)
+            })
+        })
+
+
+        $('.date').change(function () {
+            var date = new Date($('#Ngay').val());
+            var day = ("0" + date.getDate()).slice(-2);
+            var month = ("0" + (date.getMonth() + 1)).slice(-2)
+            var year = date.getFullYear();
+            var datec = `${day}/${month}/${year}`
+            var mamh = $("#MaMH").html();
+
+            $.get("/DiemDanh/GetSinhVien", { MaMH: mamh, d1: datec }, function (data) {
+                $("#data").empty()
+                console.log(data)
+                var i = 1;
+                $.each(data, function (index, row) {
+                    var tt = (row.TrangThai) ? "Có mặt" : "Vắng mặt";
+                    var thoigianvao = "Chưa có";
+                    var thoigianra = "Chưa có";
+
+                    if (row.ThoiGianVao != null) {
+                        var hours = ("0" + row.ThoiGianVao.Hours);
+                        var minutes = ("0" + row.ThoiGianVao.Minutes).slice(-2);
+                        var seconds = ("0" + row.ThoiGianVao.Seconds).slice(-2);
+                        thoigianvao = `${hours}:${minutes}:${seconds}`
+                    }
+
+                    if (row.ThoiGianRa != null) {
+                        var hours = ("0" + row.ThoiGianRa.Hours).slice(-2);
+                        var minutes = ("0" + row.ThoiGianRa.Minutes).slice(-2);
+                        var seconds = ("0" + row.ThoiGianRa.Seconds).slice(-2);
+                        thoigianvao = `${hours}:${minutes}:${seconds}`
+                    }
+
+                    $("#data").append(`<tr>
+                                        <td>${i++}</td>
+                                        <td>${row.TenSV}</td>
+                                        <td>${thoigianvao}</td>
+                                        <td>${thoigianra}</td>
+                                        <td>${tt}</td>
+                                    </tr>`)
+                })
+            })
+        })
+
+
+    });
+</script>

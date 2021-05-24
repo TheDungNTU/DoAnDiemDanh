@@ -46,8 +46,35 @@ namespace DoAnDiemDanh.Controllers
             if(tk != null)
             {
                 var gv = db.GIANGVIENs.Where(s => s.Email == model.UserName).SingleOrDefault();
-                FormsAuthentication.SetAuthCookie(model.UserName, model.RememberMe);
-                if(Url.IsLocalUrl(returnUrl) && returnUrl.Length > 1 && returnUrl.StartsWith("/")
+           
+                if (model.RememberMe)
+                {
+                    var authTicket = new FormsAuthenticationTicket(2, model.UserName, DateTime.Now, DateTime.Now.AddMinutes(30),
+                    false, gv.TenGV);
+
+                    var authCookie = new HttpCookie(FormsAuthentication.FormsCookieName,FormsAuthentication.Encrypt(authTicket))
+                    {
+                        HttpOnly = true,
+                        Expires = authTicket.Expiration
+                    };
+
+                    Response.AppendCookie(authCookie);
+                }
+                else
+                {
+                    var authTicket = new FormsAuthenticationTicket(2, model.UserName, DateTime.Now, DateTime.Now.AddMinutes(30),
+                    false, gv.TenGV);
+
+                    var authCookie = new HttpCookie(FormsAuthentication.FormsCookieName, FormsAuthentication.Encrypt(authTicket))
+                    {
+                        HttpOnly = true,
+                       
+                    };
+
+                    Response.AppendCookie(authCookie);
+                }
+            
+                if (Url.IsLocalUrl(returnUrl) && returnUrl.Length > 1 && returnUrl.StartsWith("/")
                     && !returnUrl.StartsWith("//") && !returnUrl.StartsWith("/\\"))
                 {
                     return Redirect(returnUrl);
