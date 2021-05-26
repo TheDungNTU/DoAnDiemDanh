@@ -5,7 +5,6 @@
 @{
     ViewBag.Title = "Index";
     Layout = "~/Views/Layout/_LayoutAdmin.cshtml";
-    var list = (List<HinhAnhCount>)ViewBag.danhsach;
     var DS_Khoa = (IEnumerable<KHOA>)ViewBag.Khoa;
     var DS_Khoa_Filter = (IEnumerable<KHOA>)ViewBag.Khoa_Filter;
     var DS_Lop_Filter = (IEnumerable<LOP>)ViewBag.Lop_Filter;
@@ -199,25 +198,14 @@
                             <td>
                                 <a href="@Url.Action("Details_SinhVien_HinhAnh","QuanLyHinhAnh", new{id = item.MaSV})" class="btn btn-primary btn-icon-split">
                                     <span class="icon text-white-50">
-                                        @{
-                                            HinhAnhCount hac = (HinhAnhCount)list.Find(s => s.masv == item.MaSV);
-                                            if (hac == null)
-                                            {
-                                                <span>0</span>
-                                            }
-                                            else
-                                            {
-                                                <span>@hac.soluong</span>
-                                            }
-
-                                        }
+                                       @item.HINHANHs.Count()
                                     </span>
                                     <span class="text">Hình ảnh</span>
                                 </a>
                             </td>
                             <td>
-                                @Html.ActionLink("Chỉnh sửa", "Edit", new { id = item.MaSV }) |
-                                @Ajax.ActionLink("Xóa", "Delete", new { id = item.MaSV }, new AjaxOptions { HttpMethod = "POST", OnSuccess = "deleteSuccess", Confirm = "Bạn có muốn xóa bản ghi này ?", OnFailure = "deleteFail" })
+                                @Html.ActionLink("Chỉnh sửa", "Edit", new { id = item.MaSV }) | 
+                                <a class="delete" data-model-id="@item.MaSV" onclick="Delete(this)" style="cursor: pointer;">Xóa</a>
                             </td>
                         </tr>
                     }
@@ -259,8 +247,18 @@
 
         dt = $("#dataTable").DataTable({
             language: {
-                searchPlaceholder: "Mã số sinh viên...",
-                zeroRecords: "Không tìm thấy sinh viên",
+                lengthMenu: "Số hàng mỗi trang _MENU_",
+                search: "Tìm kiếm:",
+                info: "Tổng số _TOTAL_ hàng",
+                paginate: {
+                    first: "Đầu",
+                    last: "Cuối",
+                    next: "Trang sau",
+                    previous: "Trang trước",
+                    
+                },
+                searchPlaceholder: "Tìm kiếm...",
+                zeroRecords: "Không tìm thấy kết quả",
             },
             "lengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]]
         });
@@ -290,28 +288,68 @@
                                         </span>
                                         <span class="text">Hình ảnh</span>
                                     </a>`,
-                `<a href='/QuanLySinhVien/Edit/${data.MaSV}'>Chỉnh sửa</a> |<a data-ajax='true' data-ajax-confirm='Bạn có muốn xóa bản ghi này ?' data-ajax-method='POST' data-ajax-success='deleteSuccess' href='/QuanLySinhVien/Delete/${data.MaSV}'>Xóa</a>`
+                `<a href='/QuanLySinhVien/Edit/${data.MaSV}'>Chỉnh sửa</a> | <a class="delete" data-model-id="${data.MaSV}" onclick="Delete(this)" style="cursor: pointer;">Xóa</a>`
             ]).draw().node();
-            $(node).attr('id', `row_${data.MaLop}`);
-            alertSuccess();
+            $(node).attr('id', `row_${data.MaSV}`);
+            Swal.fire({
+                icon: 'success',
+                title: 'Thành Công',
+                text: `Sinh Viên ${data.TenSV} đã được thêm thành công`,
+                timer: 2000,
+                showConfirmButton: false
+
+            })
         }
         $('#TenLop').val('');
-        $("#MaKhoa").val("").change(); s
+        $("#MaKhoa").val("").change();
     }
 
-    function deleteSuccess(data) {
+    function Delete(obj) {
+        var ele = $(obj);
+        var MaSV = ele.data("model-id");
+        var url = `/QuanLySinhVien/Delete/${MaSV}`
 
-        dt.rows(`#row_${data}`)
-            .remove()
-            .draw();
-        alertSuccess();
-    }
+        swal.fire({
+            title: 'Bạn có chắc?',
+            text: "Nếu xóa sẽ không thể khôi phục!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Có, Hãy xóa!',
+            cancelButtonText: 'Không, Quay lại!',
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.post(url, { id: MaSV })
+                    .done(function (data) {
+                        dt.rows(`#row_${data.id}`)
+                            .remove()
+                            .draw();
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Thành Công',
+                            text: `Sinh Viên ${data.TenSV} đã được xóa`,
+                            timer: 2000,
+                            showConfirmButton: false
+                        })
+                    })
+                    .fail(function (data) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Không thành công',
+                            text: `Sinh viên đã đăng ký môn học, không thể xóa!`,
+                            timer: 2000,
+                            showConfirmButton: false
 
-    function deleteFail(data) {
+                        })
+                    });
+            }
+            else if (result.dismiss === Swal.DismissReason.cancel) {
 
-        alert("Sinh viên này không thể xóa, vì đã đăng kí môn học")
-    }
+            }
+        })
 
+
+    };
 
     function FnBeginImport() {
         $('.close').click();
@@ -331,37 +369,36 @@
                                         </span>
                                         <span class="text">Hình ảnh</span>
                                     </a>`,
-                `<a href='/QuanLySinhVien/Edit/${value.MaSV}'>Chỉnh sửa</a> |<a data-ajax='true' data-ajax-confirm='Bạn có muốn xóa bản ghi này ?' data-ajax-method='POST' data-ajax-success='deleteSuccess' href='/QuanLySinhVien/Delete/${value.MaSV}'>Xóa</a>`
+                `<a href='/QuanLySinhVien/Edit/${value.MaSV}'>Chỉnh sửa</a> | <a class="delete" data-model-id="${value.MaSV}" onclick="Delete(this)" style="cursor: pointer;">Xóa</a>`
             ]).draw().node();
-            $(node).attr('id', `row_${value.MaLop}`);
+            $(node).attr('id', `row_${value.MaSV}`);
         })
-
     }
 
     function FnCompleteImport() {
         $('.loader-wrapper').hide();
-        alertSuccess();
-    }
+        Swal.fire({
+            icon: 'success',
+            title: 'Thành Công',
+            text: `Import danh sách sinh viên thành công`,
+            timer: 2000,
+            showConfirmButton: false
 
-    function alertSuccess() {
-        $('.alert').addClass("show");
-        $('.alert').removeClass("hide");
-        $('.alert').addClass("showAlert");
-        setTimeout(function () {
-            $('.alert').removeClass("show");
-            $('.alert').addClass("hide");
-        }, 5000);
-        $('.close-btn').click(function () {
-            $('.alert').removeClass("show");
-            $('.alert').addClass("hide");
-        });
+        })
     }
 
     $('#train_model').click(function () {
         $.post("http://127.0.0.1:6868/train", function (data) {
             $(".close").click();
             $('#hinhanh_cam').empty();
-            alertSuccess();
+            Swal.fire({
+                icon: 'success',
+                title: 'Thành Công',
+                text: `Train ảnh sinh viên thành công`,
+                timer: 2000,
+                showConfirmButton: false
+
+            })
         })
     });
 
@@ -385,7 +422,18 @@
             onfocusout: function (element) {
                 $(element).valid();
             },
+            invalidHandler: function (form, validator) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Xuất hiện lỗi',
+                    text: `Thêm Sinh Viên không thành công`,
+                    timer: 2000,
+                    showConfirmButton: false
 
+                })
+                validator.focusInvalid();
+
+            },
             errorClass: "is-invalid",
             validClass: "is-valid",
             rules: {

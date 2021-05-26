@@ -19,6 +19,16 @@
           rel="stylesheet">
     <!-- Custom styles for this template-->
     <link href="~/Content/css/sb-admin-2.min.css" rel="stylesheet">
+    <script src="~/Content/vendor/jquery/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.11/dist/sweetalert2.all.min.js"></script>
+
+    <style>
+        .is-invalid {
+            color: #E84C3D;
+            margin-top: 5px;
+            padding-left: 15px;
+        }
+    </style>
 
 </head>
 
@@ -41,12 +51,15 @@
                                         <h1 class="h4 text-gray-900 mb-4">Chào mừng quay trở lại!</h1>
                                     </div>
 
-                                    @using (Html.BeginForm("Login", "Account", FormMethod.Post, new { @class = "user", returnUrl = Request.QueryString["ReturnUrl"] }))
+                                    @using (Ajax.BeginForm("Login", "Account", new AjaxOptions { HttpMethod = "POST", OnSuccess = "FnSuccess", OnFailure = "FnFail" }, new { @class = "user" }))
                                     {
+                                        <input type="text" style="display: none;" name="returnUrl" value="@Request.QueryString["ReturnUrl"]">
+
+
                                         <div class="form-group">
-                                            <input type="text" class="form-control form-control-user"
+                                            <input type="email" class="form-control form-control-user"
                                                    id="UserName" aria-describedby="emailHelp"
-                                                   placeholder="Nhập tên tài khoản..." name="UserName">
+                                                   placeholder="Nhập email đăng nhập..." name="UserName" >
                                         </div>
                                         <div class="form-group">
                                             <input type="password" class="form-control form-control-user"
@@ -56,7 +69,7 @@
                                             <div class="custom-control custom-checkbox small">
                                                 <input type="checkbox" class="custom-control-input" id="RememberMe" name="RememberMe">
                                                 <label class="custom-control-label" for="RememberMe">
-                                                    Nhớ trạng thái đăng nhập
+                                                    Giữ tôi luôn đăng nhập
                                                 </label>
                                             </div>
                                         </div>
@@ -90,10 +103,32 @@
     <!-- Core plugin JavaScript-->
     <script src="~/Content/vendor/jquery-easing/jquery.easing.min.js"></script>
 
+    <script type="text/javascript" src="@Url.Content("~/Scripts/jquery.unobtrusive-ajax.min.js")"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.2/jquery.validate.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.12/jquery.validate.unobtrusive.min.js"></script>
+
     <!-- Custom scripts for all pages-->
     <script src="~/Content/js/sb-admin-2.min.js"></script>
 
     <script>
+
+        
+        function FnSuccess(data) {
+            window.location.replace(data);    
+        }
+
+        function FnFail(data) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Thông tin đăng nhập không chính xác',
+                text: `Vui lòng kiểm tra email và password của bạn`,
+                timer: 2000,
+                showConfirmButton: false
+            })
+        }
+
         $("input[type=checkbox]").change(function () {
 
             if ($(this).prop("checked")) {
@@ -102,7 +137,49 @@
                 $(this).val(false);
             }
         })
+
+        $(document).ready(function () {
+
+            $(".user").validate({
+                onfocusout: function (element) {
+                    $(element).valid();
+                },
+                invalidHandler: function (form, validator) {
+                    validator.focusInvalid();
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Xuất hiện lỗi',
+                        text: `Email hoặc Password không hợp lệ`,
+                        timer: 2000,
+                        showConfirmButton: false
+                    })
+                },
+                errorClass: "is-invalid",
+                validClass: "is-valid",
+                rules: {
+                    UserName: {
+                        required: true,
+                        email: true,
+                    },
+                    Password: {
+                        required: true,
+                    }
+                },
+                messages: {
+                    UserName: {
+                        required: "Email đăng nhập không được để trống.",
+                        email: "Email đăng nhập không hợp lệ.",
+                    },
+                    Password: {
+                        required: "Mật khẩu không được để trống.",
+                    }
+                }
+            });
+
+        });
     </script>
+
+
 
 </body>
 

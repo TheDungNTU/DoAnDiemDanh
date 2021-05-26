@@ -13,75 +13,92 @@ using DoAnDiemDanh.Models;
 
 namespace DoAnDiemDanh.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    
     public class QuanLyMonHocController : Controller
     {
-
+        
         private FACE_RECOGNITIONEntities db = new FACE_RECOGNITIONEntities();
         // GET: QuanLyMonHoc
 
+        [Authorize(Roles = "Admin, User")]
         public IEnumerable<DateTime> EachDay(DateTime d1, DateTime d2)
         {
             for (var day = d1.Date; day.Date <= d2.Date; day = day.AddDays(1))
                 yield return day;
         }
 
+        [Authorize(Roles = "Admin, User")]
         public ActionResult DangKyMonHoc()
         {
             ViewBag.MaMH = db.MONHOCs;
-            ViewBag.MaSV = db.SINHVIENs;
+            ViewBag.Khoa_Filter = db.KHOAs;
+            ViewBag.Lop_Filter = db.LOPs;
             return View();
         }
 
+        [Authorize(Roles = "Admin, User")]
+        [HttpGet]
+        public JsonResult GetThongTinMonHoc(int MaMH)
+        {
+            
+            var MonHoc = db.MONHOCs.SingleOrDefault(_ => _.MaMH == MaMH);
+
+            var SinhVienDK = from sv in db.SINHVIENs
+                             where sv.MONHOCs.Any(mh => mh.MaMH == MaMH)
+                             select sv.MaSV;
+
+            var SinhVien = from sv in db.SINHVIENs
+                           where !SinhVienDK.Contains(sv.MaSV)
+                           select new { MaSV = sv.MaSV, TenSV = sv.TenSV, TenKhoa = sv.KHOA.TenKhoa, TenLop = sv.LOP.TenLop };
+            JsonResult categoryJson = new JsonResult();
+            categoryJson.Data = SinhVien;
+            var data = new
+            {
+                TenMH = MonHoc.TenMH,
+                TenGV = MonHoc.GIANGVIEN.TenGV,
+                SoTC = MonHoc.SoTC,
+                SinhVien = categoryJson,
+
+            };
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        [Authorize(Roles = "Admin, User")]
         [HttpPost]
-        public JsonResult DangKyMonHoc(string MaMH, string MaSV)
+        public JsonResult DangKyMonHoc(string MaMH, List<string> data)
         {
             string sqlconnectStr = ConfigurationManager.ConnectionStrings["ASPNETConnectionString"].ToString();
             var cnn = new SqlConnection(sqlconnectStr);
             cnn.Open();
-
-            var command = new SqlCommand($"INSERT INTO SINHVIEN_MONHOC VALUES ({MaSV},{MaMH})", cnn);
-            command.ExecuteNonQuery();
-
-            
-            int mamh = Int32.Parse(MaMH);
-            int masv = Int32.Parse(MaSV);
-
-            var DiemDanh = db.DIEMDANHs.Where(_ => _.MaMH == mamh).ToList();
-            var CTDD = new CTDD();
-            foreach(var item in DiemDanh)
+            foreach(var item in data)
             {
-                command = new SqlCommand($"INSERT INTO dbo.CTDD ( MaDD, MaSV) VALUES  ( {item.MaDD},{masv})", cnn);
+                var command = new SqlCommand($"INSERT INTO SINHVIEN_MONHOC VALUES ({item},{MaMH})", cnn);
                 command.ExecuteNonQuery();
-            }
 
+                int mamh = Int32.Parse(MaMH);
+                int masv = Int32.Parse(item);
+
+                var DiemDanh = db.DIEMDANHs.Where(_ => _.MaMH == mamh).ToList();
+                var CTDD = new CTDD();
+                foreach (var item1 in DiemDanh)
+                {
+                    command = new SqlCommand($"INSERT INTO dbo.CTDD ( MaDD, MaSV) VALUES  ( {item1.MaDD},{masv})", cnn);
+                    command.ExecuteNonQuery();
+                }
+            }
+           
             cnn.Close();
             return Json(MaMH, JsonRequestBehavior.AllowGet);
         }
-      
+
+        [Authorize(Roles = "Admin")]
         public ActionResult Index()
         {
             ViewBag.MaGV = db.GIANGVIENs;
             var mONHOCs = db.MONHOCs.Include(m => m.GIANGVIEN);
             return View(mONHOCs.ToList());
         }
-
-        // GET: QuanLyMonHoc/Details/5
-        public ActionResult Details(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            MONHOC mONHOC = db.MONHOCs.Find(id);
-            if (mONHOC == null)
-            {
-                return HttpNotFound();
-            }
-            return View(mONHOC);
-        }
-
- 
+        [Authorize(Roles = "Admin")]
         // POST: QuanLyMonHoc/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
@@ -153,6 +170,7 @@ namespace DoAnDiemDanh.Controllers
             return Json(false, JsonRequestBehavior.AllowGet);
         }
 
+        [Authorize(Roles = "Admin")]
         // GET: QuanLyMonHoc/Edit/5
         public ActionResult Edit(int? id)
         {
@@ -172,6 +190,7 @@ namespace DoAnDiemDanh.Controllers
         // POST: QuanLyMonHoc/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Edit([Bind(Include = "MaMH,TenMH,SoTC,NgayBD,NgayKT,ThoiGianBDGD,ThoiGianKTGD,MaGV")] MONHOC mONHOC)
@@ -186,29 +205,20 @@ namespace DoAnDiemDanh.Controllers
             return View(mONHOC);
         }
 
-        // GET: QuanLyMonHoc/Delete/5
-        public ActionResult Delete(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            MONHOC mONHOC = db.MONHOCs.Find(id);
-            if (mONHOC == null)
-            {
-                return HttpNotFound();
-            }
-            return View(mONHOC);
-        }
-
+        [Authorize(Roles = "Admin")]
         // POST: QuanLyMonHoc/Delete/5
         [HttpPost, ActionName("Delete")]
         public JsonResult DeleteConfirmed(int id)
         {
             MONHOC mONHOC = db.MONHOCs.Find(id);
+            var data = new
+            {
+                id = id,
+                TenMH = mONHOC.TenMH
+            };
             db.MONHOCs.Remove(mONHOC);
             db.SaveChanges();
-            return Json(id,JsonRequestBehavior.AllowGet);
+            return Json(data,JsonRequestBehavior.AllowGet);
         }
 
         protected override void Dispose(bool disposing)

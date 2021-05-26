@@ -15,7 +15,7 @@ using DoAnDiemDanh.Models;
 
 namespace DoAnDiemDanh.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin, User")]
     public class QuanLyHinhAnhController : Controller
     {
         private FACE_RECOGNITIONEntities db = new FACE_RECOGNITIONEntities();
@@ -42,6 +42,7 @@ namespace DoAnDiemDanh.Controllers
         {
  
             var  list = (IEnumerable<string>) data;
+            List<HinhCam> listAnh = new List<HinhCam>();
             foreach(var item in list)
             {
                 using (MemoryStream ms = new MemoryStream(Convert.FromBase64String(item)))
@@ -58,10 +59,15 @@ namespace DoAnDiemDanh.Controllers
                         hinhanh.BASE64 = item;
                         db.HINHANHs.Add(hinhanh);
                         db.SaveChanges();
+
+                        var hinhcam = new HinhCam();
+                        hinhcam.tenanh = postedFileName;
+                        hinhcam.maanh = hinhanh.MaHA;
+                        listAnh.Add(hinhcam);
                     }
                 }
             }
-            return Json(true, JsonRequestBehavior.AllowGet);
+            return Json(listAnh, JsonRequestBehavior.AllowGet);
         }
 
 
@@ -182,6 +188,12 @@ namespace DoAnDiemDanh.Controllers
                 db.Dispose();
             }
             base.Dispose(disposing);
+        }
+
+        class HinhCam
+        {
+            public string tenanh { get; set; }
+            public int maanh { get; set; }
         }
     }
 }

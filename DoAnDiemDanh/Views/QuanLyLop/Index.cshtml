@@ -4,8 +4,6 @@
     ViewBag.Title = "Index";
     Layout = "~/Views/Layout/_LayoutAdmin.cshtml";
     var Khoa = (IEnumerable<DoAnDiemDanh.Models.KHOA>)ViewBag.MaKhoa;
-    var list = (List<LopHocCount>)ViewBag.danhsach;
-
     <style>
         .is-invalid {
             color: #E84C3D;
@@ -86,26 +84,15 @@
                                 @Html.DisplayFor(modelItem => item.KHOA.TenKhoa)
                             </td>
                             <td>
-                                <a href="#" class="btn btn-primary btn-icon-split">
+                                <span class="btn btn-primary btn-icon-split">
                                     <span class="icon text-white-50">
-                                        @{
-                                            LopHocCount lhc = (LopHocCount)list.Find(s => s.malh == item.MaLop);
-                                            if (lhc == null)
-                                            {
-                                                <span>0</span>
-                                            }
-                                            else
-                                            {
-                                                <span>@lhc.soluong</span>
-                                            }
-
-                                        }
+                                       @item.SINHVIENs.Count()
                                     </span>
                                     <span class="text">Sinh viên</span>
-                                </a>
+                                </span>
                             <td>
                                 @Html.ActionLink("Chỉnh sửa", "Edit", new { id = item.MaLop }) |
-                                @Ajax.ActionLink("Xóa", "Delete", new { id = item.MaLop }, new AjaxOptions { HttpMethod = "POST", OnSuccess = "deleteSuccess", Confirm = "Bạn có muốn xóa bản ghi này ?" })
+                                <a class="delete" data-model-id="@item.MaLop" onclick="Delete(this)" style="cursor: pointer;">Xóa</a>
                             </td>
                         </tr>
                     }
@@ -120,12 +107,28 @@
     var dt;
 
     function loadDataTable() {
-        dt = $("#dataTable").DataTable();
+        dt = $("#dataTable").DataTable({
+            "language": {
+                "lengthMenu": "Số hàng mỗi trang _MENU_",
+                "search": "Tìm kiếm:",
+                "info": "Tổng số _TOTAL_ hàng",
+                "infoEmpty": "",
+                "infoFiltered": "",
+                "paginate": {
+                    "first": "Đầu",
+                    "last": "Cuối",
+                    "next": "Trang sau",
+                    "previous": "Trang trước"
+                },
+                searchPlaceholder: "Nhập tên lớp...",
+                zeroRecords: "Không tìm thấy kết quả",
+            }
+
+        });
     }
 
     function FnSuccess(data) {
         if (data != false) {
-
             var node = dt.row.add([
                 data.MaLop,
                 data.TenLop,
@@ -137,35 +140,69 @@
                                     </span>
                                     <span class="text">Sinh viên</span>
                                 </a>`,
-                `<a href='/QuanLyKhoa/Edit/${data.MaKhoa}'>Chỉnh sửa</a> |<a data-ajax='true' data-ajax-confirm='Bạn có muốn xóa bản ghi này ?' data-ajax-method='POST' data-ajax-success='deleteSuccess' href='/QuanLyLop/Delete/${data.MaLop}'>Xóa</a>`
+                `<a href='/QuanLyLop/Edit/${data.MaLop}'>Chỉnh sửa</a> |<a class="delete" data-model-id="${data.MaLop}" onclick="Delete(this)" style="cursor: pointer;">Xóa</a>`
             ]).draw().node();
             $(node).attr('id', `row_${data.MaLop}`);
-            alertSuccess();
+            Swal.fire({
+                icon: 'success',
+                title: 'Thành Công',
+                text: `Lớp ${data.TenLop} đã được thêm thành công`,
+                timer: 2000,
+                showConfirmButton: false
+
+            })
         }
         $('#TenLop').val('');
         $("#MaKhoa").val("").change();
     }
 
-    function deleteSuccess(data) {
-        dt.rows(`#row_${data}`)
-            .remove()
-            .draw();
-        alertSuccess();
-    }
+    function Delete(obj) {
+        var ele = $(obj);
+        var MaLop = ele.data("model-id");
+        var url = `/QuanLyLop/Delete/${MaLop}`
 
-    function alertSuccess() {
-        $('.alert').addClass("show");
-        $('.alert').removeClass("hide");
-        $('.alert').addClass("showAlert");
-        setTimeout(function () {
-            $('.alert').removeClass("show");
-            $('.alert').addClass("hide");
-        }, 5000);
-        $('.close-btn').click(function () {
-            $('.alert').removeClass("show");
-            $('.alert').addClass("hide");
-        });
-    }
+        swal.fire({
+            title: 'Bạn có chắc?',
+            text: "Nếu xóa sẽ không thể khôi phục!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Có, Hãy xóa!',
+            cancelButtonText: 'Không, Quay lại!',
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.post(url, { id: MaLop })
+                    .done(function (data) {
+                        dt.rows(`#row_${data.id}`)
+                            .remove()
+                            .draw();
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Thành Công',
+                            text: `Lớp ${data.TenLop} đã được xóa`,
+                            timer: 2000,
+                            showConfirmButton: false
+
+                        })
+                    })
+                    .fail(function (data) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Không thành công',
+                            text: `Lớp học đã có sinh viên, không thể xóa!`,
+                            timer: 2000,
+                            showConfirmButton: false
+
+                        })
+                    });
+            }
+            else if (result.dismiss === Swal.DismissReason.cancel) {
+
+            }
+        })
+
+
+    };
 
     $("#MaKhoa").change(function () {
         var tenkhoa = $("#MaKhoa option:selected").html();
@@ -188,9 +225,17 @@
                 $(element).valid();
             },
             invalidHandler: function (form, validator) {
+    
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Xuất hiện lỗi',
+                    text: `Thêm Lớp Học không thành công`,
+                    timer: 2000,
+                    showConfirmButton: false
 
-                alert("Thêm môn học không thành công");
+                })
                 validator.focusInvalid();
+
             },
             errorClass: "is-invalid",
             validClass: "is-valid",

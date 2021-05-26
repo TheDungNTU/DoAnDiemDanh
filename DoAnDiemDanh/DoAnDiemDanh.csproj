@@ -246,7 +246,6 @@
     <Compile Include="Models\HINHANH.cs">
       <DependentUpon>FaceRecognition.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\HinhAnhCount.cs" />
     <Compile Include="Models\KHOA.cs">
       <DependentUpon>FaceRecognition.tt</DependentUpon>
     </Compile>
@@ -254,7 +253,6 @@
     <Compile Include="Models\LOP.cs">
       <DependentUpon>FaceRecognition.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\LopHocCount.cs" />
     <Compile Include="Models\MONHOC.cs">
       <DependentUpon>FaceRecognition.tt</DependentUpon>
     </Compile>
@@ -2195,9 +2193,6 @@
       <DependentUpon>Web.config</DependentUpon>
     </Content>
     <Content Include="Views\Web.config" />
-    <Content Include="Views\_ViewStart.cshtml" />
-    <Content Include="Views\Shared\Error.cshtml" />
-    <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Layout\_LayoutAdmin.cshtml" />
     <Content Include="Views\QuanLyKhoa\Edit.cshtml" />
     <Content Include="Views\QuanLyKhoa\Index.cshtml" />

@@ -65,9 +65,14 @@ namespace DoAnDiemDanh.Controllers
         public JsonResult DeleteConfirmed(int id)
         {
             KHOA kHOA = db.KHOAs.Find(id);
+            var data = new
+            {
+                id = id,
+                TenKhoa = kHOA.TenKhoa,
+            };
             db.KHOAs.Remove(kHOA);
             db.SaveChanges();
-            return Json(id, JsonRequestBehavior.AllowGet);
+            return Json(data, JsonRequestBehavior.AllowGet);
         }
 
         protected override void Dispose(bool disposing)

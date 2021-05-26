@@ -18,42 +18,12 @@ namespace DoAnDiemDanh.Controllers
         // GET: QuanLyLop
         public ActionResult Index()
         {
-
-            var t = (from lophoc in db.LOPs
-                    select new LopHocCount{malh = lophoc.MaLop, soluong = lophoc.SINHVIENs.Count() }).ToList();
-            ViewBag.danhsach = t;
-
-
             ViewBag.MaKhoa = db.KHOAs;
             var lOPs = db.LOPs.Include(l => l.KHOA);
             return View(lOPs.ToList());
         }
 
-        // GET: QuanLyLop/Details/5
-        public ActionResult Details(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            LOP lOP = db.LOPs.Find(id);
-            if (lOP == null)
-            {
-                return HttpNotFound();
-            }
-            return View(lOP);
-        }
-
-        // GET: QuanLyLop/Create
-        public ActionResult Create()
-        {
-            ViewBag.MaKhoa = new SelectList(db.KHOAs, "MaKhoa", "TenKhoa");
-            return View();
-        }
-
-        // POST: QuanLyLop/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
+  
         [HttpPost]
         [ValidateAntiForgeryToken]
         public JsonResult Create([Bind(Include = "MaLop,TenLop,MaKhoa")] LOP lOP, string TenKhoa)
@@ -109,29 +79,20 @@ namespace DoAnDiemDanh.Controllers
             return View(lOP);
         }
 
-        // GET: QuanLyLop/Delete/5
-        public ActionResult Delete(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            LOP lOP = db.LOPs.Find(id);
-            if (lOP == null)
-            {
-                return HttpNotFound();
-            }
-            return View(lOP);
-        }
 
         // POST: QuanLyLop/Delete/5
         [HttpPost, ActionName("Delete")]
         public JsonResult DeleteConfirmed(int id)
         {
             LOP lOP = db.LOPs.Find(id);
+            var data = new
+            {
+                id = id,
+                TenLop = lOP.TenLop
+            };
             db.LOPs.Remove(lOP);
             db.SaveChanges();
-            return Json(id, JsonRequestBehavior.AllowGet);
+            return Json(data, JsonRequestBehavior.AllowGet);
         }
 
         protected override void Dispose(bool disposing)

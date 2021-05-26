@@ -88,10 +88,6 @@ namespace DoAnDiemDanh.Controllers
             ViewBag.Khoa = db.KHOAs.Where(_ => _.LOPs.Count() > 0);
             ViewBag.Khoa_Filter = db.KHOAs;
             ViewBag.Lop_Filter = db.LOPs;
-            var t = (from hinhanh in db.HINHANHs
-                               group hinhanh by hinhanh.MaSV into hinhanhgrp
-                               select new HinhAnhCount { masv = hinhanhgrp.Key, soluong = hinhanhgrp.Count() }).ToList();
-            ViewBag.danhsach = t;
             return View(sINHVIENs.ToList());
         }
 
@@ -180,9 +176,14 @@ namespace DoAnDiemDanh.Controllers
         public JsonResult DeleteConfirmed(int id)
         {
             SINHVIEN sINHVIEN = db.SINHVIENs.Find(id);
+            var data = new
+            {
+                id = id,
+                TenSV = sINHVIEN.TenSV,
+            };
             db.SINHVIENs.Remove(sINHVIEN);
             db.SaveChanges();
-            return Json(id,JsonRequestBehavior.AllowGet);
+            return Json(data, JsonRequestBehavior.AllowGet);
         }
 
         protected override void Dispose(bool disposing)

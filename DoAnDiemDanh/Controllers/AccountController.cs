@@ -38,11 +38,11 @@ namespace DoAnDiemDanh.Controllers
 
         [HttpPost]
         [AllowAnonymous]
-        public ActionResult Login(LoginViewModel model, string returnUrl)
+        public JsonResult Login(LoginViewModel model, string returnUrl)
         {
             ViewBag.returnUrl = returnUrl;
             
-            var tk = db.TAIKHOANs.Where(s => s.TaiKhoan1 == model.UserName && s.MatKhau == model.Password).SingleOrDefault();
+            var tk = db.TAIKHOANs.Where(s => s.TaiKhoan1 == model.UserName && s.MatKhau == model.Password).Single();
             if(tk != null)
             {
                 var gv = db.GIANGVIENs.Where(s => s.Email == model.UserName).SingleOrDefault();
@@ -77,16 +77,16 @@ namespace DoAnDiemDanh.Controllers
                 if (Url.IsLocalUrl(returnUrl) && returnUrl.Length > 1 && returnUrl.StartsWith("/")
                     && !returnUrl.StartsWith("//") && !returnUrl.StartsWith("/\\"))
                 {
-                    return Redirect(returnUrl);
+                    return Json(returnUrl,JsonRequestBehavior.AllowGet);
                 }
                 else
                 {
-                    return RedirectToAction("Index", "DiemDanh"); 
+                    return Json(Url.Action("index","DiemDanh"), JsonRequestBehavior.AllowGet);
                 }
             }
             else
             {
-                return View();
+                return Json(Url.Action("login", "Account"), JsonRequestBehavior.AllowGet);
             }                      
         }
 

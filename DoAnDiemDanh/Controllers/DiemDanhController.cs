@@ -33,8 +33,9 @@ namespace DoAnDiemDanh.Controllers
             var data = from diemdanh in db.DIEMDANHs
                        join ctdd in db.CTDDs on diemdanh.MaDD equals ctdd.MaDD
                        join sinhvien in db.SINHVIENs on ctdd.MaSV equals sinhvien.MaSV
+                       join lop in db.LOPs on sinhvien.MaSV equals lop.MaLop
                        where diemdanh.MaMH == MaMH && diemdanh.NgayDiemDanh == date
-                       select new { TenSV = sinhvien.TenSV, ThoiGianVao = ctdd.ThoiGianVao, ThoiGianRa = ctdd.ThoiGianRa, TrangThai = ctdd.TTDD };
+                       select new {MaSV = sinhvien.MaSV , TenLop = lop.TenLop, TenSV = sinhvien.TenSV, ThoiGianVao = ctdd.ThoiGianVao, ThoiGianRa = ctdd.ThoiGianRa, TrangThai = ctdd.TTDD };
 
 
             return Json(data.ToList(), JsonRequestBehavior.AllowGet);

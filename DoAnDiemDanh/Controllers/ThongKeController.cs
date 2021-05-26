@@ -9,6 +9,7 @@ using System.Linq;
 using System.Net;
 using System;
 using System.Globalization;
+using System.Collections.Generic;
 
 namespace DoAnDiemDanh.Controllers
 {
@@ -24,7 +25,71 @@ namespace DoAnDiemDanh.Controllers
             ViewBag.Lop = db.LOPs;
             return View();
         }
+        public IEnumerable<DateTime> EachDay(DateTime d1, DateTime d2)
+        {
+            for (var day = d1.Date; day.Date <= d2.Date; day = day.AddDays(1))
+                yield return day;
+        }
 
+        public JsonResult GetBieuDo(int MaMH)
+        {
+            List<string> listNgay = new List<string>();
+            List<int> listDiHoc = new List<int>();
+            List<int> listVangHoc = new List<int>();
+            List<string> colorDiHoc = new List<string>();
+            List<string> borderDiHoc = new List<string>();
+            List<string> colorVangHoc = new List<string>();
+            List<string> borderVangHoc = new List<string>();
+            IEnumerable<DateTime> listime;
+            var MonHoc = db.MONHOCs.SingleOrDefault(_ => _.MaMH == MaMH);
+            if((DateTime)MonHoc.NgayKT <= DateTime.Now)
+            {
+                listime = EachDay((DateTime)MonHoc.NgayBD, (DateTime)MonHoc.NgayKT);
+            }
+            else
+            {
+                listime = EachDay((DateTime)MonHoc.NgayBD, DateTime.Now);
+            }
+
+            foreach(var item in listime)
+            {
+                var ctdiemdanh = from diemdanh in db.DIEMDANHs
+                            join ctdd in db.CTDDs on diemdanh.MaDD equals ctdd.MaDD
+                            where diemdanh.MaMH == MaMH && diemdanh.NgayDiemDanh == item
+                            select ctdd;
+                
+
+                int vanghoc = ctdiemdanh.Where(s => s.TTDD == false).Count();
+                int dihoc = ctdiemdanh.Where(s => s.TTDD == true).Count();
+                if(dihoc != 0 || vanghoc != 0)
+                {
+                    
+                    listNgay.Add(Convert.ToDateTime(item).ToString("dd/MM"));
+                    listDiHoc.Add(dihoc);
+                    listVangHoc.Add(vanghoc);
+                    colorDiHoc.Add("rgba(54, 162, 235, 0.2)");
+                    borderDiHoc.Add("rgba(54, 162, 235, 1)");
+                    colorVangHoc.Add("rgba(255, 99, 132, 0.2)");
+                    borderVangHoc.Add("rgba(255, 99, 132, 1)");
+                }
+               
+            }
+            int SiSo = MonHoc.SINHVIENs.Count();
+            var data = new {
+                TenMH = MonHoc.TenMH,
+                SiSo = SiSo,
+                listNgay = listNgay,
+                listDiHoc = listDiHoc,
+                listVangHoc = listVangHoc,
+                colorDiHoc = colorDiHoc,
+                borderDiHoc = borderDiHoc,
+                colorVangHoc = colorVangHoc,
+                borderVangHoc = borderVangHoc
+            };
+
+
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
         public string getTenKhoa(int MaKhoa)
         {
             var Khoa = db.KHOAs.Single(s => s.MaKhoa == MaKhoa);
@@ -536,8 +601,6 @@ namespace DoAnDiemDanh.Controllers
             db.Configuration.ProxyCreationEnabled = false;
 
             var tongsobuoi = db.DIEMDANHs.Where(_ => _.MaMH == MaMH).Count();
-
-
 
             var data1 =  (from sv in db.SINHVIENs
                          join ctdd in db.CTDDs on sv.MaSV equals ctdd.MaSV

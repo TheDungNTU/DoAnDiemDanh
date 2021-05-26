@@ -97,9 +97,23 @@ namespace DoAnDiemDanh.Controllers
         public JsonResult DeleteConfirmed(int id)
         {
             GIANGVIEN gIANGVIEN = db.GIANGVIENs.Find(id);
+
+            var data = new
+            {
+                id = id,
+                TenGV = gIANGVIEN.TenGV,
+            };
+            var TaiKhoan = db.TAIKHOANs.SingleOrDefault(s => s.MaGV == id);
+            var MonHoc = db.MONHOCs.SingleOrDefault(s => s.MaGV == id);
+            if(MonHoc == null && TaiKhoan.MaQuyen != 1)
+            {
+                db.TAIKHOANs.Remove(TaiKhoan);
+                db.SaveChanges();
+            }
             db.GIANGVIENs.Remove(gIANGVIEN);
             db.SaveChanges();
-            return Json(id,JsonRequestBehavior.AllowGet);
+
+            return Json(data, JsonRequestBehavior.AllowGet);
         }
 
         protected override void Dispose(bool disposing)
