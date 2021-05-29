@@ -12,6 +12,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.Data.OleDb;
 using Newtonsoft.Json;
+using ExcelDataReader;
 
 namespace DoAnDiemDanh.Controllers
 {
@@ -27,57 +28,49 @@ namespace DoAnDiemDanh.Controllers
             string targetpath = Server.MapPath("~/Content/doc/");
             excel.SaveAs(targetpath + filename);
             string pathToExcelFile = targetpath + filename;
-            var connectionString = "";
-            if (filename.EndsWith(".xls"))
-            {
-                connectionString = string.Format("Provider=Microsoft.Jet.OLEDB.4.0; data source={0}; Extended Properties=Excel 8.0;", pathToExcelFile);
-            }
-            else if (filename.EndsWith(".xlsx"))
-            {
-                connectionString = string.Format("Provider=Microsoft.ACE.OLEDB.12.0;Data Source={0};Extended Properties=\"Excel 12.0 Xml;HDR=YES;IMEX=1\";", pathToExcelFile);
-            }
-
-            var conn = new OleDbConnection(connectionString);
-            if (conn.State == ConnectionState.Closed) conn.Open();
-            string SpreadSheetName = "";
-            DataTable ExcelSheets = conn.GetOleDbSchemaTable(OleDbSchemaGuid.Tables, new object[] { null, null, null, "TABLE" });
-
-            SpreadSheetName = ExcelSheets.Rows[0]["TABLE_NAME"].ToString();
-            var query = "SELECT * FROM [" + SpreadSheetName + "]";
-            var cmd = new OleDbCommand(query, conn);
-            var data = new OleDbDataAdapter(cmd);
-            var dt = new DataTable();
-            data.Fill(dt);
 
             List<SinhVienRows> listSV = new List<SinhVienRows>();
-
-
-            foreach (DataRow item in dt.Rows)
+            using (var stream = System.IO.File.Open(pathToExcelFile, FileMode.Open, FileAccess.Read))
             {
-                if(item["STT"].ToString() != "")
+                var reader = ExcelReaderFactory.CreateReader(stream);
+                var result = reader.AsDataSet(new ExcelDataSetConfiguration
                 {
-                    var tenkhoa = item["Tên Khoa"].ToString();
-                    var tenlop = item["Tên Lớp"].ToString();
-                    KHOA Khoa = db.KHOAs.Single(_ => _.TenKhoa.Contains(tenkhoa));
-                    LOP lop = db.LOPs.Single(_ => _.TenLop.Contains(tenlop));
-                    if(Khoa != null && lop != null)
+                    ConfigureDataTable = _ => new ExcelDataTableConfiguration
                     {
-                        SINHVIEN sv = new SINHVIEN();
-                        SinhVienRows svr = new SinhVienRows();
-                        sv.TenSV = item["Họ Và Tên"].ToString();
-                        svr.TenSV = sv.TenSV;
-                        svr.TenKhoa = Khoa.TenKhoa;
-                        svr.TenLop = lop.TenLop;
-                        sv.MaKhoa = Khoa.MaKhoa;
-                        sv.MaLop = lop.MaLop;
-                        db.SINHVIENs.Add(sv);
-                        db.SaveChanges();
-                        svr.MaSV = sv.MaSV;
-                        listSV.Add(svr);
+                        UseHeaderRow = true // Use first row is ColumnName here :D
+                    }
+                });
+                DataTable dt = result.Tables[0];
+                
+                foreach (DataRow item in dt.Rows)
+                {
+                    if (item["STT"].ToString() != "")
+                    {
+                        var tenkhoa = item["Tên Khoa"].ToString();
+                        var tenlop = item["Tên Lớp"].ToString();
+                        KHOA Khoa = db.KHOAs.Single(_ => _.TenKhoa.Contains(tenkhoa));
+                        LOP lop = db.LOPs.Single(_ => _.TenLop.Contains(tenlop));
+                        if (Khoa != null && lop != null)
+                        {
+                            SINHVIEN sv = new SINHVIEN();
+                            SinhVienRows svr = new SinhVienRows();
+                            sv.TenSV = item["Họ Và Tên"].ToString();
+                            svr.TenSV = sv.TenSV;
+                            svr.TenKhoa = Khoa.TenKhoa;
+                            svr.TenLop = lop.TenLop;
+                            sv.MaKhoa = Khoa.MaKhoa;
+                            sv.MaLop = lop.MaLop;
+                            db.SINHVIENs.Add(sv);
+                            db.SaveChanges();
+                            svr.MaSV = sv.MaSV;
+                            listSV.Add(svr);
+                        }
                     }
                 }
+                stream.Close();
             }
-            conn.Close();
+            
+
             return Json(listSV, JsonRequestBehavior.AllowGet);
         }
 

@@ -60,6 +60,12 @@
     <Reference Include="EPPlus, Version=5.6.3.0, Culture=neutral, PublicKeyToken=ea159fdaa78159a1, processorArchitecture=MSIL">
       <HintPath>..\packages\EPPlus.5.6.3\lib\net45\EPPlus.dll</HintPath>
     </Reference>
+    <Reference Include="ExcelDataReader, Version=3.6.0.0, Culture=neutral, PublicKeyToken=93517dbe6a4012fa, processorArchitecture=MSIL">
+      <HintPath>..\packages\ExcelDataReader.3.6.0\lib\net45\ExcelDataReader.dll</HintPath>
+    </Reference>
+    <Reference Include="ExcelDataReader.DataSet, Version=3.6.0.0, Culture=neutral, PublicKeyToken=93517dbe6a4012fa, processorArchitecture=MSIL">
+      <HintPath>..\packages\ExcelDataReader.DataSet.3.6.0\lib\net35\ExcelDataReader.DataSet.dll</HintPath>
+    </Reference>
     <Reference Include="ExcelNumberFormat, Version=1.0.10.0, Culture=neutral, PublicKeyToken=23c6f5d73be07eca, processorArchitecture=MSIL">
       <HintPath>..\packages\ExcelNumberFormat.1.0.10\lib\net20\ExcelNumberFormat.dll</HintPath>
     </Reference>
@@ -107,6 +113,7 @@
       <Private>True</Private>
       <Private>True</Private>
     </Reference>
+    <Reference Include="System.IO.Compression" />
     <Reference Include="System.IO.FileSystem.Primitives, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.IO.FileSystem.Primitives.4.0.1\lib\net46\System.IO.FileSystem.Primitives.dll</HintPath>
       <Private>True</Private>
@@ -279,7 +286,7 @@
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
-    <Content Include="Content\css\alert.css" />
+    <Content Include="Content\css\style.css" />
     <Content Include="Content\css\form.css" />
     <Content Include="Content\css\sb-admin-2.css" />
     <Content Include="Content\css\sb-admin-2.min.css" />
@@ -287,6 +294,8 @@
     <Content Include="Content\data\haarcascade_frontalface_default.xml" />
     <Content Include="Content\data\lbpcascade_frontalface.xml" />
     <Content Include="Content\img\add-user.png" />
+    <Content Include="Content\img\avatar.svg" />
+    <Content Include="Content\img\bg.svg" />
     <Content Include="Content\img\Ellipsis-1s-200px.gif" />
     <Content Include="Content\img\face-recognition.png" />
     <Content Include="Content\img\photo.png" />
@@ -296,10 +305,16 @@
     <Content Include="Content\img\undraw_profile_2.svg" />
     <Content Include="Content\img\undraw_profile_3.svg" />
     <Content Include="Content\img\undraw_rocket.svg" />
+    <Content Include="Content\img\undraw_secure.svg" />
+    <Content Include="Content\img\undraw_secure_login.svg" />
+    <Content Include="Content\img\undraw_secure_login_pdn4.svg" />
+    <Content Include="Content\img\wave.png" />
+    <Content Include="Content\img\waveblue.png" />
     <Content Include="Content\js\demo\chart-area-demo.js" />
     <Content Include="Content\js\demo\chart-bar-demo.js" />
     <Content Include="Content\js\demo\chart-pie-demo.js" />
     <Content Include="Content\js\demo\datatables-demo.js" />
+    <Content Include="Content\js\main.js" />
     <Content Include="Content\js\sb-admin-2.js" />
     <Content Include="Content\js\sb-admin-2.min.js" />
     <Content Include="Content\img\new.png" />
@@ -2172,6 +2187,7 @@
     <Content Include="Models\FaceRecognition.edmx.diagram">
       <DependentUpon>FaceRecognition.edmx</DependentUpon>
     </Content>
+    <None Include="Properties\PublishProfiles\IISProfile.pubxml" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.4.1.js" />
     <Content Include="Scripts\jquery-3.4.1.min.js" />
@@ -2215,7 +2231,6 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Content\doc\" />
-    <Folder Include="Properties\PublishProfiles\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />

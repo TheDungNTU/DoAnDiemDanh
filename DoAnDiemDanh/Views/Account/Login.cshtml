@@ -10,113 +10,84 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
-
+    <link rel="icon" href="~/Content/img/face-recognition.png" type="image/x-icon">
     <title>Đăng nhập</title>
 
-    <!-- Custom fonts for this template-->
-    <link href="~/Content/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
-    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
-          rel="stylesheet">
     <!-- Custom styles for this template-->
-    <link href="~/Content/css/sb-admin-2.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="~/Content/css/style.css">
+    <link href="https://fonts.googleapis.com/css?family=Poppins:600&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/a81368914c.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
     <script src="~/Content/vendor/jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="@Url.Content("~/Scripts/jquery.unobtrusive-ajax.min.js")"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.11/dist/sweetalert2.all.min.js"></script>
 
     <style>
         .is-invalid {
             color: #E84C3D;
-            margin-top: 5px;
-            padding-left: 15px;
+            font-size: 14px;
         }
     </style>
 
 </head>
+<body>
 
-<body class="bg-gradient-primary">
+
+    <img class="wave" src="~/Content/img/wave.png">
     <div class="container">
-
-        <!-- Outer Row -->
-        <div class="row justify-content-center">
-
-            <div class="col-xl-10 col-lg-12 col-md-9">
-
-                <div class="card o-hidden border-0 shadow-lg my-5 shadow">
-                    <div class="card-body p-0">
-                        <!-- Nested Row within Card Body -->
-                        <div class="row">
-                            <div class="col-lg-6 d-none d-lg-block bg-login-image"></div>
-                            <div class="col-lg-6">
-                                <div class="p-5">
-                                    <div class="text-center">
-                                        <h1 class="h4 text-gray-900 mb-4">Chào mừng quay trở lại!</h1>
-                                    </div>
-
-                                    @using (Ajax.BeginForm("Login", "Account", new AjaxOptions { HttpMethod = "POST", OnSuccess = "FnSuccess", OnFailure = "FnFail" }, new { @class = "user" }))
-                                    {
-                                        <input type="text" style="display: none;" name="returnUrl" value="@Request.QueryString["ReturnUrl"]">
-
-
-                                        <div class="form-group">
-                                            <input type="email" class="form-control form-control-user"
-                                                   id="UserName" aria-describedby="emailHelp"
-                                                   placeholder="Nhập email đăng nhập..." name="UserName" >
-                                        </div>
-                                        <div class="form-group">
-                                            <input type="password" class="form-control form-control-user"
-                                                   id="Password" placeholder="Mật khẩu" name="Password">
-                                        </div>
-                                        <div class="form-group">
-                                            <div class="custom-control custom-checkbox small">
-                                                <input type="checkbox" class="custom-control-input" id="RememberMe" name="RememberMe">
-                                                <label class="custom-control-label" for="RememberMe">
-                                                    Giữ tôi luôn đăng nhập
-                                                </label>
-                                            </div>
-                                        </div>
-                                        <button class="btn btn-primary btn-user btn-block">
-                                            Đăng Nhập
-                                        </button>
-                                    }
-
-                                    <hr>
-                                    <div class="text-center">
-                                        <a class="small" href="forgot-password.html">Quên Mật Khẩu?</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+        <div class="img">
+            <img src="~/Content/img/undraw_secure_login.svg">
+        </div>
+        <div class="login-content">
+            @using (Ajax.BeginForm("Login", "Account", new AjaxOptions { HttpMethod = "POST", OnSuccess = "FnSuccess", OnFailure = "FnFail" }, new { @class = "user" }))
+            {
+                <img src="~/Content/img/avatar.svg">
+                <h2 class="title">ĐĂNG NHẬP</h2>
+                <div class="input-div one">
+                    <div class="i">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="div">
+                        <h5>Email</h5>
+                        <input type="email" class="input" name="UserName" id="UserName">
                     </div>
                 </div>
+                <div class="input-div pass">
+                    <div class="i">
+                        <i class="fas fa-lock"></i>
+                    </div>
+                    <div class="div">
+                        <h5>Mật khẩu</h5>
+                        <input type="password" class="input" name="Password" id="Password">
+                    </div>
+                </div>
+                <div class="grid">
+                    <label class="checkbox path">
+                        <input type="checkbox" id="RememberMe" name="RememberMe">
+                        <svg viewBox="0 0 21 21">
+                            <path d="M5,10.75 L8.5,14.25 L19.4,2.3 C18.8333333,1.43333333 18.0333333,1 17,1 L4,1 C2.35,1 1,2.35 1,4 L1,17 C1,18.65 2.35,20 4,20 L17,20 C18.65,20 20,18.65 20,17 L20,7.99769186"></path>
+                        </svg>
+                    </label>
+                    <span style="margin-left: -335px">Giữ tôi luôn đăng nhập</span>
+                </div>
 
-            </div>
-
+              
+                <a href="#">Forgot Password?</a>
+                <input type="submit" class="btn" value="Login">
+            }
         </div>
-
     </div>
 
-
-
-    <!-- Bootstrap core JavaScript-->
-    <script src="~/Content/vendor/jquery/jquery.min.js"></script>
-    <script src="~/Content/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-
-    <!-- Core plugin JavaScript-->
-    <script src="~/Content/vendor/jquery-easing/jquery.easing.min.js"></script>
-
-    <script type="text/javascript" src="@Url.Content("~/Scripts/jquery.unobtrusive-ajax.min.js")"></script>
-
+    <script type="text/javascript" src="~/Content/js/main.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.2/jquery.validate.min.js"></script>
-
+    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.12/jquery.validate.unobtrusive.min.js"></script>
-
-    <!-- Custom scripts for all pages-->
-    <script src="~/Content/js/sb-admin-2.min.js"></script>
 
     <script>
 
-        
         function FnSuccess(data) {
-            window.location.replace(data);    
+            window.location.replace(data);
         }
 
         function FnFail(data) {
@@ -154,8 +125,7 @@
                         showConfirmButton: false
                     })
                 },
-                errorClass: "is-invalid",
-                validClass: "is-valid",
+               
                 rules: {
                     UserName: {
                         required: true,
@@ -167,19 +137,18 @@
                 },
                 messages: {
                     UserName: {
-                        required: "Email đăng nhập không được để trống.",
-                        email: "Email đăng nhập không hợp lệ.",
+                        required: "",
+                        email: "",
                     },
                     Password: {
-                        required: "Mật khẩu không được để trống.",
+                        required: "",
                     }
                 }
             });
 
         });
     </script>
-
-
+   
 
 </body>
 

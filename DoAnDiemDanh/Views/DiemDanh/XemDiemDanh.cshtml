@@ -116,6 +116,9 @@
         var datec = `${day}/${month}/${year}`
         var mamh = $("#MaMH").html();
 
+        dt.clear()
+           .draw();
+
         $.get("/DiemDanh/GetSinhVien", { MaMH: mamh, d1: datec }, function (data) {
             $("#data").empty()
             console.log(data)
@@ -160,6 +163,8 @@
             var datec = `${day}/${month}/${year}`
             var mamh = $("#MaMH").html();
 
+            dt.clear()
+                .draw();
             $.get("/DiemDanh/GetSinhVien", { MaMH: mamh, d1: datec }, function (data) {
                 $("#data").empty()
                 console.log(data)

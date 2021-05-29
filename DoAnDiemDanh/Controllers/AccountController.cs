@@ -32,7 +32,6 @@ namespace DoAnDiemDanh.Controllers
         [AllowAnonymous]
         public ActionResult HTTP404()
         {
-           
             return View();
         }
 

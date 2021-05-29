@@ -121,8 +121,14 @@ C:\Users\Admin\source\repos\DoAnDiemDanh\DoAnDiemDanh\bin\sv\ZedGraph.resources.
 C:\Users\Admin\source\repos\DoAnDiemDanh\DoAnDiemDanh\bin\tr\ZedGraph.resources.dll
 C:\Users\Admin\source\repos\DoAnDiemDanh\DoAnDiemDanh\bin\zh-cn\ZedGraph.resources.dll
 C:\Users\Admin\source\repos\DoAnDiemDanh\DoAnDiemDanh\bin\zh-tw\ZedGraph.resources.dll
-C:\Users\Admin\source\repos\DoAnDiemDanh\DoAnDiemDanh\obj\Release\DoAnDiemDanh.csprojAssemblyReference.cache
 C:\Users\Admin\source\repos\DoAnDiemDanh\DoAnDiemDanh\obj\Release\DoAnDiemDanh.csproj.CoreCompileInputs.cache
 C:\Users\Admin\source\repos\DoAnDiemDanh\DoAnDiemDanh\obj\Release\DoAnDiemDanh.csproj.CopyComplete
 C:\Users\Admin\source\repos\DoAnDiemDanh\DoAnDiemDanh\obj\Release\DoAnDiemDanh.dll
 C:\Users\Admin\source\repos\DoAnDiemDanh\DoAnDiemDanh\obj\Release\DoAnDiemDanh.pdb
+C:\Users\Admin\source\repos\DoAnDiemDanh\DoAnDiemDanh\bin\ExcelDataReader.DataSet.dll
+C:\Users\Admin\source\repos\DoAnDiemDanh\DoAnDiemDanh\bin\ExcelDataReader.dll
+C:\Users\Admin\source\repos\DoAnDiemDanh\DoAnDiemDanh\bin\ExcelDataReader.pdb
+C:\Users\Admin\source\repos\DoAnDiemDanh\DoAnDiemDanh\bin\ExcelDataReader.xml
+C:\Users\Admin\source\repos\DoAnDiemDanh\DoAnDiemDanh\bin\ExcelDataReader.DataSet.pdb
+C:\Users\Admin\source\repos\DoAnDiemDanh\DoAnDiemDanh\bin\ExcelDataReader.DataSet.xml
+C:\Users\Admin\source\repos\DoAnDiemDanh\DoAnDiemDanh\obj\Release\DoAnDiemDanh.csprojAssemblyReference.cache

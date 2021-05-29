@@ -138,6 +138,12 @@
         </span>
         <span class="text">Import File Excel</span>
     </button>
+    <button class="btn btn-success btn-icon-split shadow" style="position: absolute; top: 5px; right: 662px" id="stopcam">
+        <span class="icon text-white-50">
+            <i class="fas fa-file-excel"></i>
+        </span>
+        <span class="text">Tắt Server</span>
+    </button>
 </p>
 
 
@@ -401,6 +407,23 @@
             })
         })
     });
+
+    $('#stopcam').click(function () {
+        $.post("http://127.0.0.1:6868/stop", function (data) {
+            $(".close").click();
+            $('#hinhanh_cam').empty();
+            Swal.fire({
+                icon: 'success',
+                title: data,
+                text: `Train ảnh sinh viên thành công`,
+                timer: 2000,
+                showConfirmButton: false
+
+            })
+        })
+    });
+
+
 
     $(document).ready(function () {
         loadDataTable();
