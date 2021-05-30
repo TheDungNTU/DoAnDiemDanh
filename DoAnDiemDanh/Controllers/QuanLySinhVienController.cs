@@ -16,7 +16,7 @@ using ExcelDataReader;
 
 namespace DoAnDiemDanh.Controllers
 {
-    [Authorize(Roles = "Admin, User")]
+    [Authorize(Roles = "Admin, GiangVien")]
     public class QuanLySinhVienController : Controller
     {
         private FACE_RECOGNITIONEntities db = new FACE_RECOGNITIONEntities();
@@ -98,16 +98,36 @@ namespace DoAnDiemDanh.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public JsonResult Create([Bind(Include = "MaSV,TenSV,MaKhoa,MaLop")] SINHVIEN sINHVIEN)
+        public JsonResult Create([Bind(Include = "MaSV,TenSV,Email,DiaChi,SDT,MaKhoa,MaLop")] SINHVIEN sINHVIEN)
         {
             var Khoa = db.KHOAs.Where(_ => _.MaKhoa == sINHVIEN.MaKhoa).Single();
             var Lop = db.LOPs.Where(_ => _.MaLop == sINHVIEN.MaLop).Single();
+
+            var check1 = db.GIANGVIENs.Any(_ => _.Email == sINHVIEN.Email);
+            var check2 = db.SINHVIENs.Any(_ => _.Email == sINHVIEN.Email);
+            if (check1 || check2)
+            {
+                return Json(false, JsonRequestBehavior.AllowGet);
+            }
+
             db.SINHVIENs.Add(sINHVIEN);
-                db.SaveChanges();
+            db.SaveChanges();
+
+            TAIKHOANSINHVIEN tk = new TAIKHOANSINHVIEN();
+            tk.MaQuyen = 3;
+            tk.MatKhau = "sinhvien123";
+            tk.MaSV = sINHVIEN.MaSV;
+            tk.TaiKhoan =sINHVIEN.Email;
+
+            db.TAIKHOANSINHVIENs.Add(tk);
+            db.SaveChanges();
+
             var data = new
             {
                 MaSV = sINHVIEN.MaSV,
                 TenSV = sINHVIEN.TenSV,
+                Email = sINHVIEN.Email,
+                SDT = sINHVIEN.SDT,
                 TenKhoa = Khoa.TenKhoa,
                 TenLop = Lop.TenLop,
             };

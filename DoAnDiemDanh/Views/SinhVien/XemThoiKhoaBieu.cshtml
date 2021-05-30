@@ -1,0 +1,78 @@
+﻿
+@{
+    ViewBag.Title = "XemThoiKhoaBieu";
+    Layout = "~/Views/Layout/_LayoutAdmin.cshtml";
+}
+
+<div class="card shadow mb-4">
+    <div>
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">THỜI KHÓA BIỂU SINH VIÊN: @ViewBag.TenSV</h6>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th style="width: 96.6px">Mã Môn Học</th>
+                        <th>Tên Môn Học</th>
+                        <th style="width: 73.6px">Số tín chỉ</th>
+                        <th style="width: 112.8px;">Thứ</th>
+                        <th>Thời Gian BĐ Dạy</th>
+                        <th>Thời Gian KT Dạy</th>
+                        <th>Ngày BĐ Dạy</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<script>
+
+    $(document).ready(function () {
+
+        var dt = $('#dataTable').DataTable({
+            "language": {
+                "lengthMenu": "Số hàng mỗi trang _MENU_",
+                "search": "Tìm kiếm:",
+                "info": "Tổng số _TOTAL_ hàng",
+                "infoEmpty": "",
+                "infoFiltered": "",
+                "paginate": {
+                    "first": "Đầu",
+                    "last": "Cuối",
+                    "next": "Trang sau",
+                    "previous": "Trang trước"
+                },
+
+            },
+            searching: false,
+            ordering: false
+        });
+
+       
+
+        dt.clear()
+            .draw();
+
+        $.get("/SinhVien/ThoiKhoaBieu", function (data) {
+            console.log(data);
+            $.each(data, function (index, value) {
+                dt.row.add([
+                    value.MaMH,
+                    value.TenMH,
+                    value.SoTC,
+                    value.Thu,
+                    value.ThoiGianBD,
+                    value.ThoiGianKT,
+                    value.NgayBD
+
+                ]).draw(false)
+            })
+        })
+
+    });
+</script>

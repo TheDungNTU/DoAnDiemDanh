@@ -19,7 +19,10 @@ namespace DoAnDiemDanh.Models
         public Nullable<System.TimeSpan> ThoiGianVao { get; set; }
         public Nullable<System.TimeSpan> ThoiGianRa { get; set; }
         public Nullable<bool> TTDD { get; set; }
+        public Nullable<bool> VangCoPhep { get; set; }
+        public Nullable<int> MaKN { get; set; }
     
+        public virtual KHIEUNAI KHIEUNAI { get; set; }
         public virtual DIEMDANH DIEMDANH { get; set; }
         public virtual SINHVIEN SINHVIEN { get; set; }
     }

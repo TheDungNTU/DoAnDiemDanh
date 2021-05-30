@@ -41,15 +41,34 @@ namespace DoAnDiemDanh.Controllers
         {
             ViewBag.returnUrl = returnUrl;
             
-            var tk = db.TAIKHOANs.Where(s => s.TaiKhoan1 == model.UserName && s.MatKhau == model.Password).Single();
-            if(tk != null)
+            var tkgv = db.TAIKHOANGIANGVIENs.Where(s => s.TaiKhoan == model.UserName && s.MatKhau == model.Password).SingleOrDefault();
+            var tksv = db.TAIKHOANSINHVIENs.Where(s => s.TaiKhoan == model.UserName && s.MatKhau == model.Password).SingleOrDefault();
+
+            if(tkgv == null && tksv == null)
+            {
+                var tkgv1 = db.TAIKHOANGIANGVIENs.Where(s => s.TaiKhoan == model.UserName && s.MatKhau == model.Password).Single();
+                var tksv1 = db.TAIKHOANSINHVIENs.Where(s => s.TaiKhoan == model.UserName && s.MatKhau == model.Password).Single();
+            }
+
+            else if (tkgv != null)
             {
                 var gv = db.GIANGVIENs.Where(s => s.Email == model.UserName).SingleOrDefault();
-           
+                var tk = db.TAIKHOANGIANGVIENs.Where(s => s.TaiKhoan == model.UserName).SingleOrDefault();
+                var str = "";
+                if(tk.QUYEN.MaQuyen == 1)
+                {
+                    str = $"{gv.MaGV},{gv.TenGV},{"Admin"}";
+                }
+                else
+                {
+                    str = $"{gv.MaGV},{gv.TenGV},{"GV"}";
+                }
+                
                 if (model.RememberMe)
                 {
+                    
                     var authTicket = new FormsAuthenticationTicket(2, model.UserName, DateTime.Now, DateTime.Now.AddMinutes(30),
-                    false, gv.TenGV);
+                    false, str);
 
                     var authCookie = new HttpCookie(FormsAuthentication.FormsCookieName,FormsAuthentication.Encrypt(authTicket))
                     {
@@ -62,7 +81,7 @@ namespace DoAnDiemDanh.Controllers
                 else
                 {
                     var authTicket = new FormsAuthenticationTicket(2, model.UserName, DateTime.Now, DateTime.Now.AddMinutes(30),
-                    false, gv.TenGV);
+                    false, str);
 
                     var authCookie = new HttpCookie(FormsAuthentication.FormsCookieName, FormsAuthentication.Encrypt(authTicket))
                     {
@@ -83,10 +102,52 @@ namespace DoAnDiemDanh.Controllers
                     return Json(Url.Action("index","DiemDanh"), JsonRequestBehavior.AllowGet);
                 }
             }
+            else if(tksv != null)
+            {
+                var sv = db.SINHVIENs.Where(s => s.Email == model.UserName).SingleOrDefault();
+                var str = $"{sv.MaSV},{sv.TenSV},{"SV"}";
+                if (model.RememberMe)
+                {
+
+                    var authTicket = new FormsAuthenticationTicket(2, model.UserName, DateTime.Now, DateTime.Now.AddMinutes(30),
+                    false, str);
+
+                    var authCookie = new HttpCookie(FormsAuthentication.FormsCookieName, FormsAuthentication.Encrypt(authTicket))
+                    {
+                        HttpOnly = true,
+                        Expires = authTicket.Expiration
+                    };
+
+                    Response.AppendCookie(authCookie);
+                }
+                else
+                {
+                    var authTicket = new FormsAuthenticationTicket(2, model.UserName, DateTime.Now, DateTime.Now.AddMinutes(30),
+                    false, str);
+
+                    var authCookie = new HttpCookie(FormsAuthentication.FormsCookieName, FormsAuthentication.Encrypt(authTicket))
+                    {
+                        HttpOnly = true,
+                    };
+
+                    Response.AppendCookie(authCookie);
+                }
+
+                if (Url.IsLocalUrl(returnUrl) && returnUrl.Length > 1 && returnUrl.StartsWith("/")
+                    && !returnUrl.StartsWith("//") && !returnUrl.StartsWith("/\\"))
+                {
+                    return Json(returnUrl, JsonRequestBehavior.AllowGet);
+                }
+                else
+                {
+                    return Json(Url.Action("XemDiemDanh", "SinhVien"), JsonRequestBehavior.AllowGet);
+                }
+            }
             else
             {
                 return Json(Url.Action("login", "Account"), JsonRequestBehavior.AllowGet);
-            }                      
+            }
+            return Json(Url.Action("login", "Account"), JsonRequestBehavior.AllowGet);
         }
 
         public ActionResult SignOut()

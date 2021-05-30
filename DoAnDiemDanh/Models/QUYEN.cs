@@ -17,7 +17,8 @@ namespace DoAnDiemDanh.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public QUYEN()
         {
-            this.TAIKHOANs = new HashSet<TAIKHOAN>();
+            this.TAIKHOANGIANGVIENs = new HashSet<TAIKHOANGIANGVIEN>();
+            this.TAIKHOANSINHVIENs = new HashSet<TAIKHOANSINHVIEN>();
         }
     
         public int MaQuyen { get; set; }
@@ -25,6 +26,8 @@ namespace DoAnDiemDanh.Models
         public string GhiChu { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<TAIKHOAN> TAIKHOANs { get; set; }
+        public virtual ICollection<TAIKHOANGIANGVIEN> TAIKHOANGIANGVIENs { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<TAIKHOANSINHVIEN> TAIKHOANSINHVIENs { get; set; }
     }
 }

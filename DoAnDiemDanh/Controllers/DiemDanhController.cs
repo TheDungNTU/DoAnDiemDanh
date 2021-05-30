@@ -7,7 +7,7 @@ using System.Web.Mvc;
 
 namespace DoAnDiemDanh.Controllers
 {
-    [Authorize(Roles = "Admin, User")]
+    [Authorize(Roles = "Admin, GiangVien")]
     public class DiemDanhController : Controller
     {
         

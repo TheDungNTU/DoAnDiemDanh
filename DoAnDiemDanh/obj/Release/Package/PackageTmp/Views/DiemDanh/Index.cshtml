@@ -1,0 +1,32 @@
+﻿@using DoAnDiemDanh.Models
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Layout/_LayoutAdmin.cshtml";
+    IEnumerable<MONHOC> MONHOC = (IEnumerable<MONHOC>)ViewBag.MonHoc;
+}
+
+<div class="row">
+    @foreach (var item in MONHOC)
+    {
+        <div class="col-lg-5">
+            <!-- Basic Card Example -->
+            <div class=" mb-4">
+                <div class="courses-container">
+                    <div class="course">
+                        <div class="course-info">
+                            <div class="progress-container">
+                                <span class="progress-text">
+                                    From: @item.ThoiGianBDGD - To: @item.ThoiGianKTGD
+                                </span>
+                            </div>
+                            <h6>GV: @item.GIANGVIEN.TenGV</h6>
+                            <h2>@item.TenMH</h2>
+                            <a class="btn1" href="@Url.Action("XemDiemDanh", "DiemDanh", new { @MaMH = item.MaMH })">Điểm danh</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+

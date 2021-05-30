@@ -17,6 +17,7 @@
         <li class="breadcrumb-item " aria-current="page">Quản lý khoa</li>
     </ol>
 </nav>
+
 <div>
     @using (Ajax.BeginForm("Create", "QuanLyKhoa", new AjaxOptions { HttpMethod = "POST", OnSuccess = "FnSuccess" }, new { @class = "formKhoa" }))
     {
@@ -43,6 +44,9 @@
             <h6 class="m-0 font-weight-bold text-primary">DANH SÁCH TẤT CẢ KHOA</h6>
         </div>
         <div class="card-body" id="data">
+            <div class="filter">
+               <input type="text" class="form-control form-control-sm" id="Filter_QLTenKhoa" name="Filter_QLTenKhoa" placeholder="Tìm kiếm..."/>
+            </div>
             <div class="table-responsive">
                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                     <thead>
@@ -81,6 +85,25 @@
     var dt;
 
     function loadDataTable() {
+        function removeAccents(str) {
+            return str.normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '')
+                .replace(/đ/g, 'd').replace(/Đ/g, 'D');
+        }
+
+        $.fn.dataTable.ext.search.push(
+            function (settings, data, dataIndex) {
+
+                var TenKhoa = removeAccents($('#Filter_QLTenKhoa').val()).toLowerCase();
+                var Data_TenKhoa = removeAccents(data[1]).toLowerCase();
+                   
+                if (Data_TenKhoa.includes(TenKhoa)) {
+                    return true;
+                }
+                return false;
+            }
+        );
+
         dt = $("#dataTable").DataTable({
             "language": {
                 "lengthMenu": "Số hàng mỗi trang _MENU_",
@@ -96,8 +119,15 @@
                 },
                 searchPlaceholder: "Nhập tên khoa...",
                 zeroRecords: "Không tìm thấy kết quả",
-            }
+            },
+           
         });
+
+        $('#Filter_QLTenKhoa').on('input', function (e) {
+            dt.draw();
+        });
+
+       
     }
 
     function FnSuccess(data) {
@@ -161,6 +191,10 @@
 
     $(document).ready(function () {
         loadDataTable();
+
+      
+
+      
 
         jQuery.validator.addMethod("NotAllowNumber", function (value, element) {
             return this.optional(element) || /^([^0-9]*)$/.test(value);

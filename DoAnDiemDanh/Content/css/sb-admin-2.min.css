@@ -526,6 +526,73 @@ pre {
     }
 }
 
+.ndbd{
+    width: 600px;
+}
+.formthemsv {
+    width: 568px;
+    
+}
+
+.filter {
+    position: absolute;
+    top: 72px;
+    right: 20px;
+    z-index: 999;
+}
+
+.filter1 {
+    position: absolute;
+    top: 76px;
+    right: 24px;
+    z-index: 999;
+}
+
+@media (max-width:480px) {
+    .ndbd {
+        width: 600px;
+        transform: scale(0.8);
+        margin: 0px;
+    }
+    #bieudo {
+        width: 99%;
+        margin-bottom: 7px;
+    }
+
+    #export1 {
+        width: 99%;
+        margin-bottom: 7px;
+    }
+
+
+    #export2 {
+        width: 99%;
+        margin-bottom: 7px;
+    }
+
+    .formthemsv {
+        width: 600px;
+        transform: scale(0.8);
+        margin: 0px;
+    }
+    #formchupanh {
+        transform: scale(0.4);
+        margin: -103px -208px;
+    }
+
+    .filter {
+        top: 111px;
+        right: 22px;
+    }
+
+    .filter1 {
+        position: absolute;
+        top: 114px;
+        right: 20px;
+        z-index: 999;
+    }
+}
+
 @media (min-width:768px) {
     .container, .container-md, .container-sm {
         max-width: 720px
@@ -11484,3 +11551,5 @@ footer.sticky-footer {
 body.sidebar-toggled footer.sticky-footer {
     width: 100%
 }
+
+@media 

@@ -1,0 +1,78 @@
+﻿
+
+@{
+    ViewBag.Title = "GuiKhieuNai";
+    Layout = "~/Views/Layout/_LayoutAdmin.cshtml";
+}
+
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="@Url.Action("XemDiemDanh","SinhVien")">Trang Chủ</a></li>
+        <li class="breadcrumb-item"><a href="@Request.UrlReferrer.ToString()">Xem Điểm Danh</a></li>
+        <li class="breadcrumb-item " aria-current="page">Gửi Khiếu Nại</li>
+    </ol>
+</nav>
+
+
+<div class="card shadow mb-4">
+    <div>
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Gửi Khiếu Nại Cho Môn Học</h6>
+        </div>
+    </div>
+    <div class="card-body">
+        @using (Html.BeginForm("GuiKhieuNai", "SinhVien", FormMethod.Post, new {enctype = "multipart/form-data"}))
+        {
+            
+           
+        <div class="form-horizontal p-3 mb-2 ">
+
+            <input id="MaDD" name="MaDD" type="text" value="@ViewBag.MaDD" class="d-none">
+            <input id="MaSV" name="MaSV" type="text" value="@ViewBag.MaSV" class="d-none">
+            <input id="MaMH" name="MaMH" type="text" value="@ViewBag.MaMH" class="d-none">
+
+            <div class="form-group">
+                <label class="control-label col-md-12" style="font-size: 17px; font-weight:bold">Nội Dung Khiếu Nại</label>
+                <div class="col-md-6">
+                    <textarea class="form-control text-box single-line" id="NoiDung" name="NoiDung" rows="6" required></textarea>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label col-md-12" style="font-size: 17px; font-weight:bold">Ảnh Khiếu Nại</label>
+                <div class="col-md-6">
+                    <input type="file" name="Avatar" accept="image/*" required id="upload" onchange="loadFile(event)" />
+                </div>
+            </div>
+            <div style="position: absolute; top: 81px; right: 99px; height: 336px;overflow: hidden;">
+                <img alt="avatar" style="width: 500px; height:auto; z-index: -999;" id="output" src="~/Content/img/undraw_secure_login.svg" />
+            </div>
+
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" value="Lưu Lại" class="btn btn-success btn-icon-split p-2 border" />
+                </div>
+            </div>
+        </div>
+        }
+    </div>
+</div>
+
+
+
+
+<div>
+    <a href="@Request.UrlReferrer.ToString()">Quay lại danh sách</a>
+</div>
+
+<script>
+    var loadFile = function (event) {
+        var image = document.getElementById('output');
+        image.src = URL.createObjectURL(event.target.files[0])
+    }
+    $(document).ready(function () {
+       
+
+    })
+</script>

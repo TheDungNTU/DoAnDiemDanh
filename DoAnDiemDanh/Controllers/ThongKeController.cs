@@ -13,7 +13,7 @@ using System.Collections.Generic;
 
 namespace DoAnDiemDanh.Controllers
 {
-    [Authorize(Roles = "Admin, User")]
+    [Authorize(Roles = "Admin, GiangVien")]
     public class ThongKeController : Controller
     {
         private FACE_RECOGNITIONEntities db = new FACE_RECOGNITIONEntities();

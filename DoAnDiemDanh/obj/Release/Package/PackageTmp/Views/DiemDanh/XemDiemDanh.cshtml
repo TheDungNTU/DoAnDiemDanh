@@ -1,0 +1,226 @@
+﻿@using DoAnDiemDanh.Models
+@{
+    ViewBag.Title = "XemDiemDanh";
+    Layout = "~/Views/Layout/_LayoutAdmin.cshtml";
+    IEnumerable<MONHOC> MONHOC = (IEnumerable<MONHOC>)ViewBag.MonHoc;
+}
+
+<div class="card shadow mb-4">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered" width="100%" cellspacing="0" id="dataTableMH">
+                <thead>
+                    <tr>
+                        <th>Tên Môn Học</th>
+                        <th>Số Tín Chỉ</th>
+                        <th>Ngày Bắt Đầu</th>
+                        <th>Ngày Kết Thúc</th>
+                        <th>Thời gian giảng dạy</th>
+                        <th>Giảng Viên Dạy</th>
+                    </tr>
+                </thead>
+                <tbody id="data_table">
+                    @foreach (var item in MONHOC)
+                    {
+                    <tr>
+                        
+                        <td>
+                            <span style="display: none;" id="MaMH">
+                                @Html.DisplayFor(modelItem => item.MaMH)
+                            </span>
+                            @Html.DisplayFor(modelItem => item.TenMH)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.SoTC)
+                        </td>
+                        <td>
+                            @Convert.ToDateTime(item.NgayBD).ToString("dd/MM/yyyy")
+                        </td>
+                        <td>
+                            @Convert.ToDateTime(item.NgayKT).ToString("dd/MM/yyyy")
+                        </td>
+                        <td>
+                            @{
+                                TimeSpan a = (TimeSpan)item.ThoiGianKTGD - (TimeSpan)@item.ThoiGianBDGD;
+                                var s = a.Hours + " Giờ " + a.Minutes + " Phút";
+                            }
+                            @s
+                        </td>
+
+                        <td>
+                            @Html.DisplayFor(modelItem => item.GIANGVIEN.TenGV)
+                        </td>
+                    </tr>
+                    }
+                </tbody>
+            </table>
+            <div class="form-group" style="margin-left: -9px;">
+                <div class="col-md-4">
+                    <input class="form-control text-box single-line date" data-val="true" data-val-date="The field NgayBD must be a date." id="Ngay" name="Ngay" type="date" value="@DateTime.Now.ToString("yyyy-MM-dd")" max="@DateTime.Now.ToString("yyyy-MM-dd")" required>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card shadow mb-4">
+    <div>
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">DANH SÁCH SINH VIÊN</h6>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th style="width:30px;">STT</th>
+                        <th style="width:100px;">Mã sinh viên</th>
+                        <th>Tên Sinh Viên</th>
+                        <th style="width: 73px;">Lớp</th>
+                        <th>Điểm danh đầu giờ</th>
+                        <th>Điểm danh cuối giờ</th>
+                        <th>Trạng Thái</th>
+                    </tr>
+                </thead>
+                <tbody id="data">
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        var dt_mh = $("#dataTableMH").DataTable({
+             searching: false, paging: false, info: false 
+        })
+        var dt = $('#dataTable').DataTable({  
+            "language": {
+                "lengthMenu": "Số hàng mỗi trang _MENU_",
+                "search": "Tìm kiếm:",
+                "info": "Tổng số _TOTAL_ hàng",
+                "infoEmpty": "",
+                "infoFiltered": "",
+                "paginate": {
+                    "first": "Đầu",
+                    "last": "Cuối",
+                    "next": "Trang sau",
+                    "previous": "Trang trước"
+                },
+                searchPlaceholder: "Nhập tên sinh viên...",
+                zeroRecords: "Không tìm thấy kết quả"
+            }
+        });
+       
+
+        if ($(window).width() < 380) {
+
+            dt_mh.column(1).visible(false,false);
+            dt_mh.column(2).visible(false,false);
+            dt_mh.column(3).visible(false, false);
+            dt_mh.column(4).visible(false,false);
+            dt_mh.columns.adjust().draw(false)
+
+            dt.column(0).visible(false, false);
+            dt.column(3).visible(false, false);
+            dt.column(4).visible(false, false);
+            dt.column(5).visible(false, false);
+            dt.columns.adjust().draw(false)
+
+        }
+
+        var date = new Date($('#Ngay').val());
+        var day = ("0" + date.getDate()).slice(-2);
+        var month = ("0" + (date.getMonth() + 1)).slice(-2)
+        var year = date.getFullYear();
+        var datec = `${day}/${month}/${year}`
+        var mamh = $("#MaMH").html();
+
+        dt.clear()
+            .draw();
+
+        $.get("/DiemDanh/GetSinhVien", { MaMH: mamh, d1: datec }, function (data) {
+            $("#data").empty()
+            console.log(data)
+            var i = 1;
+            $.each(data, function (index, row) {
+                var tt = (row.TrangThai) ? "Có mặt" : "Vắng mặt";
+                var thoigianvao = "Chưa có";
+                var thoigianra = "Chưa có";
+
+                if (row.ThoiGianVao != null) {
+                    var hours = ("0" + row.ThoiGianVao.Hours).slice(-2);
+                    var minutes = ("0" + row.ThoiGianVao.Minutes).slice(-2);
+                    var seconds = ("0" + row.ThoiGianVao.Seconds).slice(-2);
+                    thoigianvao = `${hours}:${minutes}:${seconds}`
+                }
+
+                if (row.ThoiGianRa != null) {
+                    var hours = ("0" + row.ThoiGianRa.Hours).slice(-2);
+                    var minutes = ("0" + row.ThoiGianRa.Minutes).slice(-2);
+                    var seconds = ("0" + row.ThoiGianRa.Seconds).slice(-2);
+                    thoigianra = `${hours}:${minutes}:${seconds}`
+                }
+
+                dt.row.add([
+                    index + 1,
+                    row.MaSV,
+                    row.TenSV,
+                    row.TenLop,
+                    thoigianvao,
+                    thoigianra,
+                    tt
+                ]).draw(false)
+            })
+        })
+
+
+        $('.date').change(function () {
+            var date = new Date($('#Ngay').val());
+            var day = ("0" + date.getDate()).slice(-2);
+            var month = ("0" + (date.getMonth() + 1)).slice(-2)
+            var year = date.getFullYear();
+            var datec = `${day}/${month}/${year}`
+            var mamh = $("#MaMH").html();
+
+            dt.clear()
+                .draw();
+            $.get("/DiemDanh/GetSinhVien", { MaMH: mamh, d1: datec }, function (data) {
+                $("#data").empty()
+                console.log(data)
+                var i = 1;
+                $.each(data, function (index, row) {
+                    var tt = (row.TrangThai) ? "Có mặt" : "Vắng mặt";
+                    var thoigianvao = "Chưa có";
+                    var thoigianra = "Chưa có";
+
+                    if (row.ThoiGianVao != null) {
+                        var hours = ("0" + row.ThoiGianVao.Hours);
+                        var minutes = ("0" + row.ThoiGianVao.Minutes).slice(-2);
+                        var seconds = ("0" + row.ThoiGianVao.Seconds).slice(-2);
+                        thoigianvao = `${hours}:${minutes}:${seconds}`
+                    }
+
+                    if (row.ThoiGianRa != null) {
+                        var hours = ("0" + row.ThoiGianRa.Hours).slice(-2);
+                        var minutes = ("0" + row.ThoiGianRa.Minutes).slice(-2);
+                        var seconds = ("0" + row.ThoiGianRa.Seconds).slice(-2);
+                        thoigianvao = `${hours}:${minutes}:${seconds}`
+                    }
+
+               
+                    dt.row.add([
+                        index + 1,
+                        row.MaSV,
+                        row.TenSV,
+                        row.TenLop,
+                        thoigianvao,
+                        thoigianra,
+                        tt   
+                    ]).draw(false)
+                })
+            })
+        })
+    });
+</script>

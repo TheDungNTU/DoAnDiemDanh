@@ -10,6 +10,8 @@
     <Property Name="ThoiGianVao" Type="time" Precision="7" />
     <Property Name="ThoiGianRa" Type="time" Precision="7" />
     <Property Name="TTDD" Type="bit" />
+    <Property Name="VangCoPhep" Type="bit" />
+    <Property Name="MaKN" Type="int" />
   </EntityType>
   <EntityType Name="DIEMDANH">
     <Key>
@@ -45,6 +47,16 @@
     <Property Name="TenHA" Type="varchar" MaxLength="500" />
     <Property Name="BASE64" Type="varchar(max)" />
     <Property Name="MaSV" Type="int" />
+  </EntityType>
+  <EntityType Name="KHIEUNAI">
+    <Key>
+      <PropertyRef Name="MaKN" />
+    </Key>
+    <Property Name="MaKN" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="TenHA" Type="varchar" MaxLength="500" />
+    <Property Name="NoiDung" Type="nvarchar(max)" />
+    <Property Name="NgayGui" Type="date" />
+    <Property Name="ThoiGianGui" Type="datetime" />
   </EntityType>
   <EntityType Name="KHOA">
     <Key>
@@ -97,6 +109,9 @@
     </Key>
     <Property Name="MaSV" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="TenSV" Type="nvarchar" MaxLength="200" />
+    <Property Name="Email" Type="varchar" MaxLength="200" />
+    <Property Name="DiaChi" Type="nvarchar" MaxLength="200" />
+    <Property Name="SDT" Type="varchar" MaxLength="200" />
     <Property Name="MaKhoa" Type="int" />
     <Property Name="MaLop" Type="int" />
   </EntityType>
@@ -108,13 +123,22 @@
     <Property Name="MaSV" Type="int" Nullable="false" />
     <Property Name="MaMH" Type="int" Nullable="false" />
   </EntityType>
-  <EntityType Name="TAIKHOAN">
+  <EntityType Name="TAIKHOANGIANGVIEN">
     <Key>
       <PropertyRef Name="TaiKhoan" />
     </Key>
     <Property Name="TaiKhoan" Type="varchar" MaxLength="500" Nullable="false" />
     <Property Name="MatKhau" Type="varchar" MaxLength="100" />
     <Property Name="MaGV" Type="int" />
+    <Property Name="MaQuyen" Type="int" />
+  </EntityType>
+  <EntityType Name="TAIKHOANSINHVIEN">
+    <Key>
+      <PropertyRef Name="TaiKhoan" />
+    </Key>
+    <Property Name="TaiKhoan" Type="varchar" MaxLength="500" Nullable="false" />
+    <Property Name="MatKhau" Type="varchar" MaxLength="100" />
+    <Property Name="MaSV" Type="int" />
     <Property Name="MaQuyen" Type="int" />
   </EntityType>
   <EntityType Name="THOIKHOABIEU">
@@ -129,7 +153,19 @@
     <Property Name="ThuSau" Type="bit" />
     <Property Name="ThuBay" Type="bit" />
   </EntityType>
-  <Association Name="FK__DIEMDANH_T__MaSV__6C190EBB">
+  <Association Name="FK__CTDD__MaKN__31EC6D26">
+    <End Role="KHIEUNAI" Type="Self.KHIEUNAI" Multiplicity="0..1" />
+    <End Role="CTDD" Type="Self.CTDD" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="KHIEUNAI">
+        <PropertyRef Name="MaKN" />
+      </Principal>
+      <Dependent Role="CTDD">
+        <PropertyRef Name="MaKN" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__DIEMDANH_T__MaSV__37A5467C">
     <End Role="SINHVIEN" Type="Self.SINHVIEN" Multiplicity="0..1">
       <OnDelete Action="Cascade" />
     </End>
@@ -143,38 +179,58 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="FK__TAIKHOAN__MaGV__1A14E395">
-    <End Role="GIANGVIEN" Type="Self.GIANGVIEN" Multiplicity="0..1">
-      <OnDelete Action="Cascade" />
-    </End>
-    <End Role="TAIKHOAN" Type="Self.TAIKHOAN" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="GIANGVIEN">
-        <PropertyRef Name="MaGV" />
-      </Principal>
-      <Dependent Role="TAIKHOAN">
-        <PropertyRef Name="MaGV" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
-  <Association Name="FK__TAIKHOAN__MaQuye__1B0907CE">
-    <End Role="QUYEN" Type="Self.QUYEN" Multiplicity="0..1">
-      <OnDelete Action="Cascade" />
-    </End>
-    <End Role="TAIKHOAN" Type="Self.TAIKHOAN" Multiplicity="*" />
+  <Association Name="FK__TAIKHOANG__MaQuy__1B0907CE">
+    <End Role="QUYEN" Type="Self.QUYEN" Multiplicity="0..1" />
+    <End Role="TAIKHOANGIANGVIEN" Type="Self.TAIKHOANGIANGVIEN" Multiplicity="*" />
     <ReferentialConstraint>
       <Principal Role="QUYEN">
         <PropertyRef Name="MaQuyen" />
       </Principal>
-      <Dependent Role="TAIKHOAN">
+      <Dependent Role="TAIKHOANGIANGVIEN">
         <PropertyRef Name="MaQuyen" />
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="FK_CTDD_DD">
-    <End Role="DIEMDANH" Type="Self.DIEMDANH" Multiplicity="1">
+  <Association Name="FK__TAIKHOANGI__MaGV__1A14E395">
+    <End Role="GIANGVIEN" Type="Self.GIANGVIEN" Multiplicity="0..1" />
+    <End Role="TAIKHOANGIANGVIEN" Type="Self.TAIKHOANGIANGVIEN" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="GIANGVIEN">
+        <PropertyRef Name="MaGV" />
+      </Principal>
+      <Dependent Role="TAIKHOANGIANGVIEN">
+        <PropertyRef Name="MaGV" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__TAIKHOANS__MaQuy__47DBAE45">
+    <End Role="QUYEN" Type="Self.QUYEN" Multiplicity="0..1" />
+    <End Role="TAIKHOANSINHVIEN" Type="Self.TAIKHOANSINHVIEN" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="QUYEN">
+        <PropertyRef Name="MaQuyen" />
+      </Principal>
+      <Dependent Role="TAIKHOANSINHVIEN">
+        <PropertyRef Name="MaQuyen" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__TAIKHOANSI__MaSV__46E78A0C">
+    <End Role="SINHVIEN" Type="Self.SINHVIEN" Multiplicity="0..1">
       <OnDelete Action="Cascade" />
     </End>
+    <End Role="TAIKHOANSINHVIEN" Type="Self.TAIKHOANSINHVIEN" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="SINHVIEN">
+        <PropertyRef Name="MaSV" />
+      </Principal>
+      <Dependent Role="TAIKHOANSINHVIEN">
+        <PropertyRef Name="MaSV" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_CTDD_DD">
+    <End Role="DIEMDANH" Type="Self.DIEMDANH" Multiplicity="1" />
     <End Role="CTDD" Type="Self.CTDD" Multiplicity="*" />
     <ReferentialConstraint>
       <Principal Role="DIEMDANH">
@@ -212,9 +268,7 @@
     </ReferentialConstraint>
   </Association>
   <Association Name="FK_GIANGVIEN_KHOA">
-    <End Role="KHOA" Type="Self.KHOA" Multiplicity="0..1">
-      <OnDelete Action="Cascade" />
-    </End>
+    <End Role="KHOA" Type="Self.KHOA" Multiplicity="0..1" />
     <End Role="GIANGVIEN" Type="Self.GIANGVIEN" Multiplicity="*" />
     <ReferentialConstraint>
       <Principal Role="KHOA">
@@ -240,9 +294,7 @@
     </ReferentialConstraint>
   </Association>
   <Association Name="FK_LOP_KHOA">
-    <End Role="KHOA" Type="Self.KHOA" Multiplicity="0..1">
-      <OnDelete Action="Cascade" />
-    </End>
+    <End Role="KHOA" Type="Self.KHOA" Multiplicity="0..1" />
     <End Role="LOP" Type="Self.LOP" Multiplicity="*" />
     <ReferentialConstraint>
       <Principal Role="KHOA">
@@ -254,9 +306,7 @@
     </ReferentialConstraint>
   </Association>
   <Association Name="FK_MONHOC_GIANGVIEN">
-    <End Role="GIANGVIEN" Type="Self.GIANGVIEN" Multiplicity="0..1">
-      <OnDelete Action="Cascade" />
-    </End>
+    <End Role="GIANGVIEN" Type="Self.GIANGVIEN" Multiplicity="0..1" />
     <End Role="MONHOC" Type="Self.MONHOC" Multiplicity="*" />
     <ReferentialConstraint>
       <Principal Role="GIANGVIEN">
@@ -268,9 +318,7 @@
     </ReferentialConstraint>
   </Association>
   <Association Name="FK_SINHVIEN_KHOA">
-    <End Role="KHOA" Type="Self.KHOA" Multiplicity="0..1">
-      <OnDelete Action="Cascade" />
-    </End>
+    <End Role="KHOA" Type="Self.KHOA" Multiplicity="0..1" />
     <End Role="SINHVIEN" Type="Self.SINHVIEN" Multiplicity="*" />
     <ReferentialConstraint>
       <Principal Role="KHOA">
@@ -294,9 +342,7 @@
     </ReferentialConstraint>
   </Association>
   <Association Name="FK_SINHVIEN_MONHOC_1">
-    <End Role="SINHVIEN" Type="Self.SINHVIEN" Multiplicity="1">
-      <OnDelete Action="Cascade" />
-    </End>
+    <End Role="SINHVIEN" Type="Self.SINHVIEN" Multiplicity="1" />
     <End Role="SINHVIEN_MONHOC" Type="Self.SINHVIEN_MONHOC" Multiplicity="*" />
     <ReferentialConstraint>
       <Principal Role="SINHVIEN">
@@ -339,6 +385,7 @@
     <EntitySet Name="DIEMDANH_T" EntityType="Self.DIEMDANH_T" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="GIANGVIEN" EntityType="Self.GIANGVIEN" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="HINHANH" EntityType="Self.HINHANH" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="KHIEUNAI" EntityType="Self.KHIEUNAI" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="KHOA" EntityType="Self.KHOA" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="LOP" EntityType="Self.LOP" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="MONHOC" EntityType="Self.MONHOC" Schema="dbo" store:Type="Tables" />
@@ -346,19 +393,32 @@
     <EntitySet Name="QUYEN" EntityType="Self.QUYEN" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="SINHVIEN" EntityType="Self.SINHVIEN" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="SINHVIEN_MONHOC" EntityType="Self.SINHVIEN_MONHOC" Schema="dbo" store:Type="Tables" />
-    <EntitySet Name="TAIKHOAN" EntityType="Self.TAIKHOAN" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="TAIKHOANGIANGVIEN" EntityType="Self.TAIKHOANGIANGVIEN" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="TAIKHOANSINHVIEN" EntityType="Self.TAIKHOANSINHVIEN" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="THOIKHOABIEU" EntityType="Self.THOIKHOABIEU" Schema="dbo" store:Type="Tables" />
-    <AssociationSet Name="FK__DIEMDANH_T__MaSV__6C190EBB" Association="Self.FK__DIEMDANH_T__MaSV__6C190EBB">
+    <AssociationSet Name="FK__CTDD__MaKN__31EC6D26" Association="Self.FK__CTDD__MaKN__31EC6D26">
+      <End Role="KHIEUNAI" EntitySet="KHIEUNAI" />
+      <End Role="CTDD" EntitySet="CTDD" />
+    </AssociationSet>
+    <AssociationSet Name="FK__DIEMDANH_T__MaSV__37A5467C" Association="Self.FK__DIEMDANH_T__MaSV__37A5467C">
       <End Role="SINHVIEN" EntitySet="SINHVIEN" />
       <End Role="DIEMDANH_T" EntitySet="DIEMDANH_T" />
     </AssociationSet>
-    <AssociationSet Name="FK__TAIKHOAN__MaGV__1A14E395" Association="Self.FK__TAIKHOAN__MaGV__1A14E395">
-      <End Role="GIANGVIEN" EntitySet="GIANGVIEN" />
-      <End Role="TAIKHOAN" EntitySet="TAIKHOAN" />
-    </AssociationSet>
-    <AssociationSet Name="FK__TAIKHOAN__MaQuye__1B0907CE" Association="Self.FK__TAIKHOAN__MaQuye__1B0907CE">
+    <AssociationSet Name="FK__TAIKHOANG__MaQuy__1B0907CE" Association="Self.FK__TAIKHOANG__MaQuy__1B0907CE">
       <End Role="QUYEN" EntitySet="QUYEN" />
-      <End Role="TAIKHOAN" EntitySet="TAIKHOAN" />
+      <End Role="TAIKHOANGIANGVIEN" EntitySet="TAIKHOANGIANGVIEN" />
+    </AssociationSet>
+    <AssociationSet Name="FK__TAIKHOANGI__MaGV__1A14E395" Association="Self.FK__TAIKHOANGI__MaGV__1A14E395">
+      <End Role="GIANGVIEN" EntitySet="GIANGVIEN" />
+      <End Role="TAIKHOANGIANGVIEN" EntitySet="TAIKHOANGIANGVIEN" />
+    </AssociationSet>
+    <AssociationSet Name="FK__TAIKHOANS__MaQuy__47DBAE45" Association="Self.FK__TAIKHOANS__MaQuy__47DBAE45">
+      <End Role="QUYEN" EntitySet="QUYEN" />
+      <End Role="TAIKHOANSINHVIEN" EntitySet="TAIKHOANSINHVIEN" />
+    </AssociationSet>
+    <AssociationSet Name="FK__TAIKHOANSI__MaSV__46E78A0C" Association="Self.FK__TAIKHOANSI__MaSV__46E78A0C">
+      <End Role="SINHVIEN" EntitySet="SINHVIEN" />
+      <End Role="TAIKHOANSINHVIEN" EntitySet="TAIKHOANSINHVIEN" />
     </AssociationSet>
     <AssociationSet Name="FK_CTDD_DD" Association="Self.FK_CTDD_DD">
       <End Role="DIEMDANH" EntitySet="DIEMDANH" />

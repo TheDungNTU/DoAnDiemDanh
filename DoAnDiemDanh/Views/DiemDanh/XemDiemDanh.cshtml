@@ -8,7 +8,7 @@
 <div class="card shadow mb-4">
     <div class="card-body">
         <div class="table-responsive">
-            <table class="table table-bordered" width="100%" cellspacing="0">
+            <table class="table table-bordered" width="100%" cellspacing="0" id="dataTableMH">
                 <thead>
                     <tr>
                         <th>Tên Môn Học</th>
@@ -23,10 +23,11 @@
                     @foreach (var item in MONHOC)
                     {
                     <tr>
-                        <td style="display: none;" id="MaMH">
-                            @Html.DisplayFor(modelItem => item.MaMH)
-                        </td>
+                        
                         <td>
+                            <span style="display: none;" id="MaMH">
+                                @Html.DisplayFor(modelItem => item.MaMH)
+                            </span>
                             @Html.DisplayFor(modelItem => item.TenMH)
                         </td>
                         <td>
@@ -69,6 +70,9 @@
         </div>
     </div>
     <div class="card-body">
+        <div class="filter">
+            <input type="text" class="form-control form-control-sm" id="Filter_QLTenSV" name="Filter_QLTenSV" placeholder="Nhập tên sinh viên..." />
+        </div>
         <div class="table-responsive">
             <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                 <thead>
@@ -91,7 +95,30 @@
 
 <script>
     $(document).ready(function () {
-        var dt = $('#dataTable').DataTable({
+        var dt_mh = $("#dataTableMH").DataTable({
+             searching: false, paging: false, info: false 
+        })
+
+        function removeAccents(str) {
+            return str.normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '')
+                .replace(/đ/g, 'd').replace(/Đ/g, 'D');
+        }
+
+        $.fn.dataTable.ext.search.push(
+            function (settings, data, dataIndex) {
+
+                var TenSV = removeAccents($('#Filter_QLTenSV').val()).toLowerCase();
+                var Data_TenSV = removeAccents(data[2]).toLowerCase();
+
+                if (Data_TenSV.includes(TenSV)) {
+                    return true;
+                }
+                return false;
+            }
+        );
+
+        var dt = $('#dataTable').DataTable({  
             "language": {
                 "lengthMenu": "Số hàng mỗi trang _MENU_",
                 "search": "Tìm kiếm:",
@@ -108,6 +135,26 @@
                 zeroRecords: "Không tìm thấy kết quả"
             }
         });
+       
+        $('#Filter_QLTenSV').on('input', function (e) {
+            dt.draw();
+        });
+
+        if ($(window).width() < 380) {
+
+            dt_mh.column(1).visible(false,false);
+            dt_mh.column(2).visible(false,false);
+            dt_mh.column(3).visible(false, false);
+            dt_mh.column(4).visible(false,false);
+            dt_mh.columns.adjust().draw(false)
+
+            dt.column(0).visible(false, false);
+            dt.column(3).visible(false, false);
+            dt.column(4).visible(false, false);
+            dt.column(5).visible(false, false);
+            dt.columns.adjust().draw(false)
+
+        }
 
         var date = new Date($('#Ngay').val());
         var day = ("0" + date.getDate()).slice(-2);
@@ -117,7 +164,7 @@
         var mamh = $("#MaMH").html();
 
         dt.clear()
-           .draw();
+            .draw();
 
         $.get("/DiemDanh/GetSinhVien", { MaMH: mamh, d1: datec }, function (data) {
             $("#data").empty()
@@ -201,7 +248,5 @@
                 })
             })
         })
-
-
     });
 </script>

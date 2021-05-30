@@ -16,7 +16,7 @@
 
 <div class="modal fade" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
     <div class="modal-dialog" role="document">
-        <div class="modal-content" style="width: 600px;">
+        <div class="modal-content ndbd">
             <div class="modal-header">
                 <h5 class="modal-title font-weight-bold" id="title_bd">Biểu đồ Tỉ Lệ Tham Gia Môn Học Của Sinh Viên</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -33,7 +33,7 @@
 
 
 <div class="row">
-    <div class="form-horizontal shadow p-3 mb-2 card col-4" style="margin-left: 13px;">
+    <div class="form-horizontal shadow p-3 mb-2 card col-4 chonmonhoc" style="margin-left: 13px;">
         <div class="form-group">
             <div class="h3 mb-2 ml-2 text-gray-800" style="font-size: 20px; font-weight: 600;">Chọn Môn Học</div>
             <div class="col-md-12">
@@ -62,7 +62,7 @@
     <span class="text">Danh Sách Điểm Danh</span>
 </a>
 
-<a class="btn btn-success btn-icon-split shadow" style="position: absolute; top: 130px; right: 614px; padding-right: 23px;" id="export1" href="">
+<a class="btn btn-success btn-icon-split shadow" style="position: absolute; top: 130px; right: 614px; padding-right: 23px;" id="export2" href="">
     <span class="icon text-white-50">
         <i class="fas fa-file-excel"></i>
     </span>
@@ -75,7 +75,7 @@
     </div>
     <div class="card-body">
         <div class="table-responsive">
-            <table class="table table-bordered" width="100%" cellspacing="0">
+            <table class="table table-bordered" width="100%" cellspacing="0" id="dataTableMH">
                 <thead>
                     <tr>
                         <th>Mã Môn Học</th>
@@ -104,6 +104,9 @@
         </div>
     </div>
     <div class="card-body">
+        <div class="filter">
+            <input type="text" class="form-control form-control-sm" id="Filter_QLTenSV" name="Filter_QLTenSV" placeholder="Tìm kiếm..." />
+        </div>
         <div style="position: absolute; top: 72px; right: 339px; z-index: 999;">
             <select class="form-control form-control-sm" id="Filter_TenKhoa" name="Filter_TenKhoa">
                 <option value=" ">Tất cả các khoa</option>
@@ -144,8 +147,20 @@
 
 <script>
     $(document).ready(function () {
+
+        function removeAccents(str) {
+            return str.normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '')
+                .replace(/đ/g, 'd').replace(/Đ/g, 'D');
+        }
+
         $.fn.dataTable.ext.search.push(
             function (settings, data, dataIndex) {
+
+                var TenSV = removeAccents($('#Filter_QLTenSV').val()).toLowerCase();
+                var Data_TenSV = removeAccents(data[2]).toLowerCase();
+
+               
 
                 var TenKhoa = $('#Filter_TenKhoa option:selected').val();
                 var TenLop = $('#Filter_TenLop option:selected').val();
@@ -153,7 +168,7 @@
                 var Data_TenKhoa = data[3];
                 var Data_TenLop = data[4];
 
-                if (Data_TenLop.includes(TenLop) && Data_TenKhoa.includes(TenKhoa)) {
+                if (Data_TenLop.includes(TenLop) && Data_TenKhoa.includes(TenKhoa) && Data_TenSV.includes(TenSV)) {
                     return true;
                 }
                 return false;
@@ -178,6 +193,43 @@
             }
 
         });
+        var dt_mh = $("#dataTableMH").DataTable({
+            searching: false, paging: false, info: false
+        })
+
+        if ($(window).width() < 480) {
+
+            $('.chonmonhoc').removeClass('col-4')
+            $('.chonmonhoc').addClass('col-11')
+            $('#bieudo').removeAttr('style')
+
+            $('#bieudo .icon').addClass('d-none')
+
+            $('#export1').removeAttr('style')
+            $('#export1 .icon').addClass('d-none')
+
+            $('#export2').removeAttr('style')
+            $('#export2 .icon').addClass('d-none')
+
+            dt_mh.column(0).visible(false, false);
+
+            dt_mh.column(4).visible(false, false);
+            dt_mh.column(5).visible(false, false);
+            dt_mh.column(6).visible(false, false);
+            dt_mh.column(7).visible(false, false);
+            dt_mh.column(8).visible(false, false);
+            dt_mh.columns.adjust().draw(false);
+
+            $("#Filter_TenLop").addClass("d-none")
+            $("#Filter_TenKhoa").addClass("d-none")
+
+            dt.column(0).visible(false, false);
+            dt.column(3).visible(false, false);
+            dt.column(4).visible(false, false);
+            dt.column(5).visible(false, false);
+            dt.columns.adjust().draw(false);
+
+        }
 
         $("#Filter_TenKhoa").change(function () {
             dt.draw();
@@ -187,23 +239,29 @@
             dt.draw();
         });
 
+        $('#Filter_QLTenSV').on('input', function (e) {
+            dt.draw();
+        });
+
         $('#export1').attr("href", `/ThongKe/XuatBaoCaoDiemDanhFull?MaMH=${$("#MaMH").val()}`)
         var mamh = $("#MaMH").val()
         $.get("/ThongKe/GetMonHoc", { MaMH: $("#MaMH").val() }, function (data) {
             dt.clear();
             $("#data").empty();
-            var rows = `<tr>
-                                <td>${data.MaMH}</td>
-                                <td>${data.TenMH}</td>
-                                <td>${data.TenGV}</td>
-                                <td>${data.SiSo}</td>
-                                <td>${data.SoTC}</td>
-                                <td>${data.NgayBD}</td>
-                                <td>${data.NgayKT}</td>
-                                <td>${data.ThoiGianBD}</td>
-                                <td>${data.ThoiGianKT}</td>
-                            </tr>`;
-            $("#data").append(rows)
+
+            dt_mh.row.add([
+                data.MaMH,
+                data.TenMH,
+                data.TenGV,
+                data.SiSo,
+                data.SoTC,
+                data.NgayBD,
+                data.NgayKT,
+                data.ThoiGianBD,
+                data.ThoiGianKT
+            ]).draw(false)
+
+        
 
             $.each(data.DSSV, function (index, row) {
                 

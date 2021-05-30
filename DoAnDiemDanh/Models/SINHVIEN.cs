@@ -20,11 +20,15 @@ namespace DoAnDiemDanh.Models
             this.CTDDs = new HashSet<CTDD>();
             this.DIEMDANH_T = new HashSet<DIEMDANH_T>();
             this.HINHANHs = new HashSet<HINHANH>();
+            this.TAIKHOANSINHVIENs = new HashSet<TAIKHOANSINHVIEN>();
             this.MONHOCs = new HashSet<MONHOC>();
         }
     
         public int MaSV { get; set; }
         public string TenSV { get; set; }
+        public string Email { get; set; }
+        public string DiaChi { get; set; }
+        public string SDT { get; set; }
         public Nullable<int> MaKhoa { get; set; }
         public Nullable<int> MaLop { get; set; }
     
@@ -36,6 +40,8 @@ namespace DoAnDiemDanh.Models
         public virtual ICollection<HINHANH> HINHANHs { get; set; }
         public virtual KHOA KHOA { get; set; }
         public virtual LOP LOP { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<TAIKHOANSINHVIEN> TAIKHOANSINHVIENs { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<MONHOC> MONHOCs { get; set; }
     }

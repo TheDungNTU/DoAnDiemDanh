@@ -20,14 +20,14 @@ namespace DoAnDiemDanh.Controllers
         private FACE_RECOGNITIONEntities db = new FACE_RECOGNITIONEntities();
         // GET: QuanLyMonHoc
 
-        [Authorize(Roles = "Admin, User")]
+        [Authorize(Roles = "Admin, GiangVien")]
         public IEnumerable<DateTime> EachDay(DateTime d1, DateTime d2)
         {
             for (var day = d1.Date; day.Date <= d2.Date; day = day.AddDays(1))
                 yield return day;
         }
 
-        [Authorize(Roles = "Admin, User")]
+        [Authorize(Roles = "Admin, GiangVien")]
         public ActionResult DangKyMonHoc()
         {
             ViewBag.MaMH = db.MONHOCs;
@@ -36,7 +36,7 @@ namespace DoAnDiemDanh.Controllers
             return View();
         }
 
-        [Authorize(Roles = "Admin, User")]
+        [Authorize(Roles = "Admin, GiangVien")]
         [HttpGet]
         public JsonResult GetThongTinMonHoc(int MaMH)
         {
@@ -63,7 +63,7 @@ namespace DoAnDiemDanh.Controllers
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
-        [Authorize(Roles = "Admin, User")]
+        [Authorize(Roles = "Admin, GiangVien")]
         [HttpPost]
         public JsonResult DangKyMonHoc(string MaMH, List<string> data)
         {
@@ -134,6 +134,14 @@ namespace DoAnDiemDanh.Controllers
                     else
                         tkb.ThuBay = true;
                 }
+
+                if (tkb.ThuHai == null) tkb.ThuHai = false;
+                if (tkb.ThuBa == null) tkb.ThuBa = false;
+                if (tkb.ThuTu == null) tkb.ThuTu = false;
+                if (tkb.ThuNam == null) tkb.ThuNam = false;
+                if (tkb.ThuSau == null) tkb.ThuSau = false;
+                if (tkb.ThuBay == null) tkb.ThuBay = false;
+
                 db.THOIKHOABIEUx.Add(tkb);
                 db.SaveChanges();
 

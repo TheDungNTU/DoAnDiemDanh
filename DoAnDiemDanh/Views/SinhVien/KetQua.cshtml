@@ -1,0 +1,148 @@
+﻿@using DoAnDiemDanh.Models
+@{
+    ViewBag.Title = "KetQua";
+    Layout = "~/Views/Layout/_LayoutAdmin.cshtml";
+    IEnumerable<MONHOC> MONHOC = (IEnumerable<MONHOC>)ViewBag.MonHoc;
+}
+
+<div class="card shadow mb-4">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered" width="100%" cellspacing="0" id="dataTableMH">
+                <thead>
+                    <tr>
+                        <th>Tên Môn Học</th>
+                        <th>Số Tín Chỉ</th>
+                        <th>Ngày Bắt Đầu</th>
+                        <th>Ngày Kết Thúc</th>
+                        <th>Thời gian giảng dạy</th>
+                        <th>Giảng Viên Dạy</th>
+                    </tr>
+                </thead>
+                <tbody id="data_table">
+                    @foreach (var item in MONHOC)
+                    {
+                        <tr>
+
+                            <td>
+                                <span style="display: none;" id="MaMH">
+                                    @Html.DisplayFor(modelItem => item.MaMH)
+                                </span>
+                                @Html.DisplayFor(modelItem => item.TenMH)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.SoTC)
+                            </td>
+                            <td>
+                                @Convert.ToDateTime(item.NgayBD).ToString("dd/MM/yyyy")
+                            </td>
+                            <td>
+                                @Convert.ToDateTime(item.NgayKT).ToString("dd/MM/yyyy")
+                            </td>
+                            <td>
+                                @{
+                                    TimeSpan a = (TimeSpan)item.ThoiGianKTGD - (TimeSpan)@item.ThoiGianBDGD;
+                                    var s = a.Hours + " Giờ " + a.Minutes + " Phút";
+                                }
+                                @s
+                            </td>
+
+                            <td>
+                                @Html.DisplayFor(modelItem => item.GIANGVIEN.TenGV)
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="card shadow mb-4">
+    <div>
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">KẾT QUẢ ĐIỂM DANH SINH VIÊN: @ViewBag.TenSV</h6>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th style="width:30px;">STT</th>
+                        <th>Ngày Học</th>
+                        <th>Thứ</th>
+                        <th>Điểm danh đầu giờ</th>
+                        <th>Điểm danh cuối giờ</th>
+                        <th>Trạng Thái</th>
+                        <th>Khiếu Nại</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    $(document).ready(function () {
+
+        var dt = $('#dataTable').DataTable({
+            "language": {
+                "lengthMenu": "Số hàng mỗi trang _MENU_",
+                "search": "Tìm kiếm:",
+                "info": "Tổng số _TOTAL_ hàng",
+                "infoEmpty": "",
+                "infoFiltered": "",
+                "paginate": {
+                    "first": "Đầu",
+                    "last": "Cuối",
+                    "next": "Trang sau",
+                    "previous": "Trang trước"
+                },
+
+            },
+            searching: false
+        });
+
+        if ($(window).width() < 380) {
+            dt.columns.adjust().draw(false)
+        }
+        var mamh = parseInt($("#MaMH").html());
+
+        dt.clear()
+            .draw();
+
+        $.get("/SinhVien/getDiemDanh", { MaMH: mamh }, function (data) {
+           
+            $.each(data, function (index, value) {
+                var kn = "";
+                if (value.MaKN != 0) {
+                    kn = `<span class="btn btn-success btn-icon-split" style="width: 122px;">    
+                                <span class="text">Đã Gửi</span>
+                          </span>`
+                }
+
+                else {
+                    kn = `<a href="/SinhVien/GuiKhieuNai?MaDD=${value.MaDD}&MaSV=${value.MaSV}&MaMH=@ViewBag.MaMH" class="btn btn-primary btn-icon-split">    
+                                <span class="text">Gửi Khiếu Nại</span>
+                          </a >`
+                }
+                
+                dt.row.add([
+                    index + 1,
+                    value.NgayDiemDanh,
+                    value.Thu,
+                    value.TGDDDG,
+                    value.TGDDCG,
+                    value.TrangThai,
+                    kn
+                   
+                ]).draw(false)
+            })
+        })
+        
+    });
+</script>

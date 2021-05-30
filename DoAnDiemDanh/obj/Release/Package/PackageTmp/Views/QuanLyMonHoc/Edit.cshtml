@@ -1,0 +1,257 @@
+﻿@model DoAnDiemDanh.Models.MONHOC
+
+@{
+    ViewBag.Title = "Edit";
+    Layout = "~/Views/Layout/_LayoutAdmin.cshtml";
+    <style>
+        .is-invalid {
+            color: #E84C3D;
+            margin-top: 5px;
+        }
+    </style>
+}
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="@Url.Action("Index","DiemDanh")">Trang chủ</a></li>
+        <li class="breadcrumb-item"><a href="@Url.Action("Index","QuanLyMonHoc")">Quản lý môn học</a></li>
+        <li class="breadcrumb-item " aria-current="page">Chỉnh sửa</li>
+    </ol>
+</nav>
+
+@using (Html.BeginForm("Edit", "QuanLyMonHoc", FormMethod.Post, new { @class = "formMH" }))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal shadow p-3 mb-2 card">
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(model => model.MaMH)
+
+        <div class="form-group">
+            <label class="control-label col-md-2" for="TenSV" style="font-size: 17px; font-weight:bold">Tên Môn Học</label>
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.TenMH, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.TenMH, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-2" for="TenSV" style="font-size: 17px; font-weight:bold">Số Tín Chỉ</label>
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.SoTC, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.SoTC, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-2" for="TenSV" style="font-size: 17px; font-weight:bold">Ngày Bắt Đầu</label>
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.NgayBD, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.NgayBD, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-2" for="TenSV" style="font-size: 17px; font-weight:bold">Ngày kết thúc</label>
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.NgayKT, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.NgayKT, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-2" for="TenSV" style="font-size: 17px; font-weight:bold">Thời gian bắt đầu</label>
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.ThoiGianBDGD, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.ThoiGianBDGD, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-2" for="TenSV" style="font-size: 17px; font-weight:bold">Thời gian kết thúc</label>
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.ThoiGianKTGD, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.ThoiGianKTGD, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-2" for="TenSV" style="font-size: 17px; font-weight:bold">Giảng viên giảng dạy</label>
+            <div class="col-md-10">
+                @Html.DropDownList("MaGV", null, htmlAttributes: new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.MaGV, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Lưu Lại" class="btn btn-success btn-icon-split p-2 border" />
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Quay lại danh sách", "Index")
+</div>
+
+
+<script>
+
+    function FnSuccess(data) {
+        if (data != false) {
+            console.log(data)
+            $(".close").click();
+            var row = `<tr role='row' class='odd' id='row_${data.MaMH}'>
+                                <td>${data.TenMH}</td >
+                                <td>${data.SoTC}</td >
+                                <td>${data.NgayBD}</td >
+                                <td>${data.NgayKT}</td >
+                                <td>${data.ThoiGianDay}</td >
+                                <td>${data.GiangVienDay}</td >
+                                <td>${data.SoSV}</td>
+                                <td><a href='/QuanLyMonHoc/Edit/${data.MaLop}'>Chỉnh sửa</a> |<a data-ajax='true' data-ajax-confirm='Bạn có muốn xóa bản ghi này ?' data-ajax-method='POST' data-ajax-success='deleteSuccess' href='/QuanLyMonHoc/Delete/${data.MaMH}'>Xóa</a></td>
+                           </tr >`;
+            $('#data_table tr:first').before(row)
+
+            alertSuccess();
+        }
+        $('#TenLop').val('');
+    }
+
+    function deleteSuccess(data) {
+        console.log(data)
+        $(`#row_${data}`).remove()
+        alertSuccess();
+    }
+
+    function alertSuccess() {
+        $('.alert').addClass("show");
+        $('.alert').removeClass("hide");
+        $('.alert').addClass("showAlert");
+        setTimeout(function () {
+            $('.alert').removeClass("show");
+            $('.alert').addClass("hide");
+        }, 5000);
+        $('.close-btn').click(function () {
+            $('.alert').removeClass("show");
+            $('.alert').addClass("hide");
+        });
+    }
+
+    $("#MaGV").change(function () {
+        var tengv = $("#MaGV option:selected").html();
+        $("#TenGV").val(tengv);
+    })
+
+
+    $(document).ready(function () {
+
+        var table = $('#dataTable').DataTable();
+
+        jQuery.validator.addMethod("NotAllowNumber", function (value, element) {
+            return this.optional(element) || /^([^0-9]*)$/.test(value);
+        }, "Không được phép có chữ số.");
+
+        jQuery.validator.addMethod("NotAllowFirstSpace", function (value, element) {
+            return this.optional(element) || /^\S{1}/.test(value);
+        }, "Kí tự đầu tiên không được có khoảng trắng.");
+
+        jQuery.validator.addMethod("NotAllowSpecial", function (value, element) {
+            return this.optional(element) || /^([^*\u0040.!/'#$%^&(){}[:;<>,.?/~_+-=|]*)$/.test(value);
+        }, "Không được phép có kí tự đặc biệt.");
+
+        jQuery.validator.addMethod("greaterThan",
+            function (value, element, params) {
+
+                if (!/Invalid|NaN/.test(new Date(value))) {
+                    return new Date(value) > new Date($(params).val());
+                }
+
+                return isNaN(value) && isNaN($(params).val())
+                    || (Number(value) > Number($(params).val()));
+            }, 'Ngày kết thúc phải lớn hơn ngày bắt đầu.');
+
+
+        var form = $(".formMH").validate({
+            onfocusout: function (element) {
+                $(element).valid();
+            },
+            invalidHandler: function (form, validator) {
+
+                alert("Thêm môn học không thành công");
+                validator.focusInvalid();
+            },
+
+            errorClass: "is-invalid",
+            validClass: "is-valid",
+            rules: {
+                TenMH: {
+                    required: true,
+                    NotAllowFirstSpace: true,
+                    NotAllowNumber: true,
+                    NotAllowSpecial: true,
+
+                },
+                SoTC: {
+                    required: true,
+                    range: [1, 10]
+                },
+                NgayBD: {
+                    required: true,
+                },
+                NgayKT: {
+                    required: true,
+                    greaterThan: "#NgayBD"
+                },
+                ThoiGianBDGD: {
+                    required: true,
+                },
+                ThoiGianKTGD: {
+                    required: true,
+                },
+                MaGV: {
+                    required: true,
+                },
+
+            },
+            messages: {
+                TenMH: {
+                    required: "Tên môn học không được để trống.",
+                },
+                SoTC: {
+                    required: "Số tín chỉ không được để trống",
+                    range: "Số tín chỉ phải lớn hơn 1 và bé hơn 10"
+                },
+                NgayBD: {
+                    required: "Ngày bắt đầu không được để trống",
+                },
+                NgayKT: {
+                    required: "Ngày kết thúc không được để trống.",
+                },
+                ThoiGianBDGD: {
+                    required: "Thời gian bắt đầu giảng dạy không được để trống",
+                },
+                ThoiGianKTGD: {
+                    required: "Thời gian bắt đầu giảng dạy không được để trống",
+                },
+                MaGV: {
+                    required: "Bạn chưa chọn Giảng viên, hãy chọn 1.",
+                }
+            }
+        });
+
+        $(".mul-select").select2({
+            placeholder: "Chọn Thời Khóa Biểu",
+            tags: true,
+            tokenSperators: ['/', ',', ',', " "],
+            width: 'resolve',
+            heigth: 'resolve'
+        });
+
+        $(".close").click(function () {
+            form.resetForm();
+        })
+    });
+
+</script>

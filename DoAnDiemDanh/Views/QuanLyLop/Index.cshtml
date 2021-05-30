@@ -60,10 +60,13 @@
         <h6 class="m-0 font-weight-bold text-primary">DANH SÁCH TẤT CẢ LỚP</h6>
     </div>
     <div class="card-body">
+        <div class="filter">
+            <input type="text" class="form-control form-control-sm" id="Filter_QLTenLop" name="Filter_QLTenLop" placeholder="Nhập tên lớp..." />
+        </div>
         <div class="table-responsive">
             <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                 <thead>
-                    <tr> 
+                    <tr>
                         <th style="width: 60px;">Mã Lớp</th>
                         <th>Tên Lớp</th>
                         <th>Tên Khoa</th>
@@ -86,7 +89,7 @@
                             <td>
                                 <span class="btn btn-primary btn-icon-split">
                                     <span class="icon text-white-50">
-                                       @item.SINHVIENs.Count()
+                                        @item.SINHVIENs.Count()
                                     </span>
                                     <span class="text">Sinh viên</span>
                                 </span>
@@ -107,6 +110,26 @@
     var dt;
 
     function loadDataTable() {
+
+        function removeAccents(str) {
+            return str.normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '')
+                .replace(/đ/g, 'd').replace(/Đ/g, 'D');
+        }
+
+        $.fn.dataTable.ext.search.push(
+            function (settings, data, dataIndex) {
+
+                var TenLop = removeAccents($('#Filter_QLTenLop').val()).toLowerCase();
+                var Data_TenLop = removeAccents(data[1]).toLowerCase();
+
+                if (Data_TenLop.includes(TenLop)) {
+                    return true;
+                }
+                return false;
+            }
+        );
+
         dt = $("#dataTable").DataTable({
             "language": {
                 "lengthMenu": "Số hàng mỗi trang _MENU_",
@@ -124,6 +147,9 @@
                 zeroRecords: "Không tìm thấy kết quả",
             }
 
+        });
+        $('#Filter_QLTenLop').on('input', function (e) {
+            dt.draw();
         });
     }
 
@@ -211,6 +237,14 @@
 
     $(document).ready(function () {
         loadDataTable();
+
+        if ($(window).width() < 380) {
+
+            dt.column(0).visible(false, false);
+            dt.column(2).visible(false, false);
+            
+            dt.columns.adjust().draw(false)
+        }
 
         jQuery.validator.addMethod("NotAllowFirstSpace", function (value, element) {
             return this.optional(element) || /^\S{1}/.test(value);

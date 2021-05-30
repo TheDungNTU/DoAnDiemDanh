@@ -29,12 +29,11 @@
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.css" />
     <script src="~/Content/vendor/jquery/jquery.min.js"></script>
 
-
+    <script src="https://cdn.rawgit.com/vpanga/MouseEventSimulatorWithTouch/master/src/jquery.mouse2touch.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ekko-lightbox/5.3.0/ekko-lightbox.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.11/dist/sweetalert2.all.min.js"></script>
-
 </head>
 
 <body id="page-top">
@@ -67,137 +66,155 @@
             <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
                 <!-- Sidebar - Brand -->
-                <a class="sidebar-brand d-flex align-items-center justify-content-center" href="@Url.Action("Index","DiemDanh")">
+                <a class="sidebar-brand d-flex align-items-center justify-content-center" href="@Url.Action("Index", "DiemDanh")">
                     <div class="sidebar-brand-icon">
                         <img src="~/Content/img/face-recognition.png" style="width: 50px; height: auto;" />
                     </div>
                     <div class="sidebar-brand-text mx-3" style="font-size: 13px;">Face Recogintion</div>
                 </a>
 
+
                 <!-- Divider -->
-                <!--<hr class="sidebar-divider my-0">-->
-                <!-- Nav Item - Dashboard -->
-                <!--<li class="nav-item">
-                <a class="nav-link" href="index.html">
-                    <i class="fas fa-fw fa-tachometer-alt"></i>
-                    <span>Dashboard</span>
-                </a>
-            </li>-->
+                <!-- Heading -->
+                <!-- Nav Item - Pages Collapse Menu -->
+                @{
+                    HttpCookie authCookie = System.Web.HttpContext.Current.Request.Cookies[FormsAuthentication.FormsCookieName];
+                    if (authCookie != null)
+                    {
+                        if (!string.IsNullOrEmpty(authCookie.Value))
+                        {
+                            FormsAuthenticationTicket authTicket = FormsAuthentication.Decrypt(authCookie.Value);
+
+                            string str = authTicket.UserData;
+                            string[] subs = str.Split(',');
+                            if (subs[2] != "SV")
+                            {
+                                <hr class="sidebar-divider">
+                                <div class="sidebar-heading">
+                                    QUẢN TRỊ DANH MỤC
+                                </div>
+                                <li class="nav-item">
+                                    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo"
+                                       aria-expanded="true" aria-controls="collapseTwo">
+                                        <i class="fas fa-fw fa-cog"></i>
+                                        <span>Quản Lý Danh Sách </span>
+                                    </a>
+                                    <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+                                        <div class="bg-white py-2 collapse-inner rounded">
+                                            <a class="collapse-item" href="@Url.Action("Index", "QuanLyKhoa")">Quản Lý Khoa</a>
+                                            <a class="collapse-item" href="@Url.Action("Index", "QuanLyLop")">
+                                                Quản Lý Lớp Học<a>
+                                                    <a class="collapse-item" href="@Url.Action("Index", "QuanLyGiangVien")">Quản Lý Giảng Viên</a>
+                                                    <a class="collapse-item" href="@Url.Action("Index", "QuanLySinhVien")">Quản Lý Sinh Viên</a>
+                                                    <a class="collapse-item" href="@Url.Action("Index", "QuanLyMonHoc")">Quản Lý Môn Học</a>
+                                        </div>
+                                    </div>
+                                </li>
+                            }
+
+                        }
+                    }
+                }
                 <!-- Divider -->
                 <hr class="sidebar-divider">
 
-                <!-- Heading -->
-                <div class="sidebar-heading">
-                    QUẢN TRỊ DANH MỤC
-                </div>
 
-                <!-- Nav Item - Pages Collapse Menu -->
-                <li class="nav-item">
-                    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo"
-                       aria-expanded="true" aria-controls="collapseTwo">
-                        <i class="fas fa-fw fa-cog"></i>
-                        <span>Quản Lý Danh Sách </span>
-                    </a>
-                    <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
-                        <div class="bg-white py-2 collapse-inner rounded">
-                            <a class="collapse-item" href="@Url.Action("Index","QuanLyKhoa")">Quản Lý Khoa</a>
-                            <a class="collapse-item" href="@Url.Action("Index","QuanLyLop")">
-                                Quản Lý Lớp Học<a>
-                                    <a class="collapse-item" href="@Url.Action("Index","QuanLyGiangVien")">Quản Lý Giảng Viên</a>
-                                    <a class="collapse-item" href="@Url.Action("Index","QuanLySinhVien")">Quản Lý Sinh Viên</a>
-                                    <a class="collapse-item" href="@Url.Action("Index","QuanLyMonHoc")">Quản Lý Môn Học</a>
-                        </div>
-                    </div>
-                </li>
+                @{
+                    authCookie = System.Web.HttpContext.Current.Request.Cookies[FormsAuthentication.FormsCookieName];
+                    if (authCookie != null)
+                    {
+                        if (!string.IsNullOrEmpty(authCookie.Value))
+                        {
+                            FormsAuthenticationTicket authTicket = FormsAuthentication.Decrypt(authCookie.Value);
 
-                <!-- Nav Item - Utilities Collapse Menu -->
-                <li class="nav-item">
-                    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities"
-                       aria-expanded="true" aria-controls="collapseUtilities">
-                        <i class="fas fa-fw fa-wrench"></i>
-                        <span>Thiết Lập</span>
-                    </a>
-                    <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities"
-                         data-parent="#accordionSidebar">
-                        <div class="bg-white py-2 collapse-inner rounded">
-                            <h6 class="collapse-header">Custom Utilities:</h6>
-                            <a class="collapse-item" href="utilities-color.html">Colors</a>
-                            <a class="collapse-item" href="utilities-border.html">Borders</a>
-                            <a class="collapse-item" href="utilities-animation.html">Animations</a>
-                            <a class="collapse-item" href="utilities-other.html">Other</a>
-                        </div>
-                    </div>
-                </li>
+                            string str = authTicket.UserData;
+                            string[] subs = str.Split(',');
+                            if (subs[2] == "SV")
+                            {
+                                <div class="sidebar-heading">
+                                    CHỨC NĂNG SINH VIÊN
+                                </div>
 
-                <!-- Divider -->
-                <hr class="sidebar-divider">
-
-                <!-- Heading -->
-                <div class="sidebar-heading">
-                    CHỨC NĂNG
-                </div>
-
-                <!-- Nav Item - Pages Collapse Menu -->
-                @*<li class="nav-item">
-                    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages"
-                       aria-expanded="true" aria-controls="collapsePages">
-                        <i class="fas fa-fw fa-folder"></i>
-                        <span>Pages</span>
-                    </a>
-                    <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
-                        <div class="bg-white py-2 collapse-inner rounded">
-                            <h6 class="collapse-header">Login Screens:</h6>
-                            <a class="collapse-item" href="login.html">Login</a>
-                            <a class="collapse-item" href="register.html">Register</a>
-                            <a class="collapse-item" href="forgot-password.html">Forgot Password</a>
-                            <div class="collapse-divider"></div>
-                            <h6 class="collapse-header">Other Pages:</h6>
-                            <a class="collapse-item" href="404.html">404 Page</a>
-                            <a class="collapse-item" href="blank.html">Blank Page</a>
-                        </div>
-                    </div>
-                </li>*@
-
-                <li class="nav-item">
-                    <a class="nav-link" href="@Url.Action("DangKyMonHoc","QuanLyMonHoc")">
-                        <i class="fas fa-fw fa-chart-area"></i>
-                        <span>Đăng Kí Môn Học</span>
-                    </a>
-                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="@Url.Action("XemDiemDanh","SinhVien")">
+                                        <i class="fas fa-fw fa-chart-area"></i>
+                                        <span>Kết Quả Điểm Danh</span>
+                                    </a>
+                                </li>
 
 
-                <!-- Nav Item - Charts -->
-                <li class="nav-item">
-                    <a class="nav-link" href="@Url.Action("Index","DiemDanh")">
-                        <i class="fas fa-fw fa-chart-area"></i>
-                        <span>Điểm Danh</span>
-                    </a>
-                </li>
+                   
+                                <li class="nav-item">
+                                    <a class="nav-link" href="@Url.Action("XemThoiKhoaBieu","SinhVien")">
+                                        <i class="fas fa-fw fa-table"></i>
+                                        <span>Thời Khóa Biểu</span>
+                                    </a>
+                                </li>
 
-                <li class="nav-item">
-                    <a class="nav-link" href="@Url.Action("Index","ThongKe")">
-                        <i class="fas fa-fw fa-table"></i>
-                        <span>Xuất Báo Cáo</span>
-                    </a>
-                </li>
+                                <!-- Nav Item - Charts -->
+                                <li class="nav-item">
+                                    <a class="nav-link" href="#">
+                                        <i class="fas fa-fw fa-chart-area"></i>
+                                        <span>Thống Kê</span>
+                                    </a>
+                                </li>
 
-                <!-- Nav Item - Charts -->
-                <li class="nav-item">
-                    <a class="nav-link" href="#">
-                        <i class="fas fa-fw fa-chart-area"></i>
-                        <span>Thống Kê</span>
-                    </a>
-                </li>
+                            }
 
-                <!-- Nav Item - Tables -->
-                <!-- Divider -->
+                            else
+                            {
+
+
+                                <!-- Heading -->
+                                <div class="sidebar-heading">
+                                    CHỨC NĂNG
+                                </div>
+
+                                <li class="nav-item">
+                                    <a class="nav-link" href="@Url.Action("DangKyMonHoc","QuanLyMonHoc")">
+                                        <i class="fas fa-fw fa-chart-area"></i>
+                                        <span>Đăng Kí Môn Học</span>
+                                    </a>
+                                </li>
+
+
+                                <!-- Nav Item - Charts -->
+                                <li class="nav-item">
+                                    <a class="nav-link" href="@Url.Action("Index","DiemDanh")">
+                                        <i class="fas fa-fw fa-chart-area"></i>
+                                        <span>Điểm Danh</span>
+                                    </a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a class="nav-link" href="@Url.Action("Index","ThongKe")">
+                                        <i class="fas fa-fw fa-table"></i>
+                                        <span>Xuất Báo Cáo</span>
+                                    </a>
+                                </li>
+
+                                <!-- Nav Item - Charts -->
+                                <li class="nav-item">
+                                    <a class="nav-link" href="#">
+                                        <i class="fas fa-fw fa-chart-area"></i>
+                                        <span>Thống Kê</span>
+                                    </a>
+                                </li>
+
+                                <!-- Nav Item - Tables -->
+                                <!-- Divider -->
+                            }
+                        }
+
+                    }
+                }
+
                 <hr class="sidebar-divider d-none d-md-block">
 
                 <!-- Sidebar Toggler (Sidebar) -->
                 <div class="text-center d-none d-md-inline">
                     <button class="rounded-circle border-0" id="sidebarToggle"></button>
                 </div>
-
             </ul>
             <!-- End of Sidebar -->
             <!-- Content Wrapper -->
@@ -210,11 +227,11 @@
                     <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
 
                         <!-- Sidebar Toggle (Topbar) -->
-                        <form class="form-inline">
+                        <div class="form-inline">
                             <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
                                 <i class="fa fa-bars"></i>
                             </button>
-                        </form>
+                        </div>
 
                         <!-- Topbar Search -->
                         <form class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
@@ -389,19 +406,29 @@
                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     <span class="mr-2 d-none d-lg-inline text-gray-600 small">
                                         @{
-                                            HttpCookie authCookie = System.Web.HttpContext.Current.Request.Cookies[FormsAuthentication.FormsCookieName];
+                                            
                                             if (authCookie != null)
                                             {
-                                                //Extract the forms authentication cookie
                                                 if (!string.IsNullOrEmpty(authCookie.Value))
                                                 {
                                                     FormsAuthenticationTicket authTicket = FormsAuthentication.Decrypt(authCookie.Value);
 
-                                                    string name = authTicket.UserData;
-
-                                                    <span>@name</span>
-
+                                                    string str = authTicket.UserData;
+                                                    string[] subs = str.Split(',');
+                                                    if (subs[2] == "Admin")
+                                                    {
+                                                        <span>Admin: @subs[1]</span>
+                                                    }
+                                                    else if (subs[2] == "GV")
+                                                    {
+                                                        <span>GV: @subs[1]</span>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span>SV: @subs[1]</span>
+                                                    }
                                                 }
+
                                             }
 
                                         }
@@ -440,9 +467,9 @@
                     <div class="container-fluid" style="position: relative">
                         @RenderBody()
                     </div>
-                        
-                        
-                    
+
+
+
                     <!-- /.container-fluid -->
 
                 </div>
@@ -498,6 +525,7 @@
         <!-- Custom scripts for all pages-->
         <script src="~/Content/js/sb-admin-2.min.js"></script>
 
+
         <!-- Page level plugins -->
         <script src="~/Content/vendor/datatables/jquery.dataTables.min.js"></script>
         <script type="text/javascript" src="https://cdn.datatables.net/select/1.3.3/js/dataTables.select.min.js"></script>
@@ -519,7 +547,8 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.12/jquery.validate.unobtrusive.min.js"></script>
 
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-
+        
+        
     </div>
         <!-- Page Wrapper -->
 

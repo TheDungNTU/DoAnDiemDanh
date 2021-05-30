@@ -39,13 +39,13 @@ namespace DoAnDiemDanh.Controllers
             db.GIANGVIENs.Add(gIANGVIEN);
             db.SaveChanges();
 
-            TAIKHOAN tk = new TAIKHOAN();
+            TAIKHOANGIANGVIEN tk = new TAIKHOANGIANGVIEN();
             tk.MaQuyen = 2;
             tk.MatKhau = "user123";
             tk.MaGV = gIANGVIEN.MaGV;
-            tk.TaiKhoan1 = gIANGVIEN.Email;
+            tk.TaiKhoan = gIANGVIEN.Email;
 
-            db.TAIKHOANs.Add(tk);
+            db.TAIKHOANGIANGVIENs.Add(tk);
             db.SaveChanges();
 
             var data = new
@@ -103,11 +103,11 @@ namespace DoAnDiemDanh.Controllers
                 id = id,
                 TenGV = gIANGVIEN.TenGV,
             };
-            var TaiKhoan = db.TAIKHOANs.SingleOrDefault(s => s.MaGV == id);
+            var TaiKhoan = db.TAIKHOANGIANGVIENs.SingleOrDefault(s => s.MaGV == id);
             var MonHoc = db.MONHOCs.SingleOrDefault(s => s.MaGV == id);
             if(MonHoc == null && TaiKhoan.MaQuyen != 1)
             {
-                db.TAIKHOANs.Remove(TaiKhoan);
+                db.TAIKHOANGIANGVIENs.Remove(TaiKhoan);
                 db.SaveChanges();
             }
             db.GIANGVIENs.Remove(gIANGVIEN);
