@@ -216,12 +216,21 @@ namespace DoAnDiemDanh.Controllers
                 int t = 5;
                 int dihoc = 0;
                 int nghihoc = 0;
+                int cophep = 0;
                 foreach (var item1 in item)
                 {
                     if ((bool)item1.TTDD)
                     {
                         worksheet.Cells[row1, col1 + t].Value = "X";
                         dihoc++;
+                        if (item1.VangCoPhep != null)
+                        {
+                            if ((bool)item1.VangCoPhep)
+                            {
+                                cophep++;
+                            }
+                        }
+                       
                     }
                     else
                     {
@@ -231,9 +240,12 @@ namespace DoAnDiemDanh.Controllers
                     t++;
                 }
                 worksheet.Cells[row1, col].Value = dihoc;
-                worksheet.Cells[row1, col+2].Value = nghihoc;
-                var x = (decimal)10/(col-6)*dihoc;
-                worksheet.Cells[row1, col+3].Value = decimal.Round(x, 2);
+                worksheet.Cells[row1, col + 1].Value = cophep;
+                worksheet.Cells[row1, col + 2].Value = nghihoc - cophep;
+
+                double x = 1 - 0.25 * (nghihoc);
+                if (x < 0) x = 0;
+                worksheet.Cells[row1, col+3].Value = x;
 
                 row1++;
                 stt++;

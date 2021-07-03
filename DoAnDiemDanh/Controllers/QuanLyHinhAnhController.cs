@@ -86,10 +86,10 @@ namespace DoAnDiemDanh.Controllers
 
             var img = Request.Files["Avatar"];
 
-            string postedFileName = System.IO.Path.GetFileName(img.FileName);
+            string postedFileName = id + "_" + System.IO.Path.GetFileName(img.FileName);
 
             //Lưu hình đại diện về Server
-            var path = Server.MapPath("/Content/img/" + postedFileName);
+            var path = Server.MapPath("/Content/img/" + ""+postedFileName);
             img.SaveAs(path);
 
             byte[] imageArray = System.IO.File.ReadAllBytes(path);

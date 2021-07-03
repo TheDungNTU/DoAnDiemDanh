@@ -4,7 +4,12 @@
     Layout = "~/Views/Layout/_LayoutAdmin.cshtml";
     IEnumerable<MONHOC> MONHOC = (IEnumerable<MONHOC>)ViewBag.MonHoc;
 }
-
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="@Url.Action("Index","DiemDanh")">Trang chủ</a></li>
+        <li class="breadcrumb-item " aria-current="page">Xem Điểm Danh</li>
+    </ol>
+</nav>
 <div class="card shadow mb-4">
     <div class="card-body">
         <div class="table-responsive">
@@ -77,16 +82,18 @@
             <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                 <thead>
                     <tr>
-                        <th style="width:30px;">STT</th>
-                        <th style="width:100px;">Mã sinh viên</th>
+                       
+                        <th style="width:41px;">MSSV</th>
                         <th>Tên Sinh Viên</th>
                         <th style="width: 73px;">Lớp</th>
                         <th>Điểm danh đầu giờ</th>
                         <th>Điểm danh cuối giờ</th>
                         <th>Trạng Thái</th>
+                        <th>Có Phép</th>
+                        <th style="width: 130px;">Khiếu nại</th>
                     </tr>
                 </thead>
-                <tbody id="data">
+                <tbody>
                 </tbody>
             </table>
         </div>
@@ -96,7 +103,7 @@
 <script>
     $(document).ready(function () {
         var dt_mh = $("#dataTableMH").DataTable({
-             searching: false, paging: false, info: false 
+             searching: false, paging: false, info: false
         })
 
         function removeAccents(str) {
@@ -118,7 +125,7 @@
             }
         );
 
-        var dt = $('#dataTable').DataTable({  
+        var dt = $('#dataTable').DataTable({
             "language": {
                 "lengthMenu": "Số hàng mỗi trang _MENU_",
                 "search": "Tìm kiếm:",
@@ -135,7 +142,7 @@
                 zeroRecords: "Không tìm thấy kết quả"
             }
         });
-       
+
         $('#Filter_QLTenSV').on('input', function (e) {
             dt.draw();
         });
@@ -167,14 +174,31 @@
             .draw();
 
         $.get("/DiemDanh/GetSinhVien", { MaMH: mamh, d1: datec }, function (data) {
-            $("#data").empty()
+            dt.clear()
+                .draw();
             console.log(data)
-            var i = 1;
             $.each(data, function (index, row) {
                 var tt = (row.TrangThai) ? "Có mặt" : "Vắng mặt";
                 var thoigianvao = "Chưa có";
                 var thoigianra = "Chưa có";
 
+                var cophep = "_";
+                var kn = `<span class="btn btn-success btn-icon-split">
+                                <span class="text">Không khiếu nại</span>
+                          </span >`
+
+                if (!row.TrangThai && row.CoPhep) {
+                    cophep = "Có phép"
+                }
+                else {
+                    cophep = "Không phép"
+                }
+
+                if (row.KhieuNai != null) {
+                    kn = `<a href="${window.location.origin}/QuanLyKhieuNai/Details/${row.KhieuNai}" class="btn btn-primary btn-icon-split" style= "width: 139px;">
+                                <span class="text">Có khiếu nại</span>
+                          </a >`
+                }
                 if (row.ThoiGianVao != null) {
                     var hours = ("0" + row.ThoiGianVao.Hours).slice(-2);
                     var minutes = ("0" + row.ThoiGianVao.Minutes).slice(-2);
@@ -190,13 +214,16 @@
                 }
 
                 dt.row.add([
-                    index + 1,
+
                     row.MaSV,
                     row.TenSV,
                     row.TenLop,
                     thoigianvao,
                     thoigianra,
-                    tt
+                    tt,
+                    cophep,
+                    kn
+
                 ]).draw(false)
             })
         })
@@ -213,13 +240,25 @@
             dt.clear()
                 .draw();
             $.get("/DiemDanh/GetSinhVien", { MaMH: mamh, d1: datec }, function (data) {
-                $("#data").empty()
+                dt.clear()
+                    .draw();
                 console.log(data)
-                var i = 1;
+
                 $.each(data, function (index, row) {
                     var tt = (row.TrangThai) ? "Có mặt" : "Vắng mặt";
                     var thoigianvao = "Chưa có";
                     var thoigianra = "Chưa có";
+
+                    var cophep = "_";
+                    var kn = `<span class="btn btn-success btn-icon-split">
+                                <span class="text">Không khiếu nại</span>
+                          </span >`
+                    if (!row.TrangThai && row.CoPhep) {
+                        cophep = "Có phép"
+                    }
+                    else {
+                        cophep = "Không phép"
+                    }
 
                     if (row.ThoiGianVao != null) {
                         var hours = ("0" + row.ThoiGianVao.Hours);
@@ -234,16 +273,22 @@
                         var seconds = ("0" + row.ThoiGianRa.Seconds).slice(-2);
                         thoigianvao = `${hours}:${minutes}:${seconds}`
                     }
+                    if (row.KhieuNai != null) {
+                        kn = `<a href="${window.location.origin}/QuanLyKhieuNai/Details/${row.KhieuNai}" class="btn btn-primary btn-icon-split" style= "width: 139px;">
+                                <span class="text">Có khiếu nại</span>
+                          </a >`
+                    }
 
-               
                     dt.row.add([
-                        index + 1,
+
                         row.MaSV,
                         row.TenSV,
                         row.TenLop,
                         thoigianvao,
                         thoigianra,
-                        tt   
+                        tt,
+                        cophep,
+                        kn
                     ]).draw(false)
                 })
             })

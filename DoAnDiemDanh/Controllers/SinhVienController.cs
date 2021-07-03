@@ -77,6 +77,7 @@ namespace DoAnDiemDanh.Controllers
             khieunai.TenHA = postedFileName;
             khieunai.NgayGui = DateTime.Now;
             khieunai.ThoiGianGui = DateTime.Now;
+            khieunai.DaXem = false;
             db.KHIEUNAIs.Add(khieunai);
             db.SaveChanges();
 
@@ -165,7 +166,7 @@ namespace DoAnDiemDanh.Controllers
                 TimeSpan tgbd = (TimeSpan)item.ThoiGianBDGD;
                 TimeSpan tgkt = (TimeSpan)item.ThoiGianKTGD;
 
-                if ((bool)item.THOIKHOABIEU.ThuHai){
+                if ((bool)item.LICHGIANGDAY.ThuHai){
                     var tkb = new thoikhoabieu();
                     tkb.MaMH = item.MaMH;
                     tkb.TenMH = item.TenMH;
@@ -178,7 +179,7 @@ namespace DoAnDiemDanh.Controllers
                     list.Add(tkb);
                 }
 
-                if ((bool)item.THOIKHOABIEU.ThuBa)
+                if ((bool)item.LICHGIANGDAY.ThuBa)
                 {
                     var tkb = new thoikhoabieu();
                     tkb.MaMH = item.MaMH;
@@ -192,7 +193,7 @@ namespace DoAnDiemDanh.Controllers
                     list.Add(tkb);
                 }
 
-                if ((bool)item.THOIKHOABIEU.ThuTu)
+                if ((bool)item.LICHGIANGDAY.ThuTu)
                 {
                     var tkb = new thoikhoabieu();
                     tkb.MaMH = item.MaMH;
@@ -206,7 +207,7 @@ namespace DoAnDiemDanh.Controllers
                     list.Add(tkb);
                 }
 
-                if ((bool)item.THOIKHOABIEU.ThuNam)
+                if ((bool)item.LICHGIANGDAY.ThuNam)
                 {
                     var tkb = new thoikhoabieu();
                     tkb.MaMH = item.MaMH;
@@ -220,7 +221,7 @@ namespace DoAnDiemDanh.Controllers
                     list.Add(tkb);
                 }
 
-                if ((bool)item.THOIKHOABIEU.ThuSau)
+                if ((bool)item.LICHGIANGDAY.ThuSau)
                 {
                     var tkb = new thoikhoabieu();
                     tkb.MaMH = item.MaMH;
@@ -234,7 +235,7 @@ namespace DoAnDiemDanh.Controllers
                     list.Add(tkb);
                 }
 
-                if ((bool)item.THOIKHOABIEU.ThuBay)
+                if ((bool)item.LICHGIANGDAY.ThuBay)
                 {
                     var tkb = new thoikhoabieu();
                     tkb.MaMH = item.MaMH;

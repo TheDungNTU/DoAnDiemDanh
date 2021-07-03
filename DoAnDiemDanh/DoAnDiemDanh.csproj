@@ -215,6 +215,7 @@
     <Compile Include="Controllers\DiemDanhController.cs" />
     <Compile Include="Controllers\QuanLyGiangVienController.cs" />
     <Compile Include="Controllers\QuanLyHinhAnhController.cs" />
+    <Compile Include="Controllers\QuanLyKhieuNaiController.cs" />
     <Compile Include="Controllers\QuanLyKhoaController.cs" />
     <Compile Include="Controllers\QuanLyLopController.cs" />
     <Compile Include="Controllers\QuanLyMonHocController.cs" />
@@ -260,6 +261,9 @@
     <Compile Include="Models\KHOA.cs">
       <DependentUpon>FaceRecognition.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\LICHGIANGDAY.cs">
+      <DependentUpon>FaceRecognition.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\LoginViewModel.cs" />
     <Compile Include="Models\LOP.cs">
       <DependentUpon>FaceRecognition.tt</DependentUpon>
@@ -280,9 +284,6 @@
       <DependentUpon>FaceRecognition.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\TAIKHOANSINHVIEN.cs">
-      <DependentUpon>FaceRecognition.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\THOIKHOABIEU.cs">
       <DependentUpon>FaceRecognition.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\userRoleProvider.cs" />
@@ -2195,6 +2196,7 @@
       <DependentUpon>FaceRecognition.edmx</DependentUpon>
     </Content>
     <None Include="Properties\PublishProfiles\IISProfile.pubxml" />
+    <None Include="Properties\PublishProfiles\IISProfile1.pubxml" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.4.1.js" />
     <Content Include="Scripts\jquery-3.4.1.min.js" />
@@ -2238,6 +2240,8 @@
     <Content Include="Views\SinhVien\KetQua.cshtml" />
     <Content Include="Views\SinhVien\GuiKhieuNai.cshtml" />
     <Content Include="Views\SinhVien\XemThoiKhoaBieu.cshtml" />
+    <Content Include="Views\QuanLyKhieuNai\Details.cshtml" />
+    <Content Include="Views\QuanLyKhieuNai\AlertPartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

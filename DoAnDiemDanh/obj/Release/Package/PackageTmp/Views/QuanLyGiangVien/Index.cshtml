@@ -67,6 +67,9 @@
         </div>
     </div>
     <div class="card-body">
+        <div class="filter">
+            <input type="text" class="form-control form-control-sm" id="Filter_QLTenGV" name="Filter_QLTenGV" placeholder="Nhập tên giảng viên..." />
+        </div>
         <div class="table-responsive">
             <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                 <thead>
@@ -120,6 +123,26 @@
     var dt;
 
     function loadDataTable() {
+
+        function removeAccents(str) {
+            return str.normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '')
+                .replace(/đ/g, 'd').replace(/Đ/g, 'D');
+        }
+
+        $.fn.dataTable.ext.search.push(
+            function (settings, data, dataIndex) {
+
+                var TenGV = removeAccents($('#Filter_QLTenGV').val()).toLowerCase();
+                var Data_TenGV = removeAccents(data[1]).toLowerCase();
+
+                if (Data_TenGV.includes(TenGV)) {
+                    return true;
+                }
+                return false;
+            }
+        );
+
         dt = $("#dataTable").DataTable({
             "language": {
                 "lengthMenu": "Số hàng mỗi trang _MENU_",
@@ -138,6 +161,10 @@
             },
             "lengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]]
 
+        });
+
+        $('#Filter_QLTenGV').on('input', function (e) {
+            dt.draw();
         });
     }
 
@@ -168,6 +195,16 @@
             $('#TenGV').val('');
             $('#Email').val('');
             $('#MaKhoa').val('').change();
+        }
+        else {
+            Swal.fire({
+                icon: 'error',
+                title: 'Có lỗi',
+                text: `Email đã được sử dụng, vui lòng nhập một email khác`,
+                timer: 2000,
+                showConfirmButton: false
+
+            })
         }
     }
 

@@ -25,6 +25,7 @@ namespace DoAnDiemDanh.Models
         public string NoiDung { get; set; }
         public Nullable<System.DateTime> NgayGui { get; set; }
         public Nullable<System.DateTime> ThoiGianGui { get; set; }
+        public Nullable<bool> DaXem { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<CTDD> CTDDs { get; set; }

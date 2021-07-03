@@ -12,7 +12,7 @@ namespace DoAnDiemDanh.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class THOIKHOABIEU
+    public partial class LICHGIANGDAY
     {
         public int MaMH { get; set; }
         public Nullable<bool> ThuHai { get; set; }

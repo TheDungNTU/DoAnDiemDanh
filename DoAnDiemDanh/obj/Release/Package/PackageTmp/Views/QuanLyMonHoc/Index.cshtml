@@ -149,6 +149,10 @@
         </div>
     </div>
     <div class="card-body">
+        <div class="filter">
+            <input type="text" class="form-control form-control-sm" id="Filter_QLTenMH" name="Filter_QLTenMH" placeholder="Nhập tên môn học..." />
+        </div>
+
         <div class="table-responsive">
             <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                 <thead>
@@ -197,14 +201,14 @@
                                     </span>
                                     <span class="text">Sinh Viên</span>
                                 </span>
-                               
+
                             </td>
                             <td>
                                 @Html.ActionLink("Chỉnh sửa", "Edit", new { id = item.MaMH }) |
                                 <a class="delete" data-model-id="@item.MaMH" onclick="Delete(this)" style="cursor: pointer;">Xóa</a>
                             </td>
                         </tr>
-                        }
+                    }
                 </tbody>
             </table>
         </div>
@@ -218,6 +222,26 @@
     var dt;
 
     function loadDataTable() {
+
+        function removeAccents(str) {
+            return str.normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '')
+                .replace(/đ/g, 'd').replace(/Đ/g, 'D');
+        }
+
+        $.fn.dataTable.ext.search.push(
+            function (settings, data, dataIndex) {
+
+                var TenMH = removeAccents($('#Filter_QLTenMH').val()).toLowerCase();
+                var Data_TenMH = removeAccents(data[0]).toLowerCase();
+
+                if (Data_TenMH.includes(TenMH)) {
+                    return true;
+                }
+                return false;
+            }
+        );
+
         dt = $("#dataTable").DataTable({
             "language": {
                 "lengthMenu": "Số hàng mỗi trang _MENU_",
@@ -234,6 +258,10 @@
                 searchPlaceholder: "Nhập tên môn học...",
                 zeroRecords: "Không tìm thấy kết quả",
             }
+        });
+
+        $('#Filter_QLTenMH').on('input', function (e) {
+            dt.draw();
         });
     }
 

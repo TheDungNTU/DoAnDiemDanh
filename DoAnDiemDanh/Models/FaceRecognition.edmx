@@ -62,6 +62,7 @@
           <Property Name="NoiDung" Type="nvarchar(max)" />
           <Property Name="NgayGui" Type="date" />
           <Property Name="ThoiGianGui" Type="datetime" />
+          <Property Name="DaXem" Type="bit" />
         </EntityType>
         <EntityType Name="KHOA">
           <Key>
@@ -69,6 +70,18 @@
           </Key>
           <Property Name="MaKhoa" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="TenKhoa" Type="nvarchar" MaxLength="200" Nullable="false" />
+        </EntityType>
+        <EntityType Name="LICHGIANGDAY">
+          <Key>
+            <PropertyRef Name="MaMH" />
+          </Key>
+          <Property Name="MaMH" Type="int" Nullable="false" />
+          <Property Name="ThuHai" Type="bit" />
+          <Property Name="ThuBa" Type="bit" />
+          <Property Name="ThuTu" Type="bit" />
+          <Property Name="ThuNam" Type="bit" />
+          <Property Name="ThuSau" Type="bit" />
+          <Property Name="ThuBay" Type="bit" />
         </EntityType>
         <EntityType Name="LOP">
           <Key>
@@ -146,19 +159,7 @@
           <Property Name="MaSV" Type="int" />
           <Property Name="MaQuyen" Type="int" />
         </EntityType>
-        <EntityType Name="THOIKHOABIEU">
-          <Key>
-            <PropertyRef Name="MaMH" />
-          </Key>
-          <Property Name="MaMH" Type="int" Nullable="false" />
-          <Property Name="ThuHai" Type="bit" />
-          <Property Name="ThuBa" Type="bit" />
-          <Property Name="ThuTu" Type="bit" />
-          <Property Name="ThuNam" Type="bit" />
-          <Property Name="ThuSau" Type="bit" />
-          <Property Name="ThuBay" Type="bit" />
-        </EntityType>
-        <Association Name="FK__CTDD__MaKN__31EC6D26">
+        <Association Name="FK__CTDD__MaKN__32E0915F">
           <End Role="KHIEUNAI" Type="Self.KHIEUNAI" Multiplicity="0..1" />
           <End Role="CTDD" Type="Self.CTDD" Multiplicity="*" />
           <ReferentialConstraint>
@@ -170,7 +171,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__DIEMDANH_T__MaSV__37A5467C">
+        <Association Name="FK__DIEMDANH_T__MaSV__38996AB5">
           <End Role="SINHVIEN" Type="Self.SINHVIEN" Multiplicity="0..1">
             <OnDelete Action="Cascade" />
           </End>
@@ -197,7 +198,9 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK__TAIKHOANGI__MaGV__1A14E395">
-          <End Role="GIANGVIEN" Type="Self.GIANGVIEN" Multiplicity="0..1" />
+          <End Role="GIANGVIEN" Type="Self.GIANGVIEN" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Role="TAIKHOANGIANGVIEN" Type="Self.TAIKHOANGIANGVIEN" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="GIANGVIEN">
@@ -208,7 +211,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__TAIKHOANS__MaQuy__47DBAE45">
+        <Association Name="FK__TAIKHOANS__MaQuy__48CFD27E">
           <End Role="QUYEN" Type="Self.QUYEN" Multiplicity="0..1" />
           <End Role="TAIKHOANSINHVIEN" Type="Self.TAIKHOANSINHVIEN" Multiplicity="*" />
           <ReferentialConstraint>
@@ -220,7 +223,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__TAIKHOANSI__MaSV__46E78A0C">
+        <Association Name="FK__TAIKHOANSI__MaSV__47DBAE45">
           <End Role="SINHVIEN" Type="Self.SINHVIEN" Multiplicity="0..1">
             <OnDelete Action="Cascade" />
           </End>
@@ -374,12 +377,12 @@
           <End Role="MONHOC" Type="Self.MONHOC" Multiplicity="1">
             <OnDelete Action="Cascade" />
           </End>
-          <End Role="THOIKHOABIEU" Type="Self.THOIKHOABIEU" Multiplicity="0..1" />
+          <End Role="LICHGIANGDAY" Type="Self.LICHGIANGDAY" Multiplicity="0..1" />
           <ReferentialConstraint>
             <Principal Role="MONHOC">
               <PropertyRef Name="MaMH" />
             </Principal>
-            <Dependent Role="THOIKHOABIEU">
+            <Dependent Role="LICHGIANGDAY">
               <PropertyRef Name="MaMH" />
             </Dependent>
           </ReferentialConstraint>
@@ -392,6 +395,7 @@
           <EntitySet Name="HINHANH" EntityType="Self.HINHANH" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="KHIEUNAI" EntityType="Self.KHIEUNAI" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="KHOA" EntityType="Self.KHOA" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="LICHGIANGDAY" EntityType="Self.LICHGIANGDAY" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="LOP" EntityType="Self.LOP" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="MONHOC" EntityType="Self.MONHOC" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="NGAYLE" EntityType="Self.NGAYLE" Schema="dbo" store:Type="Tables" />
@@ -400,12 +404,11 @@
           <EntitySet Name="SINHVIEN_MONHOC" EntityType="Self.SINHVIEN_MONHOC" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="TAIKHOANGIANGVIEN" EntityType="Self.TAIKHOANGIANGVIEN" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="TAIKHOANSINHVIEN" EntityType="Self.TAIKHOANSINHVIEN" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="THOIKHOABIEU" EntityType="Self.THOIKHOABIEU" Schema="dbo" store:Type="Tables" />
-          <AssociationSet Name="FK__CTDD__MaKN__31EC6D26" Association="Self.FK__CTDD__MaKN__31EC6D26">
+          <AssociationSet Name="FK__CTDD__MaKN__32E0915F" Association="Self.FK__CTDD__MaKN__32E0915F">
             <End Role="KHIEUNAI" EntitySet="KHIEUNAI" />
             <End Role="CTDD" EntitySet="CTDD" />
           </AssociationSet>
-          <AssociationSet Name="FK__DIEMDANH_T__MaSV__37A5467C" Association="Self.FK__DIEMDANH_T__MaSV__37A5467C">
+          <AssociationSet Name="FK__DIEMDANH_T__MaSV__38996AB5" Association="Self.FK__DIEMDANH_T__MaSV__38996AB5">
             <End Role="SINHVIEN" EntitySet="SINHVIEN" />
             <End Role="DIEMDANH_T" EntitySet="DIEMDANH_T" />
           </AssociationSet>
@@ -417,11 +420,11 @@
             <End Role="GIANGVIEN" EntitySet="GIANGVIEN" />
             <End Role="TAIKHOANGIANGVIEN" EntitySet="TAIKHOANGIANGVIEN" />
           </AssociationSet>
-          <AssociationSet Name="FK__TAIKHOANS__MaQuy__47DBAE45" Association="Self.FK__TAIKHOANS__MaQuy__47DBAE45">
+          <AssociationSet Name="FK__TAIKHOANS__MaQuy__48CFD27E" Association="Self.FK__TAIKHOANS__MaQuy__48CFD27E">
             <End Role="QUYEN" EntitySet="QUYEN" />
             <End Role="TAIKHOANSINHVIEN" EntitySet="TAIKHOANSINHVIEN" />
           </AssociationSet>
-          <AssociationSet Name="FK__TAIKHOANSI__MaSV__46E78A0C" Association="Self.FK__TAIKHOANSI__MaSV__46E78A0C">
+          <AssociationSet Name="FK__TAIKHOANSI__MaSV__47DBAE45" Association="Self.FK__TAIKHOANSI__MaSV__47DBAE45">
             <End Role="SINHVIEN" EntitySet="SINHVIEN" />
             <End Role="TAIKHOANSINHVIEN" EntitySet="TAIKHOANSINHVIEN" />
           </AssociationSet>
@@ -471,7 +474,7 @@
           </AssociationSet>
           <AssociationSet Name="FK_TKB_MH" Association="Self.FK_TKB_MH">
             <End Role="MONHOC" EntitySet="MONHOC" />
-            <End Role="THOIKHOABIEU" EntitySet="THOIKHOABIEU" />
+            <End Role="LICHGIANGDAY" EntitySet="LICHGIANGDAY" />
           </AssociationSet>
         </EntityContainer>
       </Schema>
@@ -491,7 +494,7 @@
           <Property Name="TTDD" Type="Boolean" />
           <Property Name="VangCoPhep" Type="Boolean" />
           <Property Name="MaKN" Type="Int32" />
-          <NavigationProperty Name="KHIEUNAI" Relationship="Self.FK__CTDD__MaKN__31EC6D26" FromRole="CTDD" ToRole="KHIEUNAI" />
+          <NavigationProperty Name="KHIEUNAI" Relationship="Self.FK__CTDD__MaKN__32E0915F" FromRole="CTDD" ToRole="KHIEUNAI" />
           <NavigationProperty Name="DIEMDANH" Relationship="Self.FK_CTDD_DD" FromRole="CTDD" ToRole="DIEMDANH" />
           <NavigationProperty Name="SINHVIEN" Relationship="Self.FK_CTDD_SINHVIEN" FromRole="CTDD" ToRole="SINHVIEN" />
         </EntityType>
@@ -513,7 +516,7 @@
           <Property Name="MaSV" Type="Int32" />
           <Property Name="Ngay" Type="DateTime" Precision="0" />
           <Property Name="Gio" Type="Time" Precision="7" />
-          <NavigationProperty Name="SINHVIEN" Relationship="Self.FK__DIEMDANH_T__MaSV__37A5467C" FromRole="DIEMDANH_T" ToRole="SINHVIEN" />
+          <NavigationProperty Name="SINHVIEN" Relationship="Self.FK__DIEMDANH_T__MaSV__38996AB5" FromRole="DIEMDANH_T" ToRole="SINHVIEN" />
         </EntityType>
         <EntityType Name="GIANGVIEN">
           <Key>
@@ -546,7 +549,8 @@
           <Property Name="NoiDung" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="NgayGui" Type="DateTime" Precision="0" />
           <Property Name="ThoiGianGui" Type="DateTime" Precision="3" />
-          <NavigationProperty Name="CTDDs" Relationship="Self.FK__CTDD__MaKN__31EC6D26" FromRole="KHIEUNAI" ToRole="CTDD" />
+          <Property Name="DaXem" Type="Boolean" />
+          <NavigationProperty Name="CTDDs" Relationship="Self.FK__CTDD__MaKN__32E0915F" FromRole="KHIEUNAI" ToRole="CTDD" />
         </EntityType>
         <EntityType Name="KHOA">
           <Key>
@@ -557,6 +561,19 @@
           <NavigationProperty Name="GIANGVIENs" Relationship="Self.FK_GIANGVIEN_KHOA" FromRole="KHOA" ToRole="GIANGVIEN" />
           <NavigationProperty Name="LOPs" Relationship="Self.FK_LOP_KHOA" FromRole="KHOA" ToRole="LOP" />
           <NavigationProperty Name="SINHVIENs" Relationship="Self.FK_SINHVIEN_KHOA" FromRole="KHOA" ToRole="SINHVIEN" />
+        </EntityType>
+        <EntityType Name="LICHGIANGDAY">
+          <Key>
+            <PropertyRef Name="MaMH" />
+          </Key>
+          <Property Name="MaMH" Type="Int32" Nullable="false" />
+          <Property Name="ThuHai" Type="Boolean" />
+          <Property Name="ThuBa" Type="Boolean" />
+          <Property Name="ThuTu" Type="Boolean" />
+          <Property Name="ThuNam" Type="Boolean" />
+          <Property Name="ThuSau" Type="Boolean" />
+          <Property Name="ThuBay" Type="Boolean" />
+          <NavigationProperty Name="MONHOC" Relationship="Self.FK_TKB_MH" FromRole="LICHGIANGDAY" ToRole="MONHOC" />
         </EntityType>
         <EntityType Name="LOP">
           <Key>
@@ -582,7 +599,7 @@
           <Property Name="MaGV" Type="Int32" />
           <NavigationProperty Name="DIEMDANHs" Relationship="Self.FK_DIEMDANH_MONHOC" FromRole="MONHOC" ToRole="DIEMDANH" />
           <NavigationProperty Name="GIANGVIEN" Relationship="Self.FK_MONHOC_GIANGVIEN" FromRole="MONHOC" ToRole="GIANGVIEN" />
-          <NavigationProperty Name="THOIKHOABIEU" Relationship="Self.FK_TKB_MH" FromRole="MONHOC" ToRole="THOIKHOABIEU" />
+          <NavigationProperty Name="LICHGIANGDAY" Relationship="Self.FK_TKB_MH" FromRole="MONHOC" ToRole="LICHGIANGDAY" />
           <NavigationProperty Name="SINHVIENs" Relationship="Self.SINHVIEN_MONHOC" FromRole="MONHOC" ToRole="SINHVIEN" />
         </EntityType>
         <EntityType Name="NGAYLE">
@@ -602,7 +619,7 @@
           <Property Name="TenQuyen" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="GhiChu" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="TAIKHOANGIANGVIENs" Relationship="Self.FK__TAIKHOANG__MaQuy__1B0907CE" FromRole="QUYEN" ToRole="TAIKHOANGIANGVIEN" />
-          <NavigationProperty Name="TAIKHOANSINHVIENs" Relationship="Self.FK__TAIKHOANS__MaQuy__47DBAE45" FromRole="QUYEN" ToRole="TAIKHOANSINHVIEN" />
+          <NavigationProperty Name="TAIKHOANSINHVIENs" Relationship="Self.FK__TAIKHOANS__MaQuy__48CFD27E" FromRole="QUYEN" ToRole="TAIKHOANSINHVIEN" />
         </EntityType>
         <EntityType Name="SINHVIEN">
           <Key>
@@ -616,11 +633,11 @@
           <Property Name="MaKhoa" Type="Int32" />
           <Property Name="MaLop" Type="Int32" />
           <NavigationProperty Name="CTDDs" Relationship="Self.FK_CTDD_SINHVIEN" FromRole="SINHVIEN" ToRole="CTDD" />
-          <NavigationProperty Name="DIEMDANH_T" Relationship="Self.FK__DIEMDANH_T__MaSV__37A5467C" FromRole="SINHVIEN" ToRole="DIEMDANH_T" />
+          <NavigationProperty Name="DIEMDANH_T" Relationship="Self.FK__DIEMDANH_T__MaSV__38996AB5" FromRole="SINHVIEN" ToRole="DIEMDANH_T" />
           <NavigationProperty Name="HINHANHs" Relationship="Self.FK_HINHANH_SINHVIEN" FromRole="SINHVIEN" ToRole="HINHANH" />
           <NavigationProperty Name="KHOA" Relationship="Self.FK_SINHVIEN_KHOA" FromRole="SINHVIEN" ToRole="KHOA" />
           <NavigationProperty Name="LOP" Relationship="Self.FK_SINHVIEN_LOP" FromRole="SINHVIEN" ToRole="LOP" />
-          <NavigationProperty Name="TAIKHOANSINHVIENs" Relationship="Self.FK__TAIKHOANSI__MaSV__46E78A0C" FromRole="SINHVIEN" ToRole="TAIKHOANSINHVIEN" />
+          <NavigationProperty Name="TAIKHOANSINHVIENs" Relationship="Self.FK__TAIKHOANSI__MaSV__47DBAE45" FromRole="SINHVIEN" ToRole="TAIKHOANSINHVIEN" />
           <NavigationProperty Name="MONHOCs" Relationship="Self.SINHVIEN_MONHOC" FromRole="SINHVIEN" ToRole="MONHOC" />
         </EntityType>
         <EntityType Name="TAIKHOANGIANGVIEN">
@@ -642,23 +659,10 @@
           <Property Name="MatKhau" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="MaSV" Type="Int32" />
           <Property Name="MaQuyen" Type="Int32" />
-          <NavigationProperty Name="QUYEN" Relationship="Self.FK__TAIKHOANS__MaQuy__47DBAE45" FromRole="TAIKHOANSINHVIEN" ToRole="QUYEN" />
-          <NavigationProperty Name="SINHVIEN" Relationship="Self.FK__TAIKHOANSI__MaSV__46E78A0C" FromRole="TAIKHOANSINHVIEN" ToRole="SINHVIEN" />
+          <NavigationProperty Name="QUYEN" Relationship="Self.FK__TAIKHOANS__MaQuy__48CFD27E" FromRole="TAIKHOANSINHVIEN" ToRole="QUYEN" />
+          <NavigationProperty Name="SINHVIEN" Relationship="Self.FK__TAIKHOANSI__MaSV__47DBAE45" FromRole="TAIKHOANSINHVIEN" ToRole="SINHVIEN" />
         </EntityType>
-        <EntityType Name="THOIKHOABIEU">
-          <Key>
-            <PropertyRef Name="MaMH" />
-          </Key>
-          <Property Name="MaMH" Type="Int32" Nullable="false" />
-          <Property Name="ThuHai" Type="Boolean" />
-          <Property Name="ThuBa" Type="Boolean" />
-          <Property Name="ThuTu" Type="Boolean" />
-          <Property Name="ThuNam" Type="Boolean" />
-          <Property Name="ThuSau" Type="Boolean" />
-          <Property Name="ThuBay" Type="Boolean" />
-          <NavigationProperty Name="MONHOC" Relationship="Self.FK_TKB_MH" FromRole="THOIKHOABIEU" ToRole="MONHOC" />
-        </EntityType>
-        <Association Name="FK__CTDD__MaKN__31EC6D26">
+        <Association Name="FK__CTDD__MaKN__32E0915F">
           <End Role="KHIEUNAI" Type="Self.KHIEUNAI" Multiplicity="0..1" />
           <End Role="CTDD" Type="Self.CTDD" Multiplicity="*" />
           <ReferentialConstraint>
@@ -708,7 +712,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__DIEMDANH_T__MaSV__37A5467C">
+        <Association Name="FK__DIEMDANH_T__MaSV__38996AB5">
           <End Role="SINHVIEN" Type="Self.SINHVIEN" Multiplicity="0..1">
             <OnDelete Action="Cascade" />
           </End>
@@ -723,7 +727,9 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK__TAIKHOANGI__MaGV__1A14E395">
-          <End Role="GIANGVIEN" Type="Self.GIANGVIEN" Multiplicity="0..1" />
+          <End Role="GIANGVIEN" Type="Self.GIANGVIEN" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Role="TAIKHOANGIANGVIEN" Type="Self.TAIKHOANGIANGVIEN" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="GIANGVIEN">
@@ -796,6 +802,20 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_TKB_MH">
+          <End Role="MONHOC" Type="Self.MONHOC" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="LICHGIANGDAY" Type="Self.LICHGIANGDAY" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="MONHOC">
+              <PropertyRef Name="MaMH" />
+            </Principal>
+            <Dependent Role="LICHGIANGDAY">
+              <PropertyRef Name="MaMH" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_SINHVIEN_LOP">
           <End Role="LOP" Type="Self.LOP" Multiplicity="0..1" />
           <End Role="SINHVIEN" Type="Self.SINHVIEN" Multiplicity="*" />
@@ -805,20 +825,6 @@
             </Principal>
             <Dependent Role="SINHVIEN">
               <PropertyRef Name="MaLop" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_TKB_MH">
-          <End Role="MONHOC" Type="Self.MONHOC" Multiplicity="1">
-            <OnDelete Action="Cascade" />
-          </End>
-          <End Role="THOIKHOABIEU" Type="Self.THOIKHOABIEU" Multiplicity="0..1" />
-          <ReferentialConstraint>
-            <Principal Role="MONHOC">
-              <PropertyRef Name="MaMH" />
-            </Principal>
-            <Dependent Role="THOIKHOABIEU">
-              <PropertyRef Name="MaMH" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -834,7 +840,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__TAIKHOANS__MaQuy__47DBAE45">
+        <Association Name="FK__TAIKHOANS__MaQuy__48CFD27E">
           <End Role="QUYEN" Type="Self.QUYEN" Multiplicity="0..1" />
           <End Role="TAIKHOANSINHVIEN" Type="Self.TAIKHOANSINHVIEN" Multiplicity="*" />
           <ReferentialConstraint>
@@ -846,7 +852,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__TAIKHOANSI__MaSV__46E78A0C">
+        <Association Name="FK__TAIKHOANSI__MaSV__47DBAE45">
           <End Role="SINHVIEN" Type="Self.SINHVIEN" Multiplicity="0..1">
             <OnDelete Action="Cascade" />
           </End>
@@ -872,6 +878,7 @@
           <EntitySet Name="HINHANHs" EntityType="Self.HINHANH" />
           <EntitySet Name="KHIEUNAIs" EntityType="Self.KHIEUNAI" />
           <EntitySet Name="KHOAs" EntityType="Self.KHOA" />
+          <EntitySet Name="LICHGIANGDAYs" EntityType="Self.LICHGIANGDAY" />
           <EntitySet Name="LOPs" EntityType="Self.LOP" />
           <EntitySet Name="MONHOCs" EntityType="Self.MONHOC" />
           <EntitySet Name="NGAYLEs" EntityType="Self.NGAYLE" />
@@ -879,8 +886,7 @@
           <EntitySet Name="SINHVIENs" EntityType="Self.SINHVIEN" />
           <EntitySet Name="TAIKHOANGIANGVIENs" EntityType="Self.TAIKHOANGIANGVIEN" />
           <EntitySet Name="TAIKHOANSINHVIENs" EntityType="Self.TAIKHOANSINHVIEN" />
-          <EntitySet Name="THOIKHOABIEUx" EntityType="Self.THOIKHOABIEU" />
-          <AssociationSet Name="FK__CTDD__MaKN__31EC6D26" Association="Self.FK__CTDD__MaKN__31EC6D26">
+          <AssociationSet Name="FK__CTDD__MaKN__32E0915F" Association="Self.FK__CTDD__MaKN__32E0915F">
             <End Role="KHIEUNAI" EntitySet="KHIEUNAIs" />
             <End Role="CTDD" EntitySet="CTDDs" />
           </AssociationSet>
@@ -896,7 +902,7 @@
             <End Role="MONHOC" EntitySet="MONHOCs" />
             <End Role="DIEMDANH" EntitySet="DIEMDANHs" />
           </AssociationSet>
-          <AssociationSet Name="FK__DIEMDANH_T__MaSV__37A5467C" Association="Self.FK__DIEMDANH_T__MaSV__37A5467C">
+          <AssociationSet Name="FK__DIEMDANH_T__MaSV__38996AB5" Association="Self.FK__DIEMDANH_T__MaSV__38996AB5">
             <End Role="SINHVIEN" EntitySet="SINHVIENs" />
             <End Role="DIEMDANH_T" EntitySet="DIEMDANH_T" />
           </AssociationSet>
@@ -924,23 +930,23 @@
             <End Role="KHOA" EntitySet="KHOAs" />
             <End Role="SINHVIEN" EntitySet="SINHVIENs" />
           </AssociationSet>
+          <AssociationSet Name="FK_TKB_MH" Association="Self.FK_TKB_MH">
+            <End Role="MONHOC" EntitySet="MONHOCs" />
+            <End Role="LICHGIANGDAY" EntitySet="LICHGIANGDAYs" />
+          </AssociationSet>
           <AssociationSet Name="FK_SINHVIEN_LOP" Association="Self.FK_SINHVIEN_LOP">
             <End Role="LOP" EntitySet="LOPs" />
             <End Role="SINHVIEN" EntitySet="SINHVIENs" />
-          </AssociationSet>
-          <AssociationSet Name="FK_TKB_MH" Association="Self.FK_TKB_MH">
-            <End Role="MONHOC" EntitySet="MONHOCs" />
-            <End Role="THOIKHOABIEU" EntitySet="THOIKHOABIEUx" />
           </AssociationSet>
           <AssociationSet Name="FK__TAIKHOANG__MaQuy__1B0907CE" Association="Self.FK__TAIKHOANG__MaQuy__1B0907CE">
             <End Role="QUYEN" EntitySet="QUYENs" />
             <End Role="TAIKHOANGIANGVIEN" EntitySet="TAIKHOANGIANGVIENs" />
           </AssociationSet>
-          <AssociationSet Name="FK__TAIKHOANS__MaQuy__47DBAE45" Association="Self.FK__TAIKHOANS__MaQuy__47DBAE45">
+          <AssociationSet Name="FK__TAIKHOANS__MaQuy__48CFD27E" Association="Self.FK__TAIKHOANS__MaQuy__48CFD27E">
             <End Role="QUYEN" EntitySet="QUYENs" />
             <End Role="TAIKHOANSINHVIEN" EntitySet="TAIKHOANSINHVIENs" />
           </AssociationSet>
-          <AssociationSet Name="FK__TAIKHOANSI__MaSV__46E78A0C" Association="Self.FK__TAIKHOANSI__MaSV__46E78A0C">
+          <AssociationSet Name="FK__TAIKHOANSI__MaSV__47DBAE45" Association="Self.FK__TAIKHOANSI__MaSV__47DBAE45">
             <End Role="SINHVIEN" EntitySet="SINHVIENs" />
             <End Role="TAIKHOANSINHVIEN" EntitySet="TAIKHOANSINHVIENs" />
           </AssociationSet>
@@ -1015,6 +1021,7 @@
                 <ScalarProperty Name="NoiDung" ColumnName="NoiDung" />
                 <ScalarProperty Name="NgayGui" ColumnName="NgayGui" />
                 <ScalarProperty Name="ThoiGianGui" ColumnName="ThoiGianGui" />
+                <ScalarProperty Name="DaXem" ColumnName="DaXem" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -1023,6 +1030,19 @@
               <MappingFragment StoreEntitySet="KHOA">
                 <ScalarProperty Name="MaKhoa" ColumnName="MaKhoa" />
                 <ScalarProperty Name="TenKhoa" ColumnName="TenKhoa" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="LICHGIANGDAYs">
+            <EntityTypeMapping TypeName="FACE_RECOGNITIONModel.LICHGIANGDAY">
+              <MappingFragment StoreEntitySet="LICHGIANGDAY">
+                <ScalarProperty Name="MaMH" ColumnName="MaMH" />
+                <ScalarProperty Name="ThuHai" ColumnName="ThuHai" />
+                <ScalarProperty Name="ThuBa" ColumnName="ThuBa" />
+                <ScalarProperty Name="ThuTu" ColumnName="ThuTu" />
+                <ScalarProperty Name="ThuNam" ColumnName="ThuNam" />
+                <ScalarProperty Name="ThuSau" ColumnName="ThuSau" />
+                <ScalarProperty Name="ThuBay" ColumnName="ThuBay" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -1098,19 +1118,6 @@
                 <ScalarProperty Name="MatKhau" ColumnName="MatKhau" />
                 <ScalarProperty Name="MaSV" ColumnName="MaSV" />
                 <ScalarProperty Name="MaQuyen" ColumnName="MaQuyen" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="THOIKHOABIEUx">
-            <EntityTypeMapping TypeName="FACE_RECOGNITIONModel.THOIKHOABIEU">
-              <MappingFragment StoreEntitySet="THOIKHOABIEU">
-                <ScalarProperty Name="MaMH" ColumnName="MaMH" />
-                <ScalarProperty Name="ThuHai" ColumnName="ThuHai" />
-                <ScalarProperty Name="ThuBa" ColumnName="ThuBa" />
-                <ScalarProperty Name="ThuTu" ColumnName="ThuTu" />
-                <ScalarProperty Name="ThuNam" ColumnName="ThuNam" />
-                <ScalarProperty Name="ThuSau" ColumnName="ThuSau" />
-                <ScalarProperty Name="ThuBay" ColumnName="ThuBay" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

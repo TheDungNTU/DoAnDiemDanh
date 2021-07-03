@@ -169,6 +169,8 @@
                 `<a href='/QuanLyLop/Edit/${data.MaLop}'>Chỉnh sửa</a> |<a class="delete" data-model-id="${data.MaLop}" onclick="Delete(this)" style="cursor: pointer;">Xóa</a>`
             ]).draw().node();
             $(node).attr('id', `row_${data.MaLop}`);
+            $('#TenLop').val('');
+            $("#MaKhoa").val("").change();
             Swal.fire({
                 icon: 'success',
                 title: 'Thành Công',
@@ -178,8 +180,17 @@
 
             })
         }
-        $('#TenLop').val('');
-        $("#MaKhoa").val("").change();
+        else {
+            Swal.fire({
+                icon: 'error',
+                title: 'Có lỗi',
+                text: `Lớp đã tồn tại, vui lòng nhập một lớp khác`,
+                timer: 2000,
+                showConfirmButton: false
+
+            })
+        }
+       
     }
 
     function Delete(obj) {

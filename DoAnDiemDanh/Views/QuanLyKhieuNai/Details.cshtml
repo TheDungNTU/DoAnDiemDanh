@@ -1,0 +1,148 @@
+﻿@model DoAnDiemDanh.Models.KHIEUNAI
+@using  DoAnDiemDanh.Models
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Layout/_LayoutAdmin.cshtml";
+    IEnumerable<MONHOC> MONHOC = (IEnumerable<MONHOC>)ViewBag.MonHoc;
+}
+
+<div class="card shadow mb-4">
+    <div class="card-body">
+        <div class="table-responsive">
+            <div id="dataTableMH_wrapper" class="dataTables_wrapper dt-bootstrap4 no-footer">
+                <div class="row"><div class="col-sm-12 col-md-6"></div><div class="col-sm-12 col-md-6"></div></div><div class="row">
+                    <div class="col-sm-12">
+                        <table class="table table-bordered dataTable no-footer" width="100%" cellspacing="0" id="dataTableMH" role="grid" style="width: 100%;">
+                            <thead>
+                                <tr role="row"><th class="sorting_asc" tabindex="0" aria-controls="dataTableMH" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Tên Môn Học: activate to sort column descending" style="width: 142px;">Tên Môn Học</th><th class="sorting" tabindex="0" aria-controls="dataTableMH" rowspan="1" colspan="1" aria-label="Số Tín Chỉ: activate to sort column ascending" style="width: 116px;">Số Tín Chỉ</th><th class="sorting" tabindex="0" aria-controls="dataTableMH" rowspan="1" colspan="1" aria-label="Ngày Bắt Đầu: activate to sort column ascending" style="width: 152px;">Ngày Bắt Đầu</th><th class="sorting" tabindex="0" aria-controls="dataTableMH" rowspan="1" colspan="1" aria-label="Ngày Kết Thúc: activate to sort column ascending" style="width: 161px;">Ngày Kết Thúc</th><th class="sorting" tabindex="0" aria-controls="dataTableMH" rowspan="1" colspan="1" aria-label="Thời gian giảng dạy: activate to sort column ascending" style="width: 209px;">Thời gian giảng dạy</th><th class="sorting" tabindex="0" aria-controls="dataTableMH" rowspan="1" colspan="1" aria-label="Giảng Viên Dạy: activate to sort column ascending" style="width: 169px;">Giảng Viên Dạy</th></tr>
+                            </thead>
+                            <tbody id="data_table">
+                                @foreach (var item in MONHOC)
+                                {
+                                    <tr>
+                                        <td>
+                                            <span style="display: none;" id="MaMH">
+                                                @Html.DisplayFor(modelItem => item.MaMH)
+                                            </span>
+                                            @Html.DisplayFor(modelItem => item.TenMH)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.SoTC)
+                                        </td>
+                                        <td>
+                                            @Convert.ToDateTime(item.NgayBD).ToString("dd/MM/yyyy")
+                                        </td>
+                                        <td>
+                                            @Convert.ToDateTime(item.NgayKT).ToString("dd/MM/yyyy")
+                                        </td>
+                                        <td>
+                                            @{
+                                                TimeSpan a = (TimeSpan)item.ThoiGianKTGD - (TimeSpan)@item.ThoiGianBDGD;
+                                                var s = a.Hours + " Giờ " + a.Minutes + " Phút";
+                                            }
+                                            @s
+                                        </td>
+
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.GIANGVIEN.TenGV)
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div><div class="row"><div class="col-sm-12 col-md-5"></div><div class="col-sm-12 col-md-7"></div></div>
+            </div>
+            
+        </div>
+    </div>
+</div>
+
+<div class="row pl-3">
+    <div class="form-horizontal shadow p-3 mb-2 card col-7">
+
+        <h3>THÔNG TIN KHIẾU NẠI</h3>
+
+        <table class="table table-bordered thongtinkn" width="100%" cellspacing="0">
+        </table>
+
+
+    </div>
+    <div class="form-horizontal shadow p-3 mb-2 card col-4 ml-3">
+        <h3>THÔNG TIN ĐIỂM DANH</h3>
+        <div class="thongtindd">
+
+        </div>
+    </div>
+
+</div>
+
+<script>
+    $.get("/QuanLyKhieuNai/GetDetails", { id: @ViewBag.id }, function (data) {
+        $('.thongtindd').empty()
+        var row1 = `  <table class="table table-bordered " width="100%" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th width="200px">Mã sinh viên</th>
+                                <th>${data.MaSV}</th>
+                            </tr>
+                            <tr>
+                                <th>Tên sinh viên</th>
+                                <th>${data.TenSV}</th>
+                            </tr>
+                            <tr>
+                                <th>Tên Lớp</th>
+                                <th>${data.TenLop}</th>
+                            </tr>
+                            <tr>
+                                <th>Ngày điểm danh</th>
+                                <th>${data.NgayDD}</th>
+                            </tr>
+                            <tr>
+                                <th>Thứ</th>
+                                <th>${data.Thu}</th>
+                            </tr>    
+                            </form>
+                        </thead>
+                         </table>
+                            <form action="/QuanLyKhieuNai/SubmitKhieuNai" method="post">
+                            <table class="table table-bordered " width="100%" cellspacing="0">
+                            <tr>
+                                <input name="MaDD" value="${data.MaDD}" class="d-none">
+                                <input name="MaSV" value="${data.MaSV}" class="d-none">
+                                <input name="MaMH" value="${data.MaMH}" class="d-none">
+                                <th style="width: 200px;">Trạng thái vắng</th>
+                                <th>
+                                <select class = "form-control" id="TrangThaiVang" name="TrangThaiVang">
+                                    <option value="0">Không Phép</option>
+                                    <option value="1">Có Phép</option>
+                                </select>
+                               
+                            </tr>
+                            <tr>
+                                <th></th>
+                                <th><input type="submit" value="Chỉnh Sửa Trạng Thái" class="btn btn-success btn-icon-split p-2 border"></th>
+                            </tr>
+                            </table>
+                       `
+        $('.thongtindd').append(row1);
+
+        $('.thongtinkn').empty()
+        var row2 = `  
+                        <thead>
+                            <tr>
+                                <th width="200px">Ngày khiếu nại</th>
+                                <th>${data.NgayKN}</th>
+                            </tr>
+                            <tr>
+                                <th>Nội Dung</th>
+                                <th>${data.NoiDung}</th>
+                            </tr>
+                            <tr>
+                                <th>Hình ảnh</th>
+                                <th><img src = "/Content/img/${data.HinhAnh}" style = "width: 100px; heigth: auto;"></th>
+                            </tr>
+                        </thead>`
+        $('.thongtinkn').append(row2);
+    })
+</script>

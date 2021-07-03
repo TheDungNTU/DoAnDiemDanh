@@ -115,8 +115,7 @@ namespace DoAnDiemDanh.Controllers
                 db.MONHOCs.Add(mONHOC);
                 db.SaveChanges();
 
-
-                THOIKHOABIEU tkb = new THOIKHOABIEU();
+                LICHGIANGDAY tkb = new LICHGIANGDAY();
                 tkb.MaMH = mONHOC.MaMH;
 
                 foreach (var item in TKB)
@@ -142,10 +141,8 @@ namespace DoAnDiemDanh.Controllers
                 if (tkb.ThuSau == null) tkb.ThuSau = false;
                 if (tkb.ThuBay == null) tkb.ThuBay = false;
 
-                db.THOIKHOABIEUx.Add(tkb);
+                db.LICHGIANGDAYs.Add(tkb);
                 db.SaveChanges();
-
-             
 
                 foreach (var item in listime)
                 {

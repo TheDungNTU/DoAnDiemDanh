@@ -15,7 +15,7 @@
 </nav>
 <div class="modal fade" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
     <div class="modal-dialog" role="document" style="background-color: white;"  id="formchupanh">
-        <div class="modal-content" style="width: 800px;" >
+        <div class="modal-content" style="width: 609px;" >
             <div class="form-horizontal  p-3 form-avatar">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
@@ -25,28 +25,34 @@
                     <div class="h3 mb-2 ml-2 text-gray-800" style="font-size: 16px; font-weight: 400;">Click button để chup ảnh</div>
                     <div>
                         <div class="row">
-                            <div class="col-6">
-                                <video id="stream" width="320" height="300"></video>
+                            <div class="col-12" id="video">
+                                @*<video id="stream" width="320" height="300"></video>*@
+                                @*<iframe src="https://g3.ipcamlive.com/player/player.php?alias=60c9be7f62715" width="576" height="324" id="cameraip" />*@
+                                <iframe width="560" height="315" src="https://www.youtube.com/embed/W5PwTEnQNAg" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen id="cameraip"></iframe>
                             </div>
-                            <div class="col-6">
+                            <div class="col-7">
                                 <div class="card shadow mb-4">
                                     <div class="card-header py-3">
                                         <h6 class="m-0 font-weight-bold text-primary" id="soluong">0 images</h6>
                                     </div>
                                     <div class="card-body" style="position: relative; display: block; overflow: scroll; height: 250px; padding: 0px; padding-left: 20px;" id="hinhanh_cam">
-                                        <canvas id="capture" width="320" height="240" class="d-none"></canvas>
+                                       
                                     </div>
                                 </div>
+
+                            </div>
+                            <div class="col-3">
+                                <span class="btn btn-success btn-icon-split m-2" id="btn-capture" style="margin-left: 10px;">
+                                    <span class="text">Chụp Hình</span>
+                                </span>
+                                <span class="btn btn-success btn-icon-split m-2" id="btn-save" style="margin-left: 10px; width: 100px;">
+                                    <span class="text">Lưu ảnh</span>
+                                </span>
                             </div>
                         </div>
                     </div>
 
-                    <span class="btn btn-success btn-icon-split m-2" id="btn-capture" style="margin-left: 10px;">
-                        <span class="text">Chụp Hình</span>
-                    </span>
-                    <span class="btn btn-success btn-icon-split m-2" id="btn-save" style="margin-left: 10px;">
-                        <span class="text">Lưu ảnh</span>
-                    </span>
+                   
 
                 </div>
 
@@ -207,46 +213,49 @@
 
     var cameraStream = null;
 
-    $("#open").click(function () {
+    //$("#open").click(function () {
+    //    $("#cameraip")[0].src += ";autoplay=1"
+    //})
 
-        var mediaSupport = 'mediaDevices' in navigator;
-        if (mediaSupport && null == cameraStream) {
+    //$("#open").click(function () {
 
-            navigator.mediaDevices.getUserMedia({ video: true })
-                .then(function (mediaStream) {
-                    cameraStream = mediaStream;
-                    stream.srcObject = mediaStream;
-                    stream.play();
-                })
-                .catch(function (err) {
-                    console.log("Unable to access camera: " + err);
-                });
-        }
-        else {
-            Swal.fire({
-                icon: 'warning',
-                title: 'Camera không được truy cập',
-                text: `Hãy cấp quyền bật camera trên trình duyệt`,
-                timer: 2000,
-                showConfirmButton: false
+    //    var mediaSupport = 'mediaDevices' in navigator;
+    //    if (mediaSupport && null == cameraStream) {
 
-            })
-            return;
-        }
-    });
+    //        navigator.mediaDevices.getUserMedia({ video: true })
+    //            .then(function (mediaStream) {
+    //                cameraStream = mediaStream;
+    //                stream.srcObject = mediaStream;
+    //                stream.play();
+    //            })
+    //            .catch(function (err) {
+    //                console.log("Unable to access camera: " + err);
+    //            });
+    //    }
+    //    else {
+    //        Swal.fire({
+    //            icon: 'warning',
+    //            title: 'Camera không được truy cập',
+    //            text: `Hãy cấp quyền bật camera trên trình duyệt`,
+    //            timer: 2000,
+    //            showConfirmButton: false
 
-    $(".close").click(function () {
-        if (null != cameraStream) {
-            var track = cameraStream.getTracks()[0];
-            track.stop();
-            stream.load();
-            cameraStream = null;
-        }
-    });
+    //        })
+    //        return;
+    //    }
+    //});
 
-    $("#btn-capture").mousedown(startMouseCount);
-    $("#btn-capture").mouseup(stopMouseCount);
+    //$(".close").click(function () {
+    //    if (null != cameraStream) {
+    //        var track = cameraStream.getTracks()[0];
+    //        track.stop();
+    //        stream.load();
+    //        cameraStream = null;
+    //    }
+    //});
 
+    $("#btn-capture").click(startMouseCount)
+   
     $("#btn-save").click(() => {
         $(".close").click();
 
@@ -305,26 +314,31 @@
 
     var mouseDownCount = 0
 
+
+    
+
     function startMouseCount() {
-        mdcTimer = window.setTimeout(function () {
-            var ctx = capture.getContext('2d');
-            var img = new Image();
+      
+        html2canvas(document.querySelector("#video")).then(canvas => {
+                  
+                var img = new Image()
+                  
 
-            ctx.drawImage(stream, 0, 0, capture.width, capture.height);
+                img.src = canvas.toDataURL("image/png");
+                
+                img.width = 60;
+                img.height = 45;
+                img.style = "margin: 2px; border-radius: 5px; border: 1px black solid;"
+                soluong += 1;
 
-            img.src = capture.toDataURL("image/png");
-            img.width = 60;
-            img.height = 45;
-            img.style = "margin: 2px; border-radius: 5px;"
-
-            soluong += 1;
-            capture.innerHTML = '';
-            $("#soluong").html(`${soluong} Images`);
-            $("#hinhanh_cam").append(img);
-            $("#hinhanh_cam").scrollTop($("#hinhanh_cam")[0].scrollHeight);
-            startMouseCount();
-        }, 30);
+                $("#hinhanh_cam").append(img);
+                $("#hinhanh_cam").scrollTop($("#hinhanh_cam")[0].scrollHeight);
+            });
+        
+           
+       
     }
+
     function stopMouseCount() {
         clearTimeout(mdcTimer);
     }

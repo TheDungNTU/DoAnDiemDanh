@@ -104,6 +104,9 @@
         </div>
     </div>
     <div class="card-body">
+        <div class="filter">
+            <input type="text" class="form-control form-control-sm" id="Filter_QLTenSV" name="Filter_QLTenSV" placeholder="Tìm kiếm..." />
+        </div>
         <div style="position: absolute; top: 72px; right: 339px; z-index: 999;">
             <select class="form-control form-control-sm" id="Filter_TenKhoa" name="Filter_TenKhoa">
                 <option value=" ">Tất cả các khoa</option>
@@ -145,11 +148,19 @@
 <script>
     $(document).ready(function () {
 
-        
-
+        function removeAccents(str) {
+            return str.normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '')
+                .replace(/đ/g, 'd').replace(/Đ/g, 'D');
+        }
 
         $.fn.dataTable.ext.search.push(
             function (settings, data, dataIndex) {
+
+                var TenSV = removeAccents($('#Filter_QLTenSV').val()).toLowerCase();
+                var Data_TenSV = removeAccents(data[2]).toLowerCase();
+
+               
 
                 var TenKhoa = $('#Filter_TenKhoa option:selected').val();
                 var TenLop = $('#Filter_TenLop option:selected').val();
@@ -157,7 +168,7 @@
                 var Data_TenKhoa = data[3];
                 var Data_TenLop = data[4];
 
-                if (Data_TenLop.includes(TenLop) && Data_TenKhoa.includes(TenKhoa)) {
+                if (Data_TenLop.includes(TenLop) && Data_TenKhoa.includes(TenKhoa) && Data_TenSV.includes(TenSV)) {
                     return true;
                 }
                 return false;
@@ -225,6 +236,10 @@
         });
 
         $("#Filter_TenLop").change(function () {
+            dt.draw();
+        });
+
+        $('#Filter_QLTenSV').on('input', function (e) {
             dt.draw();
         });
 

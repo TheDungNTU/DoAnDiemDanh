@@ -28,7 +28,8 @@ namespace DoAnDiemDanh.Controllers
         [ValidateAntiForgeryToken]
         public JsonResult Create([Bind(Include = "MaLop,TenLop,MaKhoa")] LOP lOP, string TenKhoa)
         {
-            if (ModelState.IsValid)
+            var Lop = db.LOPs.SingleOrDefault(s => s.TenLop == lOP.TenLop && s.MaKhoa == lOP.MaKhoa);
+            if (Lop == null)
             {
                 db.LOPs.Add(lOP);
                 db.SaveChanges();

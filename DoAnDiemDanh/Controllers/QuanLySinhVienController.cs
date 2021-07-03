@@ -41,13 +41,25 @@ namespace DoAnDiemDanh.Controllers
                     }
                 });
                 DataTable dt = result.Tables[0];
-                
+
+                foreach (DataRow item in dt.Rows)
+                {
+                    var email = item["Email"].ToString();
+                    if (db.SINHVIENs.Any(_ => _.Email == email))
+                    {
+                        return Json(false, JsonRequestBehavior.AllowGet);
+                    }
+                }
+
                 foreach (DataRow item in dt.Rows)
                 {
                     if (item["STT"].ToString() != "")
                     {
                         var tenkhoa = item["Tên Khoa"].ToString();
                         var tenlop = item["Tên Lớp"].ToString();
+                        var diachi = item["Địa chỉ"].ToString();
+                        var sdt = item["SĐT"].ToString();
+                        var email = item["Email"].ToString();
                         KHOA Khoa = db.KHOAs.Single(_ => _.TenKhoa.Contains(tenkhoa));
                         LOP lop = db.LOPs.Single(_ => _.TenLop.Contains(tenlop));
                         if (Khoa != null && lop != null)
@@ -60,7 +72,21 @@ namespace DoAnDiemDanh.Controllers
                             svr.TenLop = lop.TenLop;
                             sv.MaKhoa = Khoa.MaKhoa;
                             sv.MaLop = lop.MaLop;
+                            sv.DiaChi = diachi;
+                            svr.DiaChi = diachi;
+                            sv.SDT = sdt;
+                            svr.SDT = sdt;
+                            sv.Email = email;
+                            svr.Email = email;
                             db.SINHVIENs.Add(sv);
+                            db.SaveChanges();
+
+                            var tk = new TAIKHOANSINHVIEN();
+                            tk.MaQuyen = 3;
+                            tk.MatKhau = "sinhvien123";
+                            tk.MaSV = sv.MaSV;
+                            tk.TaiKhoan = sv.Email;
+                            db.TAIKHOANSINHVIENs.Add(tk);
                             db.SaveChanges();
                             svr.MaSV = sv.MaSV;
                             listSV.Add(svr);
@@ -69,8 +95,6 @@ namespace DoAnDiemDanh.Controllers
                 }
                 stream.Close();
             }
-            
-
             return Json(listSV, JsonRequestBehavior.AllowGet);
         }
 
@@ -189,6 +213,9 @@ namespace DoAnDiemDanh.Controllers
         public JsonResult DeleteConfirmed(int id)
         {
             SINHVIEN sINHVIEN = db.SINHVIENs.Find(id);
+            TAIKHOANSINHVIEN tk = db.TAIKHOANSINHVIENs.Single(_ => _.MaSV == sINHVIEN.MaSV);
+            db.TAIKHOANSINHVIENs.Remove(tk);
+            db.SaveChanges();
             var data = new
             {
                 id = id,
@@ -212,9 +239,10 @@ namespace DoAnDiemDanh.Controllers
         {
             public int MaSV { get; set; }
             public string TenSV { get; set; }
-
             public string TenKhoa { get; set; }
-
+            public string DiaChi { get; set; }
+            public string SDT { get; set; }
+            public string Email { get; set; }
             public string TenLop { get; set; }
 
         }

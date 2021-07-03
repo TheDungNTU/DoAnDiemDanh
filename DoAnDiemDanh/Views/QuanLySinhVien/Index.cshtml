@@ -148,19 +148,13 @@
         <span class="icon text-white-50">
             <i class="fas fa-cloud-upload-alt"></i>
         </span>
-        <span class="text">Train Model</span>
+        <span class="text">Huấn luyện ảnh</span>
     </button>
     <button class="btn btn-success btn-icon-split shadow" style="position: absolute; top: 5px; right: 260px" data-toggle="modal" data-target="#exampleModalLong" id="importexcel">
         <span class="icon text-white-50">
             <i class="fas fa-file-excel"></i>
         </span>
         <span class="text">Import File Excel</span>
-    </button>
-    <button class="btn btn-success btn-icon-split shadow" style="position: absolute; top: 5px; right: 662px" id="stopcam">
-        <span class="icon text-white-50">
-            <i class="fas fa-file-excel"></i>
-        </span>
-        <span class="text">Tắt Server</span>
     </button>
 </p>
 
@@ -361,9 +355,7 @@
                 showConfirmButton: false
 
             })
-        }
-        
-       
+        } 
     }
 
     function Delete(obj) {
@@ -409,8 +401,6 @@
 
             }
         })
-
-
     };
 
     function FnBeginImport() {
@@ -419,67 +409,81 @@
     }
 
     function FnSuccessImport(data) {
-        $.each(data, function (index, value) {
-            var node = dt.row.add([
-                value.MaSV,
-                value.TenSV,
-                value.Email,
-                value.SDT,
-                value.TenKhoa,
-                value.TenLop,
-                `<a href="/QuanLyHinhAnh/Details_SinhVien_HinhAnh/${value.MaSV}" class="btn btn-primary btn-icon-split">
+        if (data != false) {
+            console.log(data);
+            $.each(data, function (index, value) {
+                var node = dt.row.add([
+                    value.MaSV,
+                    value.TenSV,
+                    value.Email,
+                    value.SDT,
+                    value.TenKhoa,
+                    value.TenLop,
+                    `<a href="/QuanLyHinhAnh/Details_SinhVien_HinhAnh/${value.MaSV}" class="btn btn-primary btn-icon-split">
                                         <span class="icon text-white-50">
                                             0
                                         </span>
                                         <span class="text">Hình ảnh</span>
                                     </a>`,
-                `<a href='/QuanLySinhVien/Edit/${value.MaSV}'>Chỉnh sửa</a> | <a class="delete" data-model-id="${value.MaSV}" onclick="Delete(this)" style="cursor: pointer;">Xóa</a>`
-            ]).draw().node();
-            $(node).attr('id', `row_${value.MaSV}`);
-        })
-    }
-
-    function FnCompleteImport() {
-        $('.loader-wrapper').hide();
-        Swal.fire({
-            icon: 'success',
-            title: 'Thành Công',
-            text: `Import danh sách sinh viên thành công`,
-            timer: 2000,
-            showConfirmButton: false
-
-        })
-    }
-
-    $('#train_model').click(function () {
-        $.post("http://127.0.0.1:6868/train", function (data) {
-            $(".close").click();
-            $('#hinhanh_cam').empty();
+                    `<a href='/QuanLySinhVien/Edit/${value.MaSV}'>Chỉnh sửa</a> | <a class="delete" data-model-id="${value.MaSV}" onclick="Delete(this)" style="cursor: pointer;">Xóa</a>`
+                ]).draw().node();
+                $(node).attr('id', `row_${value.MaSV}`);
+            })
+            $('.loader-wrapper').hide();
             Swal.fire({
                 icon: 'success',
                 title: 'Thành Công',
-                text: `Train ảnh sinh viên thành công`,
+                text: `Import danh sách sinh viên thành công`,
                 timer: 2000,
                 showConfirmButton: false
-
             })
-        })
-    });
-
-    $('#stopcam').click(function () {
-        $.post("http://127.0.0.1:6868/stop", function (data) {
-            $(".close").click();
-            $('#hinhanh_cam').empty();
+        }
+        else {
+            $('.loader-wrapper').hide();
             Swal.fire({
-                icon: 'success',
-                title: data,
-                text: `Train ảnh sinh viên thành công`,
+                icon: 'error',
+                title: 'Có lỗi xảy ra',
+                text: `Đã tồn tại email, vui lòng kiểm tra lại`,
                 timer: 2000,
                 showConfirmButton: false
+            })
+        }
+    }
 
+    function FnCompleteImport() {
+        
+    }
+
+    $('#train_model').click(function () {
+        $.post("http://127.0.0.1:6868/stop")
+            .done(function (data) {
+                $.post("http://127.0.0.1:6868/train", function (data) {
+                    $(".close").click();
+                    $('#hinhanh_cam').empty();
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Thành Công',
+                        text: `Update Data`,
+                        timer: 2000,
+                        showConfirmButton: false
+
+                    })
+                })
+            })
+            .fail((data) => {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Thất bại',
+                    text: `Server hiện đang tắt, vui lòng bật lại`,
+                    timer: 2000,
+                    showConfirmButton: false
+
+                })
             })
         })
-    });
+   
+
+   
 
 
 

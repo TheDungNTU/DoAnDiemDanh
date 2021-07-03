@@ -1,6 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <sitemanifest>
-  <DbDacFx path="C:\Users\Admin\source\repos\DoAnDiemDanh\DoAnDiemDanh\obj\Release\AutoScripts\ASPNETConnectionString_IncrementalSchemaOnly.dacpac" dacpacAction="Deploy" />
   <IisApp path="C:\Users\Admin\source\repos\DoAnDiemDanh\DoAnDiemDanh\obj\Release\Package\PackageTmp" />
   <setAcl path="C:\Users\Admin\source\repos\DoAnDiemDanh\DoAnDiemDanh\obj\Release\Package\PackageTmp" setAclResourceType="Directory" />
   <setAcl path="C:\Users\Admin\source\repos\DoAnDiemDanh\DoAnDiemDanh\obj\Release\Package\PackageTmp" setAclUser="anonymousAuthenticationUser" setAclResourceType="Directory" />

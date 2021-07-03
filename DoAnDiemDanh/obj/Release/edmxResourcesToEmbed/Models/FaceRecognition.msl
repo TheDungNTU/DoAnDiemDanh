@@ -61,6 +61,7 @@
           <ScalarProperty Name="NoiDung" ColumnName="NoiDung" />
           <ScalarProperty Name="NgayGui" ColumnName="NgayGui" />
           <ScalarProperty Name="ThoiGianGui" ColumnName="ThoiGianGui" />
+          <ScalarProperty Name="DaXem" ColumnName="DaXem" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -69,6 +70,19 @@
         <MappingFragment StoreEntitySet="KHOA">
           <ScalarProperty Name="MaKhoa" ColumnName="MaKhoa" />
           <ScalarProperty Name="TenKhoa" ColumnName="TenKhoa" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="LICHGIANGDAYs">
+      <EntityTypeMapping TypeName="FACE_RECOGNITIONModel.LICHGIANGDAY">
+        <MappingFragment StoreEntitySet="LICHGIANGDAY">
+          <ScalarProperty Name="MaMH" ColumnName="MaMH" />
+          <ScalarProperty Name="ThuHai" ColumnName="ThuHai" />
+          <ScalarProperty Name="ThuBa" ColumnName="ThuBa" />
+          <ScalarProperty Name="ThuTu" ColumnName="ThuTu" />
+          <ScalarProperty Name="ThuNam" ColumnName="ThuNam" />
+          <ScalarProperty Name="ThuSau" ColumnName="ThuSau" />
+          <ScalarProperty Name="ThuBay" ColumnName="ThuBay" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -144,19 +158,6 @@
           <ScalarProperty Name="MatKhau" ColumnName="MatKhau" />
           <ScalarProperty Name="MaSV" ColumnName="MaSV" />
           <ScalarProperty Name="MaQuyen" ColumnName="MaQuyen" />
-        </MappingFragment>
-      </EntityTypeMapping>
-    </EntitySetMapping>
-    <EntitySetMapping Name="THOIKHOABIEUx">
-      <EntityTypeMapping TypeName="FACE_RECOGNITIONModel.THOIKHOABIEU">
-        <MappingFragment StoreEntitySet="THOIKHOABIEU">
-          <ScalarProperty Name="MaMH" ColumnName="MaMH" />
-          <ScalarProperty Name="ThuHai" ColumnName="ThuHai" />
-          <ScalarProperty Name="ThuBa" ColumnName="ThuBa" />
-          <ScalarProperty Name="ThuTu" ColumnName="ThuTu" />
-          <ScalarProperty Name="ThuNam" ColumnName="ThuNam" />
-          <ScalarProperty Name="ThuSau" ColumnName="ThuSau" />
-          <ScalarProperty Name="ThuBay" ColumnName="ThuBay" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

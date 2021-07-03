@@ -32,6 +32,7 @@ namespace DoAnDiemDanh.Models
         public virtual DbSet<HINHANH> HINHANHs { get; set; }
         public virtual DbSet<KHIEUNAI> KHIEUNAIs { get; set; }
         public virtual DbSet<KHOA> KHOAs { get; set; }
+        public virtual DbSet<LICHGIANGDAY> LICHGIANGDAYs { get; set; }
         public virtual DbSet<LOP> LOPs { get; set; }
         public virtual DbSet<MONHOC> MONHOCs { get; set; }
         public virtual DbSet<NGAYLE> NGAYLEs { get; set; }
@@ -39,6 +40,5 @@ namespace DoAnDiemDanh.Models
         public virtual DbSet<SINHVIEN> SINHVIENs { get; set; }
         public virtual DbSet<TAIKHOANGIANGVIEN> TAIKHOANGIANGVIENs { get; set; }
         public virtual DbSet<TAIKHOANSINHVIEN> TAIKHOANSINHVIENs { get; set; }
-        public virtual DbSet<THOIKHOABIEU> THOIKHOABIEUx { get; set; }
     }
 }
