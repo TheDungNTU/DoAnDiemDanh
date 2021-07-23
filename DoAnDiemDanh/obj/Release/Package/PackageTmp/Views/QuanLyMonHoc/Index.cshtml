@@ -22,125 +22,48 @@
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="@Url.Action("Index","DiemDanh")">Trang Chủ</a></li>
-       
         <li class="breadcrumb-item " aria-current="page">Quản lý môn học</li>
     </ol>
 </nav>
 
-<!-- Modal -->
-<div class="modal fade" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content" style="width: 568px;">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLongTitle">Thêm Môn Học</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            @using (Ajax.BeginForm("Create", "QuanLyMonHoc", new AjaxOptions { HttpMethod = "POST", OnSuccess = "FnSuccess" }, new { @class = "formMH" }))
-            {
-                @Html.AntiForgeryToken()
-
-                <div class="form-horizontal p-3 mb-2">
-                    <div class="form-group">
-                        <label class="control-label col-md-4" for="TenMH">Tên Môn Học</label>
-                        <div class="col-md-12">
-                            <input class="form-control text-box single-line" id="TenMH" name="TenMH" type="text" value="" required>
-                            <span class="field-validation-valid text-danger" data-valmsg-for="TenMH" data-valmsg-replace="true"></span>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="control-label col-md-4" for="SoTC">Số Tín Chỉ</label>
-                        <div class="col-md-12">
-                            <input class="form-control text-box single-line" data-val="true" data-val-number="The field SoTC must be a number." id="SoTC" name="SoTC" type="number" value="1" required>
-                            <span class="field-validation-valid text-danger" data-valmsg-for="SoTC" data-valmsg-replace="true"></span>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="control-label col-md-4" for="NgayBD">Ngày Bắt Đầu</label>
-                        <div class="col-md-12">
-                            <input class="form-control text-box single-line" data-val="true" data-val-date="The field NgayBD must be a date." id="NgayBD" name="NgayBD" type="date" value="@DateTime.Now.ToString("yyyy-MM-dd")" @*min="@DateTime.Now.ToString("yyyy-MM-dd")"*@ required>
-                            <span class="field-validation-valid text-danger" data-valmsg-for="NgayBD" data-valmsg-replace="true"></span>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="control-label col-md-4" for="NgayKT">Ngày Kết Thúc</label>
-                        <div class="col-md-12">
-                            <input class="form-control text-box single-line" data-val="true" data-val-date="The field NgayKT must be a date." id="NgayKT" name="NgayKT" type="date" value="" @*min="@DateTime.Now.ToString("yyyy-MM-dd")"*@ required>
-                            <span class="field-validation-valid text-danger" data-valmsg-for="NgayKT" data-valmsg-replace="true"></span>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="control-label col-md-4" for="TKB">Thời Khóa Biểu</label>
-                        <div class="col-md-12">
-                            <select class="form-control mul-select" id="TKB" name="TKB" required multiple="multiple" style="width: 100%">
-                                <option value="1">Thứ Hai</option>
-                                <option value="2">Thứ Ba</option>
-                                <option value="3">Thứ Tư</option>
-                                <option value="4">Thứ Năm</option>
-                                <option value="5">Thứ Sáu</option>
-                                <option value="6">Thứ Bảy</option>
-                            </select>
-                            <span class="field-validation-valid text-danger" data-valmsg-for="NgayKT" data-valmsg-replace="true"></span>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="control-label col-md-4" for="ThoiGianBDGD">Thời Gian Bắt Đầu</label>
-                        <div class="col-md-12">
-                            <input class="form-control text-box single-line" id="ThoiGianBDGD" name="ThoiGianBDGD" type="time" value="" required>
-                            <span class="field-validation-valid text-danger" data-valmsg-for="ThoiGianBDGD" data-valmsg-replace="true"></span>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="control-label col-md-4" for="ThoiGianKTGD">Thời Gian Kết Thúc</label>
-                        <div class="col-md-12">
-                            <input class="form-control text-box single-line" id="ThoiGianKTGD" name="ThoiGianKTGD" type="time" value="" required>
-                            <span class="field-validation-valid text-danger" data-valmsg-for="ThoiGianKTGD" data-valmsg-replace="true"></span>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <input class="form-control text-box single-line" id="TenGV" name="TenGV" type="text" value="" style="display: none;">
-                        <label class="control-label col-md-4" for="MaGV">Giảng Viên Dạy</label>
-                        <div class="col-md-12">
-                            <select class="form-control" id="MaGV" name="MaGV" required>
-                                <option value="">Mời bạn chọn Giảng Viên</option>
-                                @foreach (var item in GiangVien)
-                                {
-                                    <option value="@item.MaGV">@item.TenGV</option>
-                                }
-                            </select>
-                            <span class="field-validation-valid text-danger" data-valmsg-for="MaGV" data-valmsg-replace="true"></span>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <div class="col-md-offset-2 col-md-12 text-left d-flex justify-content-lg-end">
-                            <button type="button" class="btn btn-secondary mr-2" data-dismiss="modal">Đóng</button>
-                            <button type="submit" class="btn btn-success btn-icon-split p-2 border">Thêm mới</button>
-                        </div>
-                    </div>
+<div>
+    @using (Ajax.BeginForm("Create", "QuanLyMonHoc", new AjaxOptions { HttpMethod = "POST", OnSuccess = "FnSuccess" }, new { @class = "formMH" }))
+    {
+        @Html.AntiForgeryToken()
+        <div class="form-horizontal shadow p-3 mb-2 card">
+            <div class="form-group">
+                <label class="control-label col-md-4" for="TenMH">Tên Môn Học</label>
+                <div class="col-md-12">
+                    <input class="form-control text-box single-line" id="TenMH" name="TenMH" type="text" value="" required>
+                    <span class="field-validation-valid text-danger" data-valmsg-for="TenMH" data-valmsg-replace="true"></span>
                 </div>
-            }
+            </div>
+
+            <div class="form-group">
+                <label class="control-label col-md-4" for="SoTC">Số Tín Chỉ</label>
+                <div class="col-md-12">
+                    <input class="form-control text-box single-line" data-val="true" data-val-number="The field SoTC must be a number." id="SoTC" name="SoTC" type="number" value="1" required>
+                    <span class="field-validation-valid text-danger" data-valmsg-for="SoTC" data-valmsg-replace="true"></span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label col-md-4" for="SoTC">Số ngày vắng tối đa</label>
+                <div class="col-md-12">
+                    <input class="form-control text-box single-line" data-val="true" data-val-number="The field SoTC must be a number." id="SoNgayVang" name="SoNgayVang" type="number" value="1" required>
+                    <span class="field-validation-valid text-danger" data-valmsg-for="SoNgayVang" data-valmsg-replace="true"></span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" value="Thêm mới" class="btn btn-success btn-icon-split p-2 border">
+                </div>
+            </div>
         </div>
-    </div>
+    }
 </div>
-<p>
-
-    <Button class="btn btn-success btn-icon-split shadow" style="position: absolute; top: 5px; right: 25px" data-toggle="modal" data-target="#exampleModalLong">
-        <span class="icon text-white-50">
-            <i class="fas fa-plus"></i>
-        </span>
-        <span class="text">Thêm Môn Học Mới</span>
-    </Button>
-</p>
-
+   
 
 <div class="card shadow mb-4">
     <div>
@@ -157,58 +80,44 @@
             <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                 <thead>
                     <tr>
+                        <th>Mã Môn Học</th>
                         <th>Tên Môn Học</th>
-                        <th style="width:80px;">Số Tín Chỉ</th>
-                        <th style="width:80px;">Ngày Bắt Đầu</th>
-                        <th style="width:80px;">Ngày Kết Thúc</th>
-                        <th>Thời gian giảng dạy</th>
-                        <th>Giảng Viên Dạy</th>
-                        <th>Số Sinh Viên</th>
+                        <th>Số Tín Chỉ</th>
+                        <th>Số ngày vắng tối đa</th>
+                        <th>Số Nhóm Môn Học</th>
                         <th style="width: 97px;">Chức năng</th>
                     </tr>
                 </thead>
                 <tbody id="data_table">
                     @foreach (var item in Model)
                     {
-                        <tr id="row_@item.MaMH">
-                            <td>
-                                @Html.DisplayFor(modelItem => item.TenMH)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.SoTC)
-                            </td>
-                            <td>
-                                @Convert.ToDateTime(item.NgayBD).ToString("dd/MM/yyyy")
-                            </td>
-                            <td>
-                                @Convert.ToDateTime(item.NgayKT).ToString("dd/MM/yyyy")
-                            </td>
-                            <td>
-                                @{
-                                    TimeSpan a = (TimeSpan)item.ThoiGianKTGD - (TimeSpan)@item.ThoiGianBDGD;
-                                    var s = a.Hours + " Giờ " + a.Minutes + " Phút";
-                                }
-                                @s
-                            </td>
-
-                            <td>
-                                @Html.DisplayFor(modelItem => item.GIANGVIEN.TenGV)
-                            </td>
-                            <td>
-                                <span class="btn btn-primary btn-icon-split">
-                                    <span class="icon text-white-50">
-                                        @item.SINHVIENs.Count()
-                                    </span>
-                                    <span class="text">Sinh Viên</span>
+                    <tr id="row_@item.MaMH">
+                        <td>
+                            @Html.DisplayFor(modelItem => item.MaMH)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.TenMH)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.SoTC)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.SoNgayVang)
+                        </td>
+                        <td>
+                            <a href="@Url.Action("Index","QuanLyNhomMonHoc",new{MaMH = item.MaMH})" class="btn btn-primary btn-icon-split">
+                                <span class="icon text-white-50">
+                                    @item.NHOMMONHOCs.Count()
                                 </span>
-
-                            </td>
-                            <td>
-                                @Html.ActionLink("Chỉnh sửa", "Edit", new { id = item.MaMH }) |
-                                <a class="delete" data-model-id="@item.MaMH" onclick="Delete(this)" style="cursor: pointer;">Xóa</a>
-                            </td>
-                        </tr>
-                    }
+                                <span class="text">Nhóm Môn Học</span>
+                            </a>
+                        </td>
+                        <td>
+                            @Html.ActionLink("Chỉnh sửa", "Edit", new { id = item.MaMH }) |
+                            <a class="delete" data-model-id="@item.MaMH" onclick="Delete(this)" style="cursor: pointer;">Xóa</a>
+                        </td>
+                    </tr>
+                        }
                 </tbody>
             </table>
         </div>
@@ -269,18 +178,16 @@
         if (data != false) {
             $(".close").click();
             var node = dt.row.add([
+                        data.MaMH,
                         data.TenMH,
                         data.SoTC,
-                        data.NgayBD,
-                        data.NgayKT,
-                        data.ThoiGianDay,
-                        data.GiangVienDay,
-                        `<span class="btn btn-primary btn-icon-split">
-                                    <span class="icon text-white-50">
-                                        ${0}
-                                    </span>
-                                    <span class="text">Sinh Viên</span>
-                                </span>`,
+                        data.SoNgayVang,
+                        `<a href="/QuanLyNhomMonHoc?MaMH=${data.MaMH}" class="btn btn-primary btn-icon-split">
+                                <span class="icon text-white-50">
+                                   0
+                                </span>
+                                <span class="text">Nhóm Môn Học</span>
+                            </a>`,
                 `<a href="/QuanLyMonHoc/Edit/${data.MaMH}">Chỉnh sửa</a> |
                                              <a class="delete" data-model-id="${data.MaMH}" onclick="Delete(this)" style="cursor: pointer;">Xóa</a>`
             ]).draw(true).node();
@@ -409,23 +316,11 @@
                     required: true,
                     range: [1, 10]
                 },
-                NgayBD: {
+                SoNgayVang: {
                     required: true,
+                    range: [0, 100]
                 },
-                NgayKT: {
-                    required: true,
-                    greaterThan: "#NgayBD"
-                },
-                ThoiGianBDGD: {
-                    required: true,
-                },
-                ThoiGianKTGD: {
-                    required: true,
-                },
-                MaGV: {
-                    required: true,
-                },
-
+              
             },
             messages: {
                 TenMH: {
@@ -435,21 +330,11 @@
                     required: "Số tín chỉ không được để trống",
                     range: "Số tín chỉ phải lớn hơn 1 và bé hơn 10"
                 },
-                NgayBD: {
-                    required: "Ngày bắt đầu không được để trống",
+                SoNgayVang: {
+                    required: "Số ngày vắng tối đa không được để trống",
+                    range: "Số ngày vắng tối đa phải lớn hơn 1 và bé hơn 10"
                 },
-                NgayKT: {
-                    required: "Ngày kết thúc không được để trống.",
-                },
-                ThoiGianBDGD: {
-                    required: "Thời gian bắt đầu giảng dạy không được để trống",
-                },
-                ThoiGianKTGD: {
-                    required: "Thời gian bắt đầu giảng dạy không được để trống",
-                },
-                MaGV: {
-                    required: "Bạn chưa chọn Giảng viên, hãy chọn 1.",
-                }
+               
             }
         });
 

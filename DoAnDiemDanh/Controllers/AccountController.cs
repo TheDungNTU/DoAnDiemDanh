@@ -16,7 +16,7 @@ namespace DoAnDiemDanh.Controllers
     [Authorize]
     public class AccountController : Controller
     {
-        private FACE_RECOGNITIONEntities db = new FACE_RECOGNITIONEntities();
+        private FACE_RECOGNITION_V2Entities db = new FACE_RECOGNITION_V2Entities();
 
         [AllowAnonymous]
         public ActionResult Login(string returnUrl)

@@ -13,7 +13,7 @@ namespace DoAnDiemDanh.Controllers
     [Authorize(Roles = "Admin")]
     public class QuanLyKhoaController : Controller
     {
-        private FACE_RECOGNITIONEntities db = new FACE_RECOGNITIONEntities();
+        private FACE_RECOGNITION_V2Entities db = new FACE_RECOGNITION_V2Entities();
 
         public ActionResult Index()
         {
@@ -25,13 +25,13 @@ namespace DoAnDiemDanh.Controllers
         public JsonResult Create([Bind(Include = "MaKhoa,TenKhoa")] KHOA kHOA)
         {
 
-            //var Khoa = db.KHOAs.SingleOrDefault(s => s.TenKhoa == kHOA.TenKhoa);
-            //if(Khoa == null)
-            //{
+            var Khoa = db.KHOAs.SingleOrDefault(s => s.TenKhoa == kHOA.TenKhoa);
+            if(Khoa == null)
+            {
                 db.KHOAs.Add(kHOA);
                 db.SaveChanges();
-            //    return Json(kHOA, JsonRequestBehavior.AllowGet);
-            //}
+                return Json(kHOA, JsonRequestBehavior.AllowGet);
+            }
             return Json(false,JsonRequestBehavior.AllowGet);
         }
 

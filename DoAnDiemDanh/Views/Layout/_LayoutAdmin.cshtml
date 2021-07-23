@@ -104,14 +104,29 @@
                                     <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
                                         <div class="bg-white py-2 collapse-inner rounded">
                                             <a class="collapse-item" href="@Url.Action("Index", "QuanLyKhoa")">Quản Lý Khoa</a>
-                                            <a class="collapse-item" href="@Url.Action("Index", "QuanLyLop")">
-                                                Quản Lý Lớp Học<a>
-                                                    <a class="collapse-item" href="@Url.Action("Index", "QuanLyGiangVien")">Quản Lý Giảng Viên</a>
-                                                    <a class="collapse-item" href="@Url.Action("Index", "QuanLySinhVien")">Quản Lý Sinh Viên</a>
-                                                    <a class="collapse-item" href="@Url.Action("Index", "QuanLyMonHoc")">Quản Lý Môn Học</a>
+                                            <a class="collapse-item" href="@Url.Action("Index", "QuanLyLop")">Quản Lý Lớp Học<a>
+                                            <a class="collapse-item" href="@Url.Action("Index", "QuanLyGiangVien")">Quản Lý Giảng Viên</a>
+                                            <a class="collapse-item" href="@Url.Action("Index", "QuanLySinhVien")">Quản Lý Sinh Viên</a>
+                                            <a class="collapse-item" href="@Url.Action("Index", "QuanLyMonHoc")">Quản Lý Môn Học</a>
                                         </div>
                                     </div>
                                 </li>
+
+                                 <li class="nav-item">
+                                    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseThree"
+                                       aria-expanded="true" aria-controls="collapseThree">
+                                        <i class="fas fa-fw fa-cog"></i>
+                                        <span>Quản Lý Thiết Bị</span>
+                                    </a>
+                                    <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordionSidebar">
+                                        <div class="bg-white py-2 collapse-inner rounded">
+                                            <a class="collapse-item" href="@Url.Action("Index", "QuanLyCamera")">Quản Lý Camera</a>
+                                            <a class="collapse-item" href="@Url.Action("Index", "QuanLyPhongHoc")">Quản Lý Phòng học</a>
+                                        </div>
+                                    </div>
+                                </li>
+
+
                             }
 
                         }
@@ -154,12 +169,7 @@
                                 </li>
 
                                 <!-- Nav Item - Charts -->
-                                <li class="nav-item">
-                                    <a class="nav-link" href="#">
-                                        <i class="fas fa-fw fa-chart-area"></i>
-                                        <span>Thống Kê</span>
-                                    </a>
-                                </li>
+                              
 
                             }
 
@@ -184,7 +194,13 @@
                                 <li class="nav-item">
                                     <a class="nav-link" href="@Url.Action("Index", "DiemDanh")">
                                         <i class="fas fa-fw fa-chart-area"></i>
-                                        <span>Điểm Danh</span>
+                                        <span>Điểm Danh Sinh Viên</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="@Url.Action("DiemDanhGV", "DiemDanh")">
+                                        <i class="fas fa-fw fa-chart-area"></i>
+                                        <span>Điểm Danh Giảng Viên</span>
                                     </a>
                                 </li>
 
@@ -196,13 +212,7 @@
                                 </li>
 
                                 <!-- Nav Item - Charts -->
-                                <li class="nav-item">
-                                    <a class="nav-link" href="#">
-                                        <i class="fas fa-fw fa-chart-area"></i>
-                                        <span>Thống Kê</span>
-                                    </a>
-                                </li>
-
+                               
                                 <!-- Nav Item - Tables -->
                                 <!-- Divider -->
                             }

@@ -37,8 +37,15 @@
                         <option value="@item.MaMH">@item.TenMH</option>
                     }
                 </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-8" style="font-size: 17px; font-weight:bold">Nhóm môn học</label>
+            <div class="col-md-12">
+                <select class="form-control" id="MaNMH" name="MaNMH" required>
+                   
+                </select>
                 <input type="submit" value="Đăng Ký Môn Học" class="btn btn-success btn-icon-split p-2 border mt-2 submit">
-                
             </div>
         </div>
     </div>
@@ -51,7 +58,10 @@
                             <tr>
                                 <th width="200px">Tên Môn Học</th>
                                 <th>.....................</th>
-
+                            </tr>
+                            <tr>
+                                <th>Số Tín Chỉ</th>
+                                <th>.....................</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -60,7 +70,7 @@
                                 <th>.....................</th>
                             </tr>
                             <tr>
-                                <th>Số Tín Chỉ</th>
+                                <th>Phòng học</th>
                                 <th>.....................</th>
                             </tr>
                         </tbody>
@@ -227,26 +237,40 @@
 
         }
 
+        $("#MaMH").change(function () {
+            $.get("/QuanLyMonHoc/GetNhomMonHoc", { id: $(this).val() }, function (data) {
+                $("#MaNMH").empty()
+                $("#MaNMH").append("<option value=''>Chọn nhóm môn học</option>")
+                $.each(data, function (index, row) {
+                    $("#MaNMH").append("<option value='" + row.MaNMH + "'>Nhóm Môn Học - " + row.MaNMH + "</option>")
+                })
+            })
+        })
 
-        $('#MaMH').change(function () {
-            $.get("/QuanLyMonHoc/GetThongTinMonHoc", { MaMH: $(this).val() }, function (data) {
+
+        $('#MaNMH').change(function () {
+            $.get("/QuanLyMonHoc/GetThongTinMonHoc", { MaNMH: $(this).val(), MaMH: $("#MaMH").val() }, function (data) {
+                console.log(data)
                 $('.thongtinmh').empty()
                 var row = ` <thead>
                             <tr>
                                 <th width="200px">Tên Môn Học</th>
                                 <th>${data.TenMH}</th>
-
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <th>Giảng Viên Dạy</th>
-                                <th>${data.TenGV}</th>
-                            </tr>
                             <tr>
                                 <th>Số Tín Chỉ</th>
                                 <th>${data.SoTC}</th>
                             </tr>
+                        </thead>
+                        <tbody>
+                             <tr>
+                                <th>Giảng Viên Dạy</th>
+                                <th>${data.TenGV}</th>
+                            </tr>
+                            <tr>
+                                <th>Giảng Viên Dạy</th>
+                                <th>${data.TenPhongHoc}</th>
+                            </tr>
+                           
                         </tbody>`
                 $('.thongtinmh').append(row);
 
@@ -272,7 +296,7 @@
 
             }
 
-            $.post("/QuanLyMonHoc/DangKyMonHoc", { MaMH: $('#MaMH').val(), data: listMaSV })
+            $.post("/QuanLyMonHoc/DangKyMonHoc", { MaMH: $('#MaMH').val(), MaNMH: $('#MaNMH').val(),data: listMaSV })
                .done(function (data) {
                     dt.rows('.selected')
                        .remove()

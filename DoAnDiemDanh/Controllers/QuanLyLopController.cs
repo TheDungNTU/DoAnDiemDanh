@@ -13,7 +13,7 @@ namespace DoAnDiemDanh.Controllers
     [Authorize(Roles = "Admin")]
     public class QuanLyLopController : Controller
     {
-        private FACE_RECOGNITIONEntities db = new FACE_RECOGNITIONEntities();
+        private FACE_RECOGNITION_V2Entities db = new FACE_RECOGNITION_V2Entities();
 
         // GET: QuanLyLop
         public ActionResult Index()

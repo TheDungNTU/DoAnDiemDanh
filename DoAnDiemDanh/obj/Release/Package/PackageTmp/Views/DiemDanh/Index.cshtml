@@ -4,7 +4,12 @@
     Layout = "~/Views/Layout/_LayoutAdmin.cshtml";
     IEnumerable<MONHOC> MONHOC = (IEnumerable<MONHOC>)ViewBag.MonHoc;
 }
-
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="@Url.Action("Index","DiemDanh")">Trang Chủ</a></li>
+        <li class="breadcrumb-item " aria-current="page">Điểm danh sinh viên</li>
+    </ol>
+</nav>
 <div class="row">
     @foreach (var item in MONHOC)
     {
@@ -16,12 +21,12 @@
                         <div class="course-info">
                             <div class="progress-container">
                                 <span class="progress-text">
-                                    From: @item.ThoiGianBDGD - To: @item.ThoiGianKTGD
+                                   
                                 </span>
                             </div>
-                            <h6>GV: @item.GIANGVIEN.TenGV</h6>
+
                             <h2>@item.TenMH</h2>
-                            <a class="btn1" href="@Url.Action("XemDiemDanh", "DiemDanh", new { @MaMH = item.MaMH })">Điểm danh</a>
+                            <a class="btn1" href="@Url.Action("XemDiemDanh", "DiemDanh", new { @MaMH = item.MaMH })">Nhóm môn học</a>
                         </div>
                     </div>
                 </div>

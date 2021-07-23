@@ -213,25 +213,37 @@
     <Compile Include="App_Start\Startup.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\DiemDanhController.cs" />
+    <Compile Include="Controllers\QuanLyCameraController.cs" />
     <Compile Include="Controllers\QuanLyGiangVienController.cs" />
     <Compile Include="Controllers\QuanLyHinhAnhController.cs" />
     <Compile Include="Controllers\QuanLyKhieuNaiController.cs" />
     <Compile Include="Controllers\QuanLyKhoaController.cs" />
     <Compile Include="Controllers\QuanLyLopController.cs" />
     <Compile Include="Controllers\QuanLyMonHocController.cs" />
+    <Compile Include="Controllers\QuanLyNhomMonHocController.cs" />
+    <Compile Include="Controllers\QuanLyPhongHocController.cs" />
     <Compile Include="Controllers\QuanLySinhVienController.cs" />
     <Compile Include="Controllers\SinhVienController.cs" />
     <Compile Include="Controllers\ThongKeController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\CAMERA.cs">
+      <DependentUpon>FaceRecognition.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\CTDD.cs">
+      <DependentUpon>FaceRecognition.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\CTDD_GV.cs">
       <DependentUpon>FaceRecognition.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\DIEMDANH.cs">
       <DependentUpon>FaceRecognition.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\DIEMDANH_T.cs">
+    <Compile Include="Models\DIEMDANH_T_GV.cs">
+      <DependentUpon>FaceRecognition.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\DIEMDANH_T_SV.cs">
       <DependentUpon>FaceRecognition.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\FaceRecognition.Context.cs">
@@ -252,7 +264,10 @@
     <Compile Include="Models\GIANGVIEN.cs">
       <DependentUpon>FaceRecognition.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\HINHANH.cs">
+    <Compile Include="Models\HINHANH_GV.cs">
+      <DependentUpon>FaceRecognition.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\HINHANH_SV.cs">
       <DependentUpon>FaceRecognition.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\KHIEUNAI.cs">
@@ -272,6 +287,12 @@
       <DependentUpon>FaceRecognition.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\NGAYLE.cs">
+      <DependentUpon>FaceRecognition.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\NHOMMONHOC.cs">
+      <DependentUpon>FaceRecognition.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\PHONGHOC.cs">
       <DependentUpon>FaceRecognition.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\QUYEN.cs">
@@ -2242,6 +2263,17 @@
     <Content Include="Views\SinhVien\XemThoiKhoaBieu.cshtml" />
     <Content Include="Views\QuanLyKhieuNai\Details.cshtml" />
     <Content Include="Views\QuanLyKhieuNai\AlertPartial.cshtml" />
+    <Content Include="Views\QuanLyHinhAnh\Details_GiangVien_HinhAnh.cshtml" />
+    <Content Include="Views\DiemDanh\DiemDanhGV.cshtml" />
+    <Content Include="Views\DiemDanh\XemDiemDanhGV.cshtml" />
+    <Content Include="Views\QuanLyNhomMonHoc\Edit.cshtml" />
+    <Content Include="Views\QuanLyNhomMonHoc\Index.cshtml" />
+    <Content Include="Views\QuanLyPhongHoc\Edit.cshtml" />
+    <Content Include="Views\QuanLyPhongHoc\Index.cshtml" />
+    <Content Include="Views\QuanLyCamera\Edit.cshtml" />
+    <Content Include="Views\QuanLyCamera\Index.cshtml" />
+    <Content Include="Views\DiemDanh\XemChiTietDiemDanh.cshtml" />
+    <Content Include="Views\DiemDanh\XemChiTietDiemDanhGV.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

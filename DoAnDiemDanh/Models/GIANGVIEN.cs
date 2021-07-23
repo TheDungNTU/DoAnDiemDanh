@@ -17,8 +17,11 @@ namespace DoAnDiemDanh.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public GIANGVIEN()
         {
+            this.CTDD_GV = new HashSet<CTDD_GV>();
+            this.DIEMDANH_T_GV = new HashSet<DIEMDANH_T_GV>();
             this.TAIKHOANGIANGVIENs = new HashSet<TAIKHOANGIANGVIEN>();
-            this.MONHOCs = new HashSet<MONHOC>();
+            this.HINHANH_GV = new HashSet<HINHANH_GV>();
+            this.NHOMMONHOCs = new HashSet<NHOMMONHOC>();
         }
     
         public int MaGV { get; set; }
@@ -27,9 +30,15 @@ namespace DoAnDiemDanh.Models
         public Nullable<int> MaKhoa { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<CTDD_GV> CTDD_GV { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<DIEMDANH_T_GV> DIEMDANH_T_GV { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<TAIKHOANGIANGVIEN> TAIKHOANGIANGVIENs { get; set; }
         public virtual KHOA KHOA { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<MONHOC> MONHOCs { get; set; }
+        public virtual ICollection<HINHANH_GV> HINHANH_GV { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<NHOMMONHOC> NHOMMONHOCs { get; set; }
     }
 }

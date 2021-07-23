@@ -1,0 +1,420 @@
+﻿@model IEnumerable<DoAnDiemDanh.Models.NHOMMONHOC>
+@using DoAnDiemDanh.Models
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Layout/_LayoutAdmin.cshtml";
+    var MONHOC = (IEnumerable<MONHOC>)ViewBag.MonHoc;
+    var GIANGVIEN = (IEnumerable<GIANGVIEN>)ViewBag.GiangVien;
+    var PHONGHOC = (IEnumerable<PHONGHOC>)ViewBag.PhongHoc;
+
+    <style>
+        .is-invalid {
+            color: #E84C3D;
+            margin-top: 5px;
+        }
+    </style>
+}
+
+<ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="@Url.Action("Index","DiemDanh")">Trang Chủ</a></li>
+    <li class="breadcrumb-item"><a href="@Url.Action("Index","QuanLyMonHoc")">Quản lý môn học</a></li>
+    <li class="breadcrumb-item " aria-current="page">Quản lý nhóm môn học</li>
+</ol>
+
+<div class="modal fade" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content" style="width: 568px;">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Thêm nhóm môn học</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            @using (Ajax.BeginForm("Create", "QuanLyNhomMonHoc", new AjaxOptions { HttpMethod = "POST", OnSuccess = "FnSuccess" }, new { @class = "formNMH" }))
+            {
+                @Html.AntiForgeryToken()
+
+                <div class="form-horizontal p-3 mb-2">
+
+                    <div class="form-group">
+                        <label class="control-label col-md-4" for="NgayBD">Ngày Bắt Đầu</label>
+                        <div class="col-md-12">
+                            <input name="MaMH" id="MaMH" value="@MONHOC.Single().MaMH" class="d-none">
+                            <input class="form-control text-box single-line" data-val="true" data-val-date="The field NgayBD must be a date." id="NgayBD" name="NgayBD" type="date" value="@DateTime.Now.ToString("yyyy-MM-dd")" @*min="@DateTime.Now.ToString("yyyy-MM-dd")"*@ required>
+                            <span class="field-validation-valid text-danger" data-valmsg-for="NgayBD" data-valmsg-replace="true"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label col-md-4" for="TKB">Thời Khóa Biểu</label>
+                        <div class="col-md-12">
+                            <select class="form-control mul-select" id="TKB" name="TKB" required multiple="multiple" style="width: 100%">
+                                <option value="1">Thứ Hai</option>
+                                <option value="2">Thứ Ba</option>
+                                <option value="3">Thứ Tư</option>
+                                <option value="4">Thứ Năm</option>
+                                <option value="5">Thứ Sáu</option>
+                                <option value="6">Thứ Bảy</option>
+                            </select>
+                            <span class="field-validation-valid text-danger" data-valmsg-for="NgayKT" data-valmsg-replace="true"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label col-md-4" for="ThoiGianBDGD">Thời Gian Bắt Đầu</label>
+                        <div class="col-md-12">
+                            <input class="form-control text-box single-line" id="ThoiGianBD" name="ThoiGianBD" type="time" value="" required>
+                            <span class="field-validation-valid text-danger" data-valmsg-for="ThoiGianBD" data-valmsg-replace="true"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label col-md-4" for="ThoiGianKT">Thời Gian Kết Thúc</label>
+                        <div class="col-md-12">
+                            <input class="form-control text-box single-line" id="ThoiGianKT" name="ThoiGianKT" type="time" value="" required>
+                            <span class="field-validation-valid text-danger" data-valmsg-for="ThoiGianKT" data-valmsg-replace="true"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <input class="form-control text-box single-line" id="TenGV" name="TenGV" type="text" value="" style="display: none;">
+                        <label class="control-label col-md-4" for="MaGV">Giảng Viên Dạy</label>
+                        <div class="col-md-12">
+                            <select class="form-control" id="MaGV" name="MaGV" required>
+                                <option value="">Mời bạn chọn Giảng Viên</option>
+                                @foreach (var item in GIANGVIEN)
+                                {
+                                    <option value="@item.MaGV">@item.TenGV</option>
+                                }
+                            </select>
+                            <span class="field-validation-valid text-danger" data-valmsg-for="MaGV" data-valmsg-replace="true"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <input class="form-control text-box single-line" id="TenPhongHoc" name="TenPhongHoc" type="text" value="" style="display: none;">
+                        <label class="control-label col-md-4" for="MaPhongHoc">Giảng Viên Dạy</label>
+                        <div class="col-md-12">
+                            <select class="form-control" id="MaPhongHoc" name="MaPhongHoc" required>
+                                <option value="">Mời bạn chọn Phòng Học</option>
+                                @foreach (var item in PHONGHOC)
+                                {
+                                    <option value="@item.MaPhongHoc">@item.TenPhongHoc</option>
+                                }
+                            </select>
+                            <span class="field-validation-valid text-danger" data-valmsg-for="MaGV" data-valmsg-replace="true"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-md-offset-2 col-md-12 text-left d-flex justify-content-lg-end">
+                            <button type="button" class="btn btn-secondary mr-2" data-dismiss="modal">Đóng</button>
+                            <button type="submit" class="btn btn-success btn-icon-split p-2 border">Thêm mới</button>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+<p>
+    <Button class="btn btn-success btn-icon-split shadow" style="position: absolute; top: 5px; right: 25px" data-toggle="modal" data-target="#exampleModalLong">
+        <span class="icon text-white-50">
+            <i class="fas fa-plus"></i>
+        </span>
+        <span class="text">Thêm Nhóm Môn Học Mới</span>
+    </Button>
+</p>
+
+<div class="card shadow mb-4">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered" width="100%" cellspacing="0" id="dataTableMH">
+                <thead>
+                    <tr>
+                        <th>Mã môn học</th>
+                        <th>Tên môn học</th>
+                        <th>Số tín chỉ</th>
+                        <th>Số ngày vắng tối đa</th>
+                    </tr>
+                </thead>
+                <tbody id="data_table">
+                    @foreach (var item in MONHOC)
+                    {
+                        <tr>
+                            <td>
+                                @item.MaMH
+                            </td>
+                            <td>
+                                <span style="display: none;" id="MaMH">
+                                    @item.MaMH
+                                </span>
+                                @item.TenMH
+                            </td>
+                            <td>
+                                @item.SoTC
+                            </td>
+                            <td>
+                                @item.SoNgayVang
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="card shadow mb-4">
+    <div>
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">DANH SÁCH TẤT CẢ NHÓM HỌC PHẦN</h6>
+        </div>
+    </div>
+    <div class="card-body">
+      
+        <div class="table-responsive">
+            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>Mã nhóm MH</th>
+                        <th>Ngày BĐ</th>
+                        <th>Ngày KT</th>
+                        <th>Thời gian học</th>
+                        <th>Giảng Viên Dạy</th>
+                        <th>Phòng Học</th>
+                        <th>Số sinh viên</th>
+                        <th style="width: 97px;">Chức năng</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr id="row_@item.MaNMH">
+                           
+                            <td>
+                                @Html.DisplayFor(modelItem => item.MaNMH)
+                            </td>
+                            <td>
+                                @Convert.ToDateTime(item.NgayBD).ToString("dd/MM/yyyy")
+                            </td>
+                             <td>
+                                @Convert.ToDateTime(item.NgayKT).ToString("dd/MM/yyyy")
+                            </td>
+                            <td>
+                                @{
+                                    TimeSpan a = (TimeSpan)item.ThoiGianKT - (TimeSpan)@item.ThoiGianBD;
+                                    var s = a.Hours + " Giờ " + a.Minutes + " Phút";
+                                }
+                                @s
+                            </td>
+
+                            <td>
+                                @Html.DisplayFor(modelItem => item.GIANGVIEN.TenGV)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.PHONGHOC.TenPhongHoc)
+                            </td>
+                            
+                            <td>
+                                <span class="btn btn-primary btn-icon-split">
+                                    <span class="icon text-white-50">
+                                        @item.SINHVIENs.Count()
+                                    </span>
+                                    <span class="text">Sinh Viên</span>
+                                </span>
+
+                            </td>
+                            <td>
+                                @Html.ActionLink("Chỉnh sửa", "Edit", new { id = item.MaNMH }) |
+                                <a class="delete" data-model-id="@item.MaNMH" onclick="Delete(this)" style="cursor: pointer;">Xóa</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    var dt;
+
+    function loadDataTable() {
+
+        dt = $("#dataTable").DataTable({
+            "language": {
+                "lengthMenu": "Số hàng mỗi trang _MENU_",
+                "search": "Tìm kiếm:",
+                "info": "Tổng số _TOTAL_ hàng",
+                "infoEmpty": "",
+                "infoFiltered": "",
+                "paginate": {
+                    "first": "Đầu",
+                    "last": "Cuối",
+                    "next": "Trang sau",
+                    "previous": "Trang trước"
+                },
+                searchPlaceholder: "Tìm kiếm...",
+                zeroRecords: "Không tìm thấy kết quả",
+            }
+        });
+    }
+
+    function FnSuccess(data) {
+        console.log(data);
+        if (data != false) {
+            $(".close").click();
+            var node = dt.row.add([
+                data.MaNMH,
+                data.NgayBD,
+                data.NgayKT,
+                data.ThoiGianDay,
+                data.TenGiangVien,
+                data.TenPhongHoc,
+                `<span class="btn btn-primary btn-icon-split">
+                                    <span class="icon text-white-50">
+                                        ${0}
+                                    </span>
+                                    <span class="text">Sinh Viên</span>
+                                </span>`,
+                `<a href="/QuanLyNhomMonHoc/Edit/${data.MaNMH}">Chỉnh sửa</a> |
+                                             <a class="delete" data-model-id="${data.MaNMH}" onclick="Delete(this)" style="cursor: pointer;">Xóa</a>`
+            ]).draw(true).node();
+            $(node).attr('id', `row_${data.MaNMH}`);
+            Swal.fire({
+                icon: 'success',
+                title: 'Thành Công',
+                text: `Nhóm môn học ${data.MaNMH} đã được thêm thành công`,
+                timer: 2000,
+                showConfirmButton: false
+            })
+        }
+    }
+
+
+    function Delete(obj) {
+        var ele = $(obj);
+        var MaMH = ele.data("model-id");
+        var url = `/QuanLyMonHoc/Delete/${MaMH}`
+
+        swal.fire({
+            title: 'Bạn có chắc?',
+            text: "Nếu xóa sẽ không thể khôi phục!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Có, Hãy xóa!',
+            cancelButtonText: 'Không, Quay lại!',
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.post(url, { id: MaMH })
+                    .done(function (data) {
+                        dt.rows(`#row_${data.id}`)
+                            .remove()
+                            .draw();
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Thành Công',
+                            text: `Môn Học ${data.TenMH} đã được xóa`,
+                            timer: 2000,
+                            showConfirmButton: false
+                        })
+                    })
+                    .fail(function (data) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Không thành công',
+                            text: `Môn học đã có sinh viên đăng ký, không thể xóa!`,
+                            timer: 2000,
+                            showConfirmButton: false
+                        })
+                    });
+            }
+            else if (result.dismiss === Swal.DismissReason.cancel) {
+
+            }
+        })
+
+
+    };
+
+
+    $("#MaGV").change(function () {
+        var tengv = $("#MaGV option:selected").html();
+        $("#TenGV").val(tengv);
+    })
+
+    $(document).ready(function () {
+
+        loadDataTable();
+
+        var form = $(".formMH").validate({
+            onfocusout: function (element) {
+                $(element).valid();
+            },
+            invalidHandler: function (form, validator) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Xuất hiện lỗi',
+                    text: `Thêm Môn Học không thành công`,
+                    timer: 2000,
+                    showConfirmButton: false
+
+                })
+                validator.focusInvalid();
+            },
+
+            errorClass: "is-invalid",
+            validClass: "is-valid",
+            rules: {
+               
+                NgayBD: {
+                    required: true,
+                },
+                ThoiGianBDGD: {
+                    required: true,
+                },
+                ThoiGianKTGD: {
+                    required: true,
+                },
+                MaGV: {
+                    required: true,
+                },
+                MaPhongHoc: {
+                    required: true,
+                },
+
+            },
+            messages: {
+               
+                NgayBD: {
+                    required: "Ngày bắt đầu không được để trống",
+                },
+                ThoiGianBDGD: {
+                    required: "Thời gian bắt đầu giảng dạy không được để trống",
+                },
+                ThoiGianKTGD: {
+                    required: "Thời gian bắt đầu giảng dạy không được để trống",
+                },
+                MaGV: {
+                    required: "Bạn chưa chọn Giảng viên, hãy chọn 1.",
+                },
+                MaPhongHoc: {
+                    required: "Bạn chưa chọn Phòng học, hãy chọn 1.",
+                }
+            }
+        });
+
+        $(".mul-select").select2({
+            placeholder: "Chọn Thời Khóa Biểu",
+            tags: true,
+            tokenSperators: ['/', ',', ',', " "],
+            width: 'resolve',
+            heigth: 'resolve'
+        });
+
+       
+    });
+
+</script>

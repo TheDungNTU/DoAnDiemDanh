@@ -3,7 +3,6 @@
 @{
     ViewBag.Title = "Index";
     Layout = "~/Views/Layout/_LayoutAdmin.cshtml";
-    IEnumerable<DoAnDiemDanh.Models.MONHOC> MONHOC = (IEnumerable<DoAnDiemDanh.Models.MONHOC>)ViewBag.MONHOC;
     var Khoa = (IEnumerable<DoAnDiemDanh.Models.KHOA>)ViewBag.MaKhoa;
     <style>
         .is-invalid {
@@ -78,39 +77,48 @@
                         <th>Tên Giảng Viên</th>
                         <th>Email</th>
                         <th>Khoa</th>
-                        <th>Số môn học giảng dạy</th>
+                        <th style="width: 128px;">Số môn học giảng dạy</th>
+                        <th style="width: 110px;">Hình Ảnh</th>
                         <th>Chức năng</th>
                     </tr>
                 </thead>
                 <tbody id="data_table">
                     @foreach (var item in Model)
                     {
-                        <tr id="row_@item.MaGV">
-                            <td>
-                                @Html.DisplayFor(modelItem => item.MaGV)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.TenGV)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.Email)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.KHOA.TenKhoa)
-                            </td>
-                            <td>
-                                <span class="btn btn-primary btn-icon-split">
-                                    <span class="icon text-white-50">
-                                        @MONHOC.ToList().Where(_ => _.MaGV == item.MaGV).Count()
-                                    </span>
-                                    <span class="text">Môn Học</span>
+                    <tr id="row_@item.MaGV">
+                        <td>
+                            @Html.DisplayFor(modelItem => item.MaGV)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.TenGV)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Email)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.KHOA.TenKhoa)
+                        </td>
+                        <td>
+                            <span class="btn btn-primary btn-icon-split">
+                                <span class="icon text-white-50">
+                                   @item.NHOMMONHOCs.Count()
                                 </span>
-                            </td>
-                            <td>
-                                <a href='/QuanLyGiangVien/Edit/@item.MaGV'>Chỉnh sửa</a> |
-                                <a class="delete" data-model-id="@item.MaGV" onclick="Delete(this)" style="cursor: pointer;">Xóa</a>
-                            </td>
-                        </tr>
+                                <span class="text">Môn Học</span>
+                            </span>
+                        </td>
+                        <td>
+                            <a href="@Url.Action("Details_GiangVien_HinhAnh","QuanLyHinhAnh", new{id = item.MaGV, MaPhongHoc = 1})" class="btn btn-primary btn-icon-split">
+                                <span class="icon text-white-50">
+                                    @item.HINHANH_GV.Count()
+                                </span>
+                                <span class="text">Hình ảnh</span>
+                            </a>
+                        </td>
+                        <td>
+                            <a href='/QuanLyGiangVien/Edit/@item.MaGV'>Chỉnh sửa</a> |
+                            <a class="delete" data-model-id="@item.MaGV" onclick="Delete(this)" style="cursor: pointer;">Xóa</a>
+                        </td>
+                    </tr>
                     }
                 </tbody>
             </table>
@@ -180,6 +188,11 @@
                                 0
                             </span>
                             <span class="text">Môn Học</span>`,
+                `<a href="/QuanLyHinhAnh/Details_GiangVien_HinhAnh/${data.MaGV}?MaPhongHoc=1" class="btn btn-primary btn-icon-split">
+                            <span class="icon text-white-50">
+                                0
+                            </span>
+                            <span class="text">Hình ảnh</span>`,
 
                 `<a href='/QuanLyGiangVien/Edit/${data.MaGV}'>Chỉnh sửa</a> |<a class="delete" data-model-id="${data.MaGV}" onclick="Delete(this)" style="cursor: pointer;">Xóa</a>`
             ]).draw().node();

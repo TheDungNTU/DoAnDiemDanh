@@ -1,0 +1,315 @@
+﻿@using DoAnDiemDanh.Models
+@model IEnumerable<HINHANH_GV>
+@{
+    ViewBag.Title = "Details_SinhVien_HinhAnh";
+    Layout = "~/Views/Layout/_LayoutAdmin.cshtml";
+    var PHONGHOC = (IEnumerable<PHONGHOC>)ViewBag.PHONGHOC;
+}
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="@Url.Action("Index","DiemDanh")">Trang chủ</a></li>
+        <li class="breadcrumb-item"><a href="@Url.Action("Index","QuanLyGiangVien")">Quản lý giảng viên</a></li>
+        <li class="breadcrumb-item " aria-current="page">Hình ảnh train</li>
+    </ol>
+</nav>
+<div class="modal fade" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+    <div class="modal-dialog" role="document" style="background-color: white;" id="formchupanh">
+        <div class="modal-content" style="width: 674px;">
+            <div class="form-horizontal  p-3 form-avatar">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <div class="h3 mb-2 ml-2 text-gray-800" style="font-size: 20px; font-weight: 600;">UPLOAD HÌNH ẢNH</div>
+                <div class="h3 mb-2 ml-2 text-gray-800" style="font-size: 16px; font-weight: 400;">Click button để upload ảnh</div>
+                @using (Ajax.BeginForm("Details_GiangVien_HinhAnh", "QuanLyHinhAnh", new AjaxOptions { HttpMethod = "POST", OnSuccess = "FnSuccess" }, new { id = ViewBag.MaGV, enctype = "multipart/form-data" }))
+                {
+                    <div class="row uploadanh1" style="text-align: center">
+                        <div class="col-xl-4 col-md-6 mb-4">
+                            <div class="card border-left-primary shadow h-100 py-2">
+                                <div class="col mr-1">
+                                    <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                        <img src="~/Content/img/photo.png" alt="avatar" style="width: 80px; height:auto; z-index: -999; margin-top: 38px;" />
+                                        <input type="file" name="Avatar" accept="image/*" required id="upload" class="custom-file-input" onchange="loadFile(event)" style=" position: absolute; left: -11px; top: 37px; height: 78px;" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-8 col-md-6 mb-4">
+                            <div class="card  shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800" style="text-align: center">
+                                                <img alt="avatar" style="width: 125px; height:auto; z-index: -999;" id="output" src="~/Content/img/white.jpg" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row uploadanh2" style="text-align: center">
+
+                    </div>
+                    <input type="submit" value="Thêm mới" class="btn btn-success btn-icon-split p-2 border submit" />
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Danh sách hình ảnh train của giảng viên @ViewBag.TenGV</h6>
+    </div>
+    <div class="card-body" style="position: relative; display: flex; overflow:scroll" id="card_hinhanh">
+        @Html.AntiForgeryToken()
+        @foreach (var item in Model)
+        {
+            <div id="hinhanh_@item.MaHA" style="margin-right: 10px; ">
+                <a data-ajax="true" data-ajax-confirm="Bạn có muốn hình ảnh này ?" data-ajax-method="POST" data-ajax-success="deleteSuccess" href="@Url.Action("Delete_HinhAnh_GV","QuanLyHinhAnh",new {id=item.MaHA })">
+                    <span class="icon" style=" z-index: 999; position: absolute; margin-left: 63px; color: #6784D9;">
+                        <i class="fas fa-times"></i>
+                    </span>
+                </a>
+                <a href="~/Content/img/@item.TenHA" data-toggle="lightbox">
+                    <img src="~/Content/img/@item.TenHA" style="width: 80px; height: auto;  border-radius: 5px;" />
+                </a>
+            </div>
+        }
+    </div>
+</div>
+<select class="form-control" id="MaPhongHoc" name="MaPhongHoc" required="" aria-invalid="true" style=" width: 300px; margin-bottom: 10px;">
+    <option value="@ViewBag.MaPhongHoc">Camera @ViewBag.TenPhongHoc</option>
+    @foreach (var item in PHONGHOC)
+    {
+        <option value="@item.MaPhongHoc">Camera @item.TenPhongHoc</option>
+    }
+</select>
+
+
+<div class="form-group camera ">
+    <div class="row">
+        <div class="col-6">
+            <div id='wowza_player'></div>
+            <script id='player_embed' src='//@ViewBag.Url' type='text/javascript'></script>
+        </div>
+        <div class="col-5 ml-4">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary" id="soluong">0 images</h6>
+                </div>
+                <div class="card-body" style="position: relative; display: block; overflow: scroll; height: 306px; padding: 0px; padding-left: 20px;" id="hinhanh_cam">
+                    <canvas id="capture" width="320" height="240" class="d-none"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-12">
+            <span class="btn btn-success btn-icon-split m-2" id="btn-capture" style="width: 140px;">
+                <span class="text">Chụp Hình</span>
+            </span>
+            <span class="btn btn-success btn-icon-split m-2" id="btn-save" style="width: 140px;">
+                <span class="text">Lưu Ảnh</span>
+            </span>
+            <span class="btn btn-success btn-icon-split m-2" id="btn-delete" style="width: 140px;">
+                <span class="text">Xóa Ảnh</span>
+            </span>
+            <Button class="btn btn-success btn-icon-split shadow" data-toggle="modal" data-target="#exampleModalLong" id="open" style="width: 140px;">        
+                <span class="text">Upload Ảnh</span>
+            </Button>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        if ($(window).width() < 480) {
+            $('.uploadanh1').addClass('d-none')
+            $('.uploadanh2').addClass('d-none')
+            $('.submit').addClass('d-none')
+        }
+    })
+
+    $('#fcplayer_wrapper').attr = ("style", "position: relative; background-image: url(); background-size: cover;height: auto; width: 390px;");
+
+    $("#MaPhongHoc").change(() => {
+        var url = location.href;
+        location.href = url.substring(0, url.length - 1) + $("#MaPhongHoc").val();
+    })
+
+    var loadFile = function (event) {
+        var image = document.getElementById('output');
+        image.src = URL.createObjectURL(event.target.files[0])
+    }
+
+    function FnSuccess(data) {
+        if (data != false) {
+            var hinhanh = `<div id="hinhanh_${data.MaHA}" style="margin-right: 10px;">
+                                <a data-ajax="true" data-ajax-confirm="Bạn có muốn hình ảnh này ?" data-ajax-method="POST" data-ajax-success="deleteSuccess" href="/QuanLyHinhAnh/Delete_HinhAnh_GV/${data.MaHA}">
+                                    <span class="icon" style=" z-index: 999; position: absolute; margin-left: 63px; color: #6784D9;">
+                                        <i class="fas fa-times"></i>
+                                    </span>
+                                </a>
+                                <a href="../../Content/img/${data.TenHA}" data-toggle="lightbox">
+                                    <img src="../../Content/img/${data.TenHA}" style="width: 80px; height: auto;  border-radius: 5px;" />
+                                </a>
+                            </div>`;
+            $('#card_hinhanh').append(hinhanh);
+            $('#upload').val("");
+            $('#output').attr("src", "");
+            $('.close').click()
+            Swal.fire({
+                icon: 'success',
+                title: 'Thành Công',
+                text: `Upload ảnh thành công`,
+                timer: 2000,
+                showConfirmButton: false
+
+            })
+        }
+    }
+
+    function deleteSuccess(data) {
+
+        $(`#hinhanh_${data}`).remove()
+        Swal.fire({
+            icon: 'success',
+            title: 'Thành Công',
+            text: `Xóa ảnh thành công`,
+            timer: 2000,
+            showConfirmButton: false
+        })
+    }
+
+
+    function getAttrFromString(str, node, attr) {
+        var regex = new RegExp('<' + node + ' .*?' + attr + '="(.*?)"', "gi"), result, res = [];
+        while ((result = regex.exec(str))) {
+            res.push(result[1].substr(22, result[1].length));
+        }
+        return res;
+    }
+
+
+    var capture = document.getElementById("capture");
+    var video = document.getElementById("fcplayer_html5_api")
+    var soluong = 0;
+    var cameraStream = null;
+    var videoId = 'fcplayer_html5_api';
+    var scaleFactor = 0.25;
+
+    setTimeout(() => {
+        var video = document.getElementById(videoId);
+        video.play()
+    }, 300);
+
+
+    $("#open").click(function () {
+
+    });
+
+
+    $("#btn-delete").click(function () {
+        $("#hinhanh_cam").empty()
+        soluong = 0;
+        $("#soluong").html(`0 Images`);
+    });
+
+    $("#btn-capture").click(startMouseCount)
+
+    $("#btn-save").click(() => {
+        if (null != cameraStream) {
+            var track = cameraStream.getTracks()[0];
+            track.stop();
+            stream.load();
+            cameraStream = null;
+        }
+
+        var s = getAttrFromString($('#hinhanh_cam').html(), 'img', 'src');
+
+        $.ajax({
+            type: 'POST',
+            url: "/QuanLyHinhAnh/Webcam_GV",
+            data: { id: @ViewBag.MaGV, data: s },
+            beforeSend: () => { $('.loader-wrapper').show() },
+            complete: () => { $('.loader-wrapper').hide()},
+            success: function (data) {
+                $('#hinhanh_cam').empty();
+                $("#btn-delete").click()
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Thành Công',
+                    text: `Chụp ảnh và upload thành công`,
+                    timer: 2000,
+                    showConfirmButton: false
+
+                })
+                $.each(data, function (index, value) {
+                    var row = `<div id="hinhanh_${value.maanh}" style="margin-right: 10px; ">
+                                    <a data-ajax="true" data-ajax-confirm="Bạn có muốn hình ảnh này ?" data-ajax-method="POST" data-ajax-success="deleteSuccess" href="/QuanLyHinhAnh/Delete_HinhAnh_GV/${value.maanh}">
+                                        <span class="icon" style=" z-index: 999; position: absolute; margin-left: 63px; color: #6784D9;">
+                                            <i class="fas fa-times"></i>
+                                        </span>
+                                    </a>
+                                    <a href="../../Content/img/${value.tenanh}" data-toggle="lightbox">
+                                    <img src="../../Content/img/${value.tenanh}" style="width: 80px; height: auto;  border-radius: 5px;" />
+                                </a>
+                                </div>`
+                    $('#card_hinhanh').append(row)
+                })
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Thành Công',
+                    text: `Chụp Ảnh và Upload thành công`,
+                    timer: 2000,
+                    showConfirmButton: false
+
+                })
+
+            }
+        });
+
+    })
+
+    function capture_camera(video, scaleFactor) {
+        if (scaleFactor == null) {
+            scaleFactor = 1;
+        }
+        var w = 640;
+        var h = 360;
+        var canvas = document.createElement('canvas');
+        canvas.width = w;
+        canvas.height = h;
+        var ctx = canvas.getContext('2d');
+        ctx.drawImage(video, 0, 0, w, h);
+        return canvas;
+    }
+
+    function startMouseCount() {
+        var video = document.getElementById(videoId);
+
+        var canvas = capture_camera(video, scaleFactor);
+
+        var img = new Image()
+
+
+        img.src = canvas.toDataURL("image/png");
+
+        img.width = 220;
+        img.height = 140;
+        img.style = "margin: 2px; border-radius: 5px; border: 1px black solid;"
+        soluong += 1;
+        $("#soluong").html(`${soluong} Images`);
+        $("#hinhanh_cam").append(img);
+        $("#hinhanh_cam").scrollTop($("#hinhanh_cam")[0].scrollHeight);
+    }
+
+
+    $(document).on('click', '[data-toggle="lightbox"]', function (event) {
+        event.preventDefault();
+        $(this).ekkoLightbox();
+    });
+
+
+</script>

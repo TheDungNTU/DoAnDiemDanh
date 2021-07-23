@@ -37,7 +37,7 @@ namespace DoAnDiemDanh.Models
 
         public override string[] GetRolesForUser(string username)
         {
-            FACE_RECOGNITIONEntities db = new FACE_RECOGNITIONEntities();
+            FACE_RECOGNITION_V2Entities db = new FACE_RECOGNITION_V2Entities();
             var tkgv = db.TAIKHOANGIANGVIENs.Where(s => s.TaiKhoan == username).SingleOrDefault();
             var tksv = db.TAIKHOANSINHVIENs.Where(s => s.TaiKhoan == username).SingleOrDefault();
             string[] role = null;

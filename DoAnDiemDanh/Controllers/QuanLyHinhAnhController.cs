@@ -18,7 +18,7 @@ namespace DoAnDiemDanh.Controllers
     [Authorize(Roles = "Admin, GiangVien")]
     public class QuanLyHinhAnhController : Controller
     {
-        private FACE_RECOGNITIONEntities db = new FACE_RECOGNITIONEntities();
+        private FACE_RECOGNITION_V2Entities db = new FACE_RECOGNITION_V2Entities();
 
         public static string RandomString(int length)
         {
@@ -49,15 +49,15 @@ namespace DoAnDiemDanh.Controllers
                 {
                     using (Bitmap bm2 = new Bitmap(ms))
                     {
-                        var postedFileName = $"{id}_{RandomString(10)}.jpg";
+                        var postedFileName = $"SV_{id}_{RandomString(10)}.jpg";
                         var path = Server.MapPath("/Content/img/" + postedFileName);
                         bm2.Save(path);
 
-                        HINHANH hinhanh = new HINHANH();
+                        HINHANH_SV hinhanh = new HINHANH_SV();
                         hinhanh.MaSV = id;
                         hinhanh.TenHA = postedFileName;
                         hinhanh.BASE64 = item;
-                        db.HINHANHs.Add(hinhanh);
+                        db.HINHANH_SV.Add(hinhanh);
                         db.SaveChanges();
 
                         var hinhcam = new HinhCam();
@@ -71,12 +71,63 @@ namespace DoAnDiemDanh.Controllers
         }
 
 
-        //Hiển thị thông tin hình ảnh của sinh viên
-        public ActionResult Details_SinhVien_HinhAnh(int? id)
+        [HttpPost]
+        public JsonResult Webcam_GV(int id, object data)
         {
-            var HinhAnhs = db.HINHANHs.Where(s => s.MaSV == id);
+
+            var list = (IEnumerable<string>)data;
+            List<HinhCam> listAnh = new List<HinhCam>();
+            foreach (var item in list)
+            {
+                using (MemoryStream ms = new MemoryStream(Convert.FromBase64String(item)))
+                {
+                    using (Bitmap bm2 = new Bitmap(ms))
+                    {
+                        var postedFileName = $"GV_{id}_{RandomString(10)}.jpg";
+                        var path = Server.MapPath("/Content/img/" + postedFileName);
+                        bm2.Save(path);
+
+                        HINHANH_GV hinhanh = new HINHANH_GV();
+                        hinhanh.MaGV = id;
+                        hinhanh.TenHA = postedFileName;
+                        hinhanh.BASE64 = item;
+                        db.HINHANH_GV.Add(hinhanh);
+                        db.SaveChanges();
+
+                        var hinhcam = new HinhCam();
+                        hinhcam.tenanh = postedFileName;
+                        hinhcam.maanh = hinhanh.MaHA;
+                        listAnh.Add(hinhcam);
+                    }
+                }
+            }
+            return Json(listAnh, JsonRequestBehavior.AllowGet);
+        }
+
+        //Hiển thị thông tin hình ảnh của sinh viên
+        public ActionResult Details_SinhVien_HinhAnh(int? id, int MaPhongHoc)
+        {
+            var HinhAnhs = db.HINHANH_SV.Where(s => s.MaSV == id);
+            var PHONGHOC = db.PHONGHOCs.Single(s => s.MaPhongHoc == MaPhongHoc);
+            ViewBag.PHONGHOC = db.PHONGHOCs.Where(s => s.MaPhongHoc != MaPhongHoc).ToList();
             ViewBag.TenSV = db.SINHVIENs.SingleOrDefault(s => s.MaSV == id).TenSV;
             ViewBag.MaSV = id;
+            ViewBag.Url = PHONGHOC.CAMERA.URL;
+            ViewBag.MaPhongHoc = MaPhongHoc;
+            ViewBag.TenPhongHoc = PHONGHOC.TenPhongHoc;
+            return View(HinhAnhs.ToList());
+        }
+
+        public ActionResult Details_GiangVien_HinhAnh(int? id, int MaPhongHoc)
+        {
+            var PHONGHOC = db.PHONGHOCs.Single(s => s.MaPhongHoc == MaPhongHoc);
+            var HinhAnhs = db.HINHANH_GV.Where(s => s.MaGV == id);
+            ViewBag.PHONGHOC = db.PHONGHOCs.Where(s => s.MaPhongHoc != MaPhongHoc).ToList();
+            ViewBag.TenGV = db.GIANGVIENs.SingleOrDefault(s => s.MaGV == id).TenGV;
+            ViewBag.MaGV = id;
+            ViewBag.Url = PHONGHOC.CAMERA.URL;
+            ViewBag.MaPhongHoc = MaPhongHoc;
+            ViewBag.TenPhongHoc = PHONGHOC.TenPhongHoc;
             return View(HinhAnhs.ToList());
         }
 
@@ -86,7 +137,7 @@ namespace DoAnDiemDanh.Controllers
 
             var img = Request.Files["Avatar"];
 
-            string postedFileName = id + "_" + System.IO.Path.GetFileName(img.FileName);
+            string postedFileName = "SV_"+ id + "_" + System.IO.Path.GetFileName(img.FileName);
 
             //Lưu hình đại diện về Server
             var path = Server.MapPath("/Content/img/" + ""+postedFileName);
@@ -95,90 +146,60 @@ namespace DoAnDiemDanh.Controllers
             byte[] imageArray = System.IO.File.ReadAllBytes(path);
             string base64ImageRepresentation = Convert.ToBase64String(imageArray);
 
-            var HinhAnh = new HINHANH();
+            var HinhAnh = new HINHANH_SV();
             HinhAnh.MaSV = id;
             HinhAnh.TenHA = postedFileName;
             HinhAnh.BASE64 = base64ImageRepresentation;
 
-            db.HINHANHs.Add(HinhAnh);
+            db.HINHANH_SV.Add(HinhAnh);
             db.SaveChanges();
             return Json(HinhAnh, JsonRequestBehavior.AllowGet);
       
        }
 
-        // GET: QuanLyHinhAnh
-        public ActionResult Index()
-        {
-            var hINHANHs = db.HINHANHs.Include(h => h.SINHVIEN);
-            return View(hINHANHs.ToList());
-        }
-
-        // GET: QuanLyHinhAnh/Details/5
-        public ActionResult Details(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            HINHANH hINHANH = db.HINHANHs.Find(id);
-            if (hINHANH == null)
-            {
-                return HttpNotFound();
-            }
-            return View(hINHANH);
-        }
-
-        // GET: QuanLyHinhAnh/Create
-        public ActionResult Create()
-        {
-            ViewBag.MaSV = new SelectList(db.SINHVIENs, "MaSV", "TenSV");
-            return View();
-        }
-
-        // POST: QuanLyHinhAnh/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "MaHA,TenHA,MaSV,BASE64")] HINHANH hINHANH)
+        public JsonResult Details_GiangVien_HinhAnh(int id)
         {
-            if (ModelState.IsValid)
-            {
-                db.HINHANHs.Add(hINHANH);
-                db.SaveChanges();
-                return RedirectToAction("Index");
-            }
 
-            ViewBag.MaSV = new SelectList(db.SINHVIENs, "MaSV", "TenSV", hINHANH.MaSV);
-            return View(hINHANH);
+            var img = Request.Files["Avatar"];
+
+            string postedFileName = "GV_" + id + "_" + System.IO.Path.GetFileName(img.FileName);
+
+            //Lưu hình đại diện về Server
+            var path = Server.MapPath("/Content/img/" + "" + postedFileName);
+            img.SaveAs(path);
+
+            byte[] imageArray = System.IO.File.ReadAllBytes(path);
+            string base64ImageRepresentation = Convert.ToBase64String(imageArray);
+
+            var HinhAnh = new HINHANH_GV();
+            HinhAnh.MaGV = id;
+            HinhAnh.TenHA = postedFileName;
+            HinhAnh.BASE64 = base64ImageRepresentation;
+
+            db.HINHANH_GV.Add(HinhAnh);
+            db.SaveChanges();
+            return Json(HinhAnh, JsonRequestBehavior.AllowGet);
         }
-
-        // GET: QuanLyHinhAnh/Edit/5
-        public ActionResult Edit(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            HINHANH hINHANH = db.HINHANHs.Find(id);
-            if (hINHANH == null)
-            {
-                return HttpNotFound();
-            }
-            ViewBag.MaSV = new SelectList(db.SINHVIENs, "MaSV", "TenSV", hINHANH.MaSV);
-            return View(hINHANH);
-        }
-
  
         // POST: QuanLyHinhAnh/Delete/5
         [HttpPost, ActionName("Delete")]
 
         public JsonResult DeleteConfirmed(int id)
         {
-            HINHANH hINHANH = db.HINHANHs.Find(id);
-            db.HINHANHs.Remove(hINHANH);
+            HINHANH_SV hINHANH = db.HINHANH_SV.Find(id);
+            db.HINHANH_SV.Remove(hINHANH);
             db.SaveChanges();
             return Json(id,JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public JsonResult Delete_HinhAnh_GV(int id)
+        {
+            HINHANH_GV hINHANH = db.HINHANH_GV.Find(id);
+            db.HINHANH_GV.Remove(hINHANH);
+            db.SaveChanges();
+            return Json(id, JsonRequestBehavior.AllowGet);
         }
 
         protected override void Dispose(bool disposing)

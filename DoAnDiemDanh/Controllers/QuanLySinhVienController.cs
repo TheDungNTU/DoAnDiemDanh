@@ -13,13 +13,36 @@ using System.Drawing.Imaging;
 using System.Data.OleDb;
 using Newtonsoft.Json;
 using ExcelDataReader;
+using System.Net.Mail;
 
 namespace DoAnDiemDanh.Controllers
 {
     [Authorize(Roles = "Admin, GiangVien")]
     public class QuanLySinhVienController : Controller
     {
-        private FACE_RECOGNITIONEntities db = new FACE_RECOGNITIONEntities();
+        private FACE_RECOGNITION_V2Entities db = new FACE_RECOGNITION_V2Entities();
+
+
+        public void SendMail(string email, string subject, string content)
+        {
+            using (MailMessage mail = new MailMessage())
+            {
+                mail.From = new MailAddress("tuyetsuong6332@gmail.com");
+                mail.To.Add(email);
+                mail.Subject = subject;
+                mail.Body = content;
+                mail.IsBodyHtml = true;
+ 
+
+                using (SmtpClient smtp = new SmtpClient("smtp.gmail.com", 587))
+                {
+                    smtp.Credentials = new NetworkCredential("tuyetsuong6332@gmail.com", "0987806758");
+                    smtp.EnableSsl = true;
+                    smtp.Send(mail);
+                }
+            }
+
+        }
 
         [HttpPost]
         public JsonResult ImportFileExcel(HttpPostedFileBase excel)
@@ -88,6 +111,9 @@ namespace DoAnDiemDanh.Controllers
                             tk.TaiKhoan = sv.Email;
                             db.TAIKHOANSINHVIENs.Add(tk);
                             db.SaveChanges();
+
+                           
+
                             svr.MaSV = sv.MaSV;
                             listSV.Add(svr);
                         }
@@ -101,6 +127,7 @@ namespace DoAnDiemDanh.Controllers
         // GET: QuanLySinhVien
         public ActionResult Index()
         {
+          
             var sINHVIENs = db.SINHVIENs.Include(sv => sv.KHOA).Include(sv => sv.LOP);
             ViewBag.Khoa = db.KHOAs.Where(_ => _.LOPs.Count() > 0);
             ViewBag.Khoa_Filter = db.KHOAs;
@@ -145,7 +172,7 @@ namespace DoAnDiemDanh.Controllers
 
             db.TAIKHOANSINHVIENs.Add(tk);
             db.SaveChanges();
-
+            SendMail(sINHVIEN.Email, "[MẬT KHẨU ĐĂNG NHẬP WEB ĐIỂM DANH]", "Mật khẩu của bạn là: sinhvien123");
             var data = new
             {
                 MaSV = sINHVIEN.MaSV,

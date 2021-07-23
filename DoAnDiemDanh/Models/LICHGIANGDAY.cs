@@ -14,7 +14,7 @@ namespace DoAnDiemDanh.Models
     
     public partial class LICHGIANGDAY
     {
-        public int MaMH { get; set; }
+        public int MaNMH { get; set; }
         public Nullable<bool> ThuHai { get; set; }
         public Nullable<bool> ThuBa { get; set; }
         public Nullable<bool> ThuTu { get; set; }
@@ -22,6 +22,6 @@ namespace DoAnDiemDanh.Models
         public Nullable<bool> ThuSau { get; set; }
         public Nullable<bool> ThuBay { get; set; }
     
-        public virtual MONHOC MONHOC { get; set; }
+        public virtual NHOMMONHOC NHOMMONHOC { get; set; }
     }
 }

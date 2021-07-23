@@ -18,14 +18,17 @@ namespace DoAnDiemDanh.Models
         public DIEMDANH()
         {
             this.CTDDs = new HashSet<CTDD>();
+            this.CTDD_GV = new HashSet<CTDD_GV>();
         }
     
         public int MaDD { get; set; }
-        public Nullable<int> MaMH { get; set; }
+        public Nullable<int> MaNMH { get; set; }
         public Nullable<System.DateTime> NgayDiemDanh { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<CTDD> CTDDs { get; set; }
-        public virtual MONHOC MONHOC { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<CTDD_GV> CTDD_GV { get; set; }
+        public virtual NHOMMONHOC NHOMMONHOC { get; set; }
     }
 }

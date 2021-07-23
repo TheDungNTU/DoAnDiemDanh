@@ -4,6 +4,7 @@ using System.Data;
 using System.Data.Entity;
 using System.Linq;
 using System.Net;
+using System.Net.Mail;
 using System.Web;
 using System.Web.Mvc;
 using DoAnDiemDanh.Models;
@@ -13,13 +14,34 @@ namespace DoAnDiemDanh.Controllers
     [Authorize(Roles = "Admin")]
     public class QuanLyGiangVienController : Controller
     {
-        private FACE_RECOGNITIONEntities db = new FACE_RECOGNITIONEntities();
+        private FACE_RECOGNITION_V2Entities db = new FACE_RECOGNITION_V2Entities();
 
-        // GET: QuanLyGiangVien
+        public void SendMail(string email, string subject, string content)
+        {
+            using (MailMessage mail = new MailMessage())
+            {
+                mail.From = new MailAddress("tuyetsuong6332@gmail.com");
+                mail.To.Add(email);
+                mail.Subject = subject;
+                mail.Body = content;
+                mail.IsBodyHtml = true;
+
+
+                using (SmtpClient smtp = new SmtpClient("smtp.gmail.com", 587))
+                {
+                    smtp.Credentials = new NetworkCredential("tuyetsuong6332@gmail.com", "0987806758");
+                    smtp.EnableSsl = true;
+                    smtp.Send(mail);
+                }
+            }
+
+        }
+
+
+        //GET: QuanLyGiangVien
         public ActionResult Index()
         {
             var gIANGVIENs = db.GIANGVIENs.Include(g => g.KHOA);
-            ViewBag.MONHOC = db.MONHOCs.Include(_ => _.GIANGVIEN);
             ViewBag.MaKhoa = db.KHOAs;
             return View(gIANGVIENs.ToList());
         }
@@ -47,6 +69,8 @@ namespace DoAnDiemDanh.Controllers
 
             db.TAIKHOANGIANGVIENs.Add(tk);
             db.SaveChanges();
+
+            SendMail(gIANGVIEN.Email, "[MẬT KHẨU ĐĂNG NHẬP WEB ĐIỂM DANH]", "Mật khẩu của bạn là: user123");
 
             var data = new
             {
@@ -93,28 +117,28 @@ namespace DoAnDiemDanh.Controllers
         }
 
         // POST: QuanLyGiangVien/Delete/5
-        [HttpPost, ActionName("Delete")]
-        public JsonResult DeleteConfirmed(int id)
-        {
-            GIANGVIEN gIANGVIEN = db.GIANGVIENs.Find(id);
+        //[HttpPost, ActionName("Delete")]
+        //public JsonResult DeleteConfirmed(int id)
+        //{
+        //    GIANGVIEN gIANGVIEN = db.GIANGVIENs.Find(id);
 
-            var data = new
-            {
-                id = id,
-                TenGV = gIANGVIEN.TenGV,
-            };
-            var TaiKhoan = db.TAIKHOANGIANGVIENs.SingleOrDefault(s => s.MaGV == id);
-            var MonHoc = db.MONHOCs.SingleOrDefault(s => s.MaGV == id);
-            if(MonHoc == null && TaiKhoan.MaQuyen != 1)
-            {
-                db.TAIKHOANGIANGVIENs.Remove(TaiKhoan);
-                db.SaveChanges();
-            }
-            db.GIANGVIENs.Remove(gIANGVIEN);
-            db.SaveChanges();
+        //    var data = new
+        //    {
+        //        id = id,
+        //        TenGV = gIANGVIEN.TenGV,
+        //    };
+        //    var TaiKhoan = db.TAIKHOANGIANGVIENs.SingleOrDefault(s => s.MaGV == id);
+        //    var MonHoc = db.MONHOCs.SingleOrDefault(s => s.MaGV == id);
+        //    if(MonHoc == null && TaiKhoan.MaQuyen != 1)
+        //    {
+        //        db.TAIKHOANGIANGVIENs.Remove(TaiKhoan);
+        //        db.SaveChanges();
+        //    }
+        //    db.GIANGVIENs.Remove(gIANGVIEN);
+        //    db.SaveChanges();
 
-            return Json(data, JsonRequestBehavior.AllowGet);
-        }
+        //    return Json(data, JsonRequestBehavior.AllowGet);
+        //}
 
         protected override void Dispose(bool disposing)
         {

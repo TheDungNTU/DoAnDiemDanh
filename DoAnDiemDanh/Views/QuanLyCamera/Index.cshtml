@@ -1,0 +1,303 @@
+﻿@model IEnumerable<DoAnDiemDanh.Models.CAMERA>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Layout/_LayoutAdmin.cshtml";
+
+    <style>
+        .is-invalid {
+            color: #E84C3D;
+            margin-top: 5px;
+        }
+    </style>
+}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="@Url.Action("Index","DiemDanh")">Trang Chủ</a></li>
+        <li class="breadcrumb-item " aria-current="page">Quản lý Camera</li>
+    </ol>
+</nav>
+
+<div>
+    @using (Ajax.BeginForm("Create", "QuanLyCamera", new AjaxOptions { HttpMethod = "POST", OnSuccess = "FnSuccess" }, new { @class = "formCamera" }))
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="form-horizontal shadow p-3 mb-2 card">
+
+            <div class="form-group">
+                <label class="control-label col-md-2" for="TenCamera" style="font-size: 17px; font-weight:bold">Tên Camera</label>
+                <div class="col-md-10">
+                    <input class="form-control text-box single-line " id="TenCamera" name="TenCamera" type="text" value="" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label col-md-2" for="RTSP" style="font-size: 17px; font-weight:bold">RTSP</label>
+                <div class="col-md-10">
+                    <input class="form-control text-box single-line " id="RTSP" name="RTSP" type="text" value="" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label col-md-2" for="URL" style="font-size: 17px; font-weight:bold">URL</label>
+                <div class="col-md-10">
+                    <input class="form-control text-box single-line " id="URL" name="URL" type="text" value="" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" value="Thêm mới" class="btn btn-success btn-icon-split p-2 border">
+                </div>
+            </div>
+        </div>
+    }
+
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">DANH SÁCH TẤT CẢ CAMERA</h6>
+        </div>
+        <div class="card-body" id="data">
+            <div class="filter">
+                <input type="text" class="form-control form-control-sm" id="Filter_QLTenCamera" name="Filter_QLTenCamera" placeholder="Tìm kiếm..." />
+            </div>
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th style="width: 86px;">Mã Camera</th>
+                            <th>Tên Camera</th>
+                            <th>RTSP</th>
+                            <th>Chức năng</th>
+                        </tr>
+                    </thead>
+                    <tbody id="data_table">
+                        @foreach (var item in Model)
+                        {
+                            <tr id="row_@item.MaCamera">
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.MaCamera)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.TenCamera)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.RTSP)
+                                </td>
+                                <td>
+                                    @Html.ActionLink("Chỉnh sửa", "Edit", new { id = item.MaCamera }) |
+                                    <a class="delete" data-model-id="@item.MaCamera" onclick="Delete(this)" style="cursor: pointer;">Xóa</a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+
+    var dt;
+
+    function loadDataTable() {
+        function removeAccents(str) {
+            return str.normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '')
+                .replace(/đ/g, 'd').replace(/Đ/g, 'D');
+        }
+
+        $.fn.dataTable.ext.search.push(
+            function (settings, data, dataIndex) {
+
+                var TenCamera = removeAccents($('#Filter_QLTenCamera').val()).toLowerCase();
+           
+                var Data_TenCamera = removeAccents(data[1]).toLowerCase();
+
+                if (Data_TenCamera.includes(TenCamera)) {
+                    return true;
+                }
+                return false;
+            }
+        );
+
+        dt = $("#dataTable").DataTable({
+            "language": {
+                "lengthMenu": "Số hàng mỗi trang _MENU_",
+                "search": "Tìm kiếm:",
+                "info": "Tổng số _TOTAL_ hàng",
+                "infoEmpty": "",
+                "infoFiltered": "",
+                "paginate": {
+                    "first": "Đầu",
+                    "last": "Cuối",
+                    "next": "Trang sau",
+                    "previous": "Trang trước"
+                },
+                searchPlaceholder: "Nhập tên camera...",
+                zeroRecords: "Không tìm thấy kết quả",
+            },
+
+        });
+
+        $('#Filter_QLTenCamera').on('input', function (e) {
+            dt.draw();
+        });
+    }
+
+    function FnSuccess(data) {
+        console.log(data);
+        if (data != false) {
+            var node = dt.row.add([
+                data.MaCamera,
+                data.TenCamera,
+                data.RTSP,
+                `<a href="/QuanLyCamera/Edit/${data.MaCamera}">Chỉnh sửa</a> |
+                 <a class="delete" data-model-id="${data.MaCamera}" onclick="Delete(this)" style="cursor: pointer;">Xóa</a>`
+            ]).draw().node();
+            $(node).attr('id', `row_${data.MaCamera}`);
+            $('#TenCamera').val('');
+            $('#RTSP').val('');
+            $('#URL').val('');
+            Swal.fire({
+                icon: 'success',
+                title: 'Thành Công',
+                text: `Camera ${data.TenCamera} đã được thêm thành công`,
+                timer: 2000,
+                showConfirmButton: false
+
+            })
+        }
+        else {
+            Swal.fire({
+                icon: 'error',
+                title: 'Có lỗi',
+                text: `Camera đã tồn tại, vui lòng nhập một camera khác`,
+                timer: 2000,
+                showConfirmButton: false
+
+            })
+        }
+
+    }
+
+    function Delete(obj) {
+        var ele = $(obj);
+        var MaCamera = ele.data("model-id");
+        var url = `/QuanLyCamera/Delete/${MaCamera}`
+
+        swal.fire({
+            title: 'Bạn có chắc?',
+            text: "Nếu xóa sẽ không thể khôi phục!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Có, Hãy xóa!',
+            cancelButtonText: 'Không, Quay lại!',
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.post(url, { id: MaCamera})
+                    .done(function (data) {
+                        dt.rows(`#row_${data.id}`)
+                            .remove()
+                            .draw();
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Thành Công',
+                            text: `Camera ${data.TenCamera} đã được xóa`,
+                            timer: 2000,
+                            showConfirmButton: false
+
+                        })
+                    })
+                    .fail(function (data) {
+                        dt.rows(`#row_${data.id}`)
+                            .remove()
+                            .draw();
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Có lỗi xảy ra',
+                            text: `Camera này đã có phòng học sử dụng không thể xóa!`,
+                            timer: 2000,
+                            showConfirmButton: false
+
+                        })
+                    });
+            }
+            else if (result.dismiss === Swal.DismissReason.cancel) {
+
+            }
+        })
+
+
+    };
+
+    $(document).ready(function () {
+        loadDataTable();
+
+        jQuery.validator.addMethod("NotAllowNumber", function (value, element) {
+            return this.optional(element) || /^([^0-9]*)$/.test(value);
+        }, "Không được phép có chữ số.");
+
+        jQuery.validator.addMethod("NotAllowFirstSpace", function (value, element) {
+            return this.optional(element) || /^\S{1}/.test(value);
+        }, "Kí tự đầu tiên không được có khoảng trắng.");
+
+        jQuery.validator.addMethod("NotAllowSpecial", function (value, element) {
+            return this.optional(element) || /^([^*\u0040.!/'#$%^&(){}[:;<>,.?/~_+-=|]*)$/.test(value);
+        }, "Không được phép có kí tự đặc biệt.");
+
+        $(".formCamera").validate({
+            onfocusout: function (element) {
+                $(element).valid();
+            },
+            invalidHandler: function (form, validator) {
+
+                validator.focusInvalid();
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Xuất hiện lỗi',
+                    text: `Thêm Camera không thành công`,
+                    timer: 2000,
+                    showConfirmButton: false
+
+                })
+
+            },
+            errorClass: "is-invalid",
+            validClass: "is-valid",
+            rules: {
+                TenKhoa: {
+                    required: true,
+                    NotAllowNumber: true,
+                    NotAllowSpecial: true,
+                    NotAllowFirstSpace: true,
+                },
+                RTSP: {
+                    required: true,
+                    NotAllowFirstSpace: true,
+                },
+                URL: {
+                    required: true,
+                    NotAllowFirstSpace: true,
+                },
+            },
+            messages: {
+                TenKhoa: {
+                    required: "Tên Camera không được để trống.",
+                },
+                RTSP: {
+                    required: "Tên Camera không được để trống.",
+                },
+                URL: {
+                    required: "Tên Camera không được để trống.",
+                },
+            }
+        });
+
+    });
+
+</script>

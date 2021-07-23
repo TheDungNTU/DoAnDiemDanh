@@ -18,10 +18,10 @@ namespace DoAnDiemDanh.Models
         public SINHVIEN()
         {
             this.CTDDs = new HashSet<CTDD>();
-            this.DIEMDANH_T = new HashSet<DIEMDANH_T>();
-            this.HINHANHs = new HashSet<HINHANH>();
+            this.DIEMDANH_T_SV = new HashSet<DIEMDANH_T_SV>();
+            this.HINHANH_SV = new HashSet<HINHANH_SV>();
             this.TAIKHOANSINHVIENs = new HashSet<TAIKHOANSINHVIEN>();
-            this.MONHOCs = new HashSet<MONHOC>();
+            this.NHOMMONHOCs = new HashSet<NHOMMONHOC>();
         }
     
         public int MaSV { get; set; }
@@ -35,14 +35,14 @@ namespace DoAnDiemDanh.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<CTDD> CTDDs { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<DIEMDANH_T> DIEMDANH_T { get; set; }
+        public virtual ICollection<DIEMDANH_T_SV> DIEMDANH_T_SV { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<HINHANH> HINHANHs { get; set; }
+        public virtual ICollection<HINHANH_SV> HINHANH_SV { get; set; }
         public virtual KHOA KHOA { get; set; }
         public virtual LOP LOP { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<TAIKHOANSINHVIEN> TAIKHOANSINHVIENs { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<MONHOC> MONHOCs { get; set; }
+        public virtual ICollection<NHOMMONHOC> NHOMMONHOCs { get; set; }
     }
 }

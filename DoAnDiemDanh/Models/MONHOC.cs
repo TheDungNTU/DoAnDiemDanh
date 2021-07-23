@@ -17,24 +17,15 @@ namespace DoAnDiemDanh.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public MONHOC()
         {
-            this.DIEMDANHs = new HashSet<DIEMDANH>();
-            this.SINHVIENs = new HashSet<SINHVIEN>();
+            this.NHOMMONHOCs = new HashSet<NHOMMONHOC>();
         }
     
         public int MaMH { get; set; }
         public string TenMH { get; set; }
         public Nullable<int> SoTC { get; set; }
-        public Nullable<System.DateTime> NgayBD { get; set; }
-        public Nullable<System.DateTime> NgayKT { get; set; }
-        public Nullable<System.TimeSpan> ThoiGianBDGD { get; set; }
-        public Nullable<System.TimeSpan> ThoiGianKTGD { get; set; }
-        public Nullable<int> MaGV { get; set; }
+        public Nullable<int> SoNgayVang { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<DIEMDANH> DIEMDANHs { get; set; }
-        public virtual GIANGVIEN GIANGVIEN { get; set; }
-        public virtual LICHGIANGDAY LICHGIANGDAY { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<SINHVIEN> SINHVIENs { get; set; }
+        public virtual ICollection<NHOMMONHOC> NHOMMONHOCs { get; set; }
     }
 }

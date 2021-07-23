@@ -12,12 +12,12 @@ namespace DoAnDiemDanh.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class DIEMDANH_T
+    public partial class HINHANH_SV
     {
-        public int MaDD { get; set; }
+        public int MaHA { get; set; }
+        public string TenHA { get; set; }
+        public string BASE64 { get; set; }
         public Nullable<int> MaSV { get; set; }
-        public Nullable<System.DateTime> Ngay { get; set; }
-        public Nullable<System.TimeSpan> Gio { get; set; }
     
         public virtual SINHVIEN SINHVIEN { get; set; }
     }

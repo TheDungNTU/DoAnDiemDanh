@@ -1,69 +1,63 @@
-﻿@using DoAnDiemDanh.Models
+﻿@model IEnumerable<DoAnDiemDanh.Models.NHOMMONHOC>
+@using DoAnDiemDanh.Models
 @{
-    ViewBag.Title = "XemDiemDanh";
+    ViewBag.Title = "Index";
     Layout = "~/Views/Layout/_LayoutAdmin.cshtml";
-    IEnumerable<MONHOC> MONHOC = (IEnumerable<MONHOC>)ViewBag.MonHoc;
+    var MONHOC = (IEnumerable<MONHOC>)ViewBag.MonHoc;
+
+    <style>
+        .is-invalid {
+            color: #E84C3D;
+            margin-top: 5px;
+        }
+    </style>
 }
-<nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="@Url.Action("Index","DiemDanh")">Trang chủ</a></li>
-        <li class="breadcrumb-item " aria-current="page">Xem Điểm Danh</li>
-    </ol>
-</nav>
+
+<ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="@Url.Action("Index","DiemDanh")">Trang chủ</a></li>
+    <li class="breadcrumb-item " aria-current="page">Xem điểm danh</li>
+</ol>
+
 <div class="card shadow mb-4">
+    <div>
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">THÔNG TIN MÔN HỌC</h6>
+        </div>
+    </div>
     <div class="card-body">
         <div class="table-responsive">
             <table class="table table-bordered" width="100%" cellspacing="0" id="dataTableMH">
                 <thead>
                     <tr>
-                        <th>Tên Môn Học</th>
-                        <th>Số Tín Chỉ</th>
-                        <th>Ngày Bắt Đầu</th>
-                        <th>Ngày Kết Thúc</th>
-                        <th>Thời gian giảng dạy</th>
-                        <th>Giảng Viên Dạy</th>
+                        <th>Mã môn học</th>
+                        <th>Tên môn học</th>
+                        <th>Số tín chỉ</th>
+                        <th>Số ngày vắng tối đa</th>
                     </tr>
                 </thead>
                 <tbody id="data_table">
                     @foreach (var item in MONHOC)
                     {
-                    <tr>
-                        
-                        <td>
-                            <span style="display: none;" id="MaMH">
-                                @Html.DisplayFor(modelItem => item.MaMH)
-                            </span>
-                            @Html.DisplayFor(modelItem => item.TenMH)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.SoTC)
-                        </td>
-                        <td>
-                            @Convert.ToDateTime(item.NgayBD).ToString("dd/MM/yyyy")
-                        </td>
-                        <td>
-                            @Convert.ToDateTime(item.NgayKT).ToString("dd/MM/yyyy")
-                        </td>
-                        <td>
-                            @{
-                                TimeSpan a = (TimeSpan)item.ThoiGianKTGD - (TimeSpan)@item.ThoiGianBDGD;
-                                var s = a.Hours + " Giờ " + a.Minutes + " Phút";
-                            }
-                            @s
-                        </td>
-
-                        <td>
-                            @Html.DisplayFor(modelItem => item.GIANGVIEN.TenGV)
-                        </td>
-                    </tr>
+                        <tr>
+                            <td>
+                                @item.MaMH
+                            </td>
+                            <td>
+                                <span style="display: none;" id="MaMH">
+                                    @item.MaMH
+                                </span>
+                                @item.TenMH
+                            </td>
+                            <td>
+                                @item.SoTC
+                            </td>
+                            <td>
+                                @item.SoNgayVang
+                            </td>
+                        </tr>
                     }
                 </tbody>
             </table>
-            <div class="form-group" style="margin-left: -9px;">
-                <div class="col-md-4">
-                    <input class="form-control text-box single-line date" data-val="true" data-val-date="The field NgayBD must be a date." id="Ngay" name="Ngay" type="date" value="@DateTime.Now.ToString("yyyy-MM-dd")" max="@DateTime.Now.ToString("yyyy-MM-dd")" required>
-                </div>
-            </div>
         </div>
     </div>
 </div>
@@ -71,29 +65,72 @@
 <div class="card shadow mb-4">
     <div>
         <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">DANH SÁCH SINH VIÊN</h6>
+            <h6 class="m-0 font-weight-bold text-primary">DANH SÁCH TẤT CẢ NHÓM HỌC PHẦN</h6>
         </div>
     </div>
     <div class="card-body">
-        <div class="filter">
-            <input type="text" class="form-control form-control-sm" id="Filter_QLTenSV" name="Filter_QLTenSV" placeholder="Nhập tên sinh viên..." />
-        </div>
+
         <div class="table-responsive">
             <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                 <thead>
                     <tr>
-                       
-                        <th style="width:41px;">MSSV</th>
-                        <th>Tên Sinh Viên</th>
-                        <th style="width: 73px;">Lớp</th>
-                        <th>Điểm danh đầu giờ</th>
-                        <th>Điểm danh cuối giờ</th>
-                        <th>Trạng Thái</th>
-                        <th>Có Phép</th>
-                        <th style="width: 130px;">Khiếu nại</th>
+                        <th>Mã nhóm MH</th>
+                        <th>Ngày BĐ</th>
+                        <th>Ngày KT</th>
+                        <th>Thời gian học</th>
+                        <th>Giảng Viên Dạy</th>
+                        <th>Phòng Học</th>
+                        <th>Số sinh viên</th>
+                        <th style="width: 1;">Chức năng</th>
                     </tr>
                 </thead>
                 <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr id="row_@item.MaNMH">
+
+                            <td>
+                                @Html.DisplayFor(modelItem => item.MaNMH)
+                            </td>
+                            <td>
+                                @Convert.ToDateTime(item.NgayBD).ToString("dd/MM/yyyy")
+                            </td>
+                            <td>
+                                @Convert.ToDateTime(item.NgayKT).ToString("dd/MM/yyyy")
+                            </td>
+                            <td>
+                                @{
+                                    TimeSpan a = (TimeSpan)item.ThoiGianKT - (TimeSpan)@item.ThoiGianBD;
+                                    var s = a.Hours + " Giờ " + a.Minutes + " Phút";
+                                }
+                                @s
+                            </td>
+
+                            <td>
+                                @Html.DisplayFor(modelItem => item.GIANGVIEN.TenGV)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.PHONGHOC.TenPhongHoc)
+                            </td>
+
+                            <td>
+                                <span class="btn btn-primary btn-icon-split">
+                                    <span class="icon text-white-50">
+                                        @item.SINHVIENs.Count()
+                                    </span>
+                                    <span class="text">Sinh Viên</span>
+                                </span>
+                            </td>
+                            <td>
+                                <a href="@Url.Action("XemChiTietDiemDanh","DiemDanh",new{MaNMH = item.MaNMH})" class="btn btn-primary btn-icon-split">
+                                    <span class="icon text-white-50">
+                                       
+                                    </span>
+                                    <span class="text">Xem Chi Tiết</span>
+                                </a>
+                            </td>
+                        </tr>
+                    }
                 </tbody>
             </table>
         </div>
@@ -101,31 +138,11 @@
 </div>
 
 <script>
-    $(document).ready(function () {
-        var dt_mh = $("#dataTableMH").DataTable({
-             searching: false, paging: false, info: false
-        })
+    var dt;
 
-        function removeAccents(str) {
-            return str.normalize('NFD')
-                .replace(/[\u0300-\u036f]/g, '')
-                .replace(/đ/g, 'd').replace(/Đ/g, 'D');
-        }
+    function loadDataTable() {
 
-        $.fn.dataTable.ext.search.push(
-            function (settings, data, dataIndex) {
-
-                var TenSV = removeAccents($('#Filter_QLTenSV').val()).toLowerCase();
-                var Data_TenSV = removeAccents(data[2]).toLowerCase();
-
-                if (Data_TenSV.includes(TenSV)) {
-                    return true;
-                }
-                return false;
-            }
-        );
-
-        var dt = $('#dataTable').DataTable({
+        dt = $("#dataTable").DataTable({
             "language": {
                 "lengthMenu": "Số hàng mỗi trang _MENU_",
                 "search": "Tìm kiếm:",
@@ -138,160 +155,166 @@
                     "next": "Trang sau",
                     "previous": "Trang trước"
                 },
-                searchPlaceholder: "Nhập tên sinh viên...",
-                zeroRecords: "Không tìm thấy kết quả"
+                searchPlaceholder: "Tìm kiếm...",
+                zeroRecords: "Không tìm thấy kết quả",
+            }
+        });
+    }
+
+    function FnSuccess(data) {
+        console.log(data);
+        if (data != false) {
+            $(".close").click();
+            var node = dt.row.add([
+                data.MaNMH,
+                data.NgayBD,
+                data.NgayKT,
+                data.ThoiGianDay,
+                data.TenGiangVien,
+                data.TenPhongHoc,
+                `<span class="btn btn-primary btn-icon-split">
+                                    <span class="icon text-white-50">
+                                        ${0}
+                                    </span>
+                                    <span class="text">Sinh Viên</span>
+                                </span>`,
+                `<a href="/QuanLyNhomMonHoc/Edit/${data.MaNMH}">Chỉnh sửa</a> |
+                                             <a class="delete" data-model-id="${data.MaNMH}" onclick="Delete(this)" style="cursor: pointer;">Xóa</a>`
+            ]).draw(true).node();
+            $(node).attr('id', `row_${data.MaNMH}`);
+            Swal.fire({
+                icon: 'success',
+                title: 'Thành Công',
+                text: `Nhóm môn học ${data.MaNMH} đã được thêm thành công`,
+                timer: 2000,
+                showConfirmButton: false
+            })
+        }
+    }
+
+
+    function Delete(obj) {
+        var ele = $(obj);
+        var MaMH = ele.data("model-id");
+        var url = `/QuanLyMonHoc/Delete/${MaMH}`
+
+        swal.fire({
+            title: 'Bạn có chắc?',
+            text: "Nếu xóa sẽ không thể khôi phục!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Có, Hãy xóa!',
+            cancelButtonText: 'Không, Quay lại!',
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.post(url, { id: MaMH })
+                    .done(function (data) {
+                        dt.rows(`#row_${data.id}`)
+                            .remove()
+                            .draw();
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Thành Công',
+                            text: `Môn Học ${data.TenMH} đã được xóa`,
+                            timer: 2000,
+                            showConfirmButton: false
+                        })
+                    })
+                    .fail(function (data) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Không thành công',
+                            text: `Môn học đã có sinh viên đăng ký, không thể xóa!`,
+                            timer: 2000,
+                            showConfirmButton: false
+                        })
+                    });
+            }
+            else if (result.dismiss === Swal.DismissReason.cancel) {
+
+            }
+        })
+
+
+    };
+
+
+    $("#MaGV").change(function () {
+        var tengv = $("#MaGV option:selected").html();
+        $("#TenGV").val(tengv);
+    })
+
+    $(document).ready(function () {
+
+        loadDataTable();
+
+        var form = $(".formMH").validate({
+            onfocusout: function (element) {
+                $(element).valid();
+            },
+            invalidHandler: function (form, validator) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Xuất hiện lỗi',
+                    text: `Thêm Môn Học không thành công`,
+                    timer: 2000,
+                    showConfirmButton: false
+
+                })
+                validator.focusInvalid();
+            },
+
+            errorClass: "is-invalid",
+            validClass: "is-valid",
+            rules: {
+
+                NgayBD: {
+                    required: true,
+                },
+                ThoiGianBDGD: {
+                    required: true,
+                },
+                ThoiGianKTGD: {
+                    required: true,
+                },
+                MaGV: {
+                    required: true,
+                },
+                MaPhongHoc: {
+                    required: true,
+                },
+
+            },
+            messages: {
+
+                NgayBD: {
+                    required: "Ngày bắt đầu không được để trống",
+                },
+                ThoiGianBDGD: {
+                    required: "Thời gian bắt đầu giảng dạy không được để trống",
+                },
+                ThoiGianKTGD: {
+                    required: "Thời gian bắt đầu giảng dạy không được để trống",
+                },
+                MaGV: {
+                    required: "Bạn chưa chọn Giảng viên, hãy chọn 1.",
+                },
+                MaPhongHoc: {
+                    required: "Bạn chưa chọn Phòng học, hãy chọn 1.",
+                }
             }
         });
 
-        $('#Filter_QLTenSV').on('input', function (e) {
-            dt.draw();
+        $(".mul-select").select2({
+            placeholder: "Chọn Thời Khóa Biểu",
+            tags: true,
+            tokenSperators: ['/', ',', ',', " "],
+            width: 'resolve',
+            heigth: 'resolve'
         });
 
-        if ($(window).width() < 380) {
 
-            dt_mh.column(1).visible(false,false);
-            dt_mh.column(2).visible(false,false);
-            dt_mh.column(3).visible(false, false);
-            dt_mh.column(4).visible(false,false);
-            dt_mh.columns.adjust().draw(false)
-
-            dt.column(0).visible(false, false);
-            dt.column(3).visible(false, false);
-            dt.column(4).visible(false, false);
-            dt.column(5).visible(false, false);
-            dt.columns.adjust().draw(false)
-
-        }
-
-        var date = new Date($('#Ngay').val());
-        var day = ("0" + date.getDate()).slice(-2);
-        var month = ("0" + (date.getMonth() + 1)).slice(-2)
-        var year = date.getFullYear();
-        var datec = `${day}/${month}/${year}`
-        var mamh = $("#MaMH").html();
-
-        dt.clear()
-            .draw();
-
-        $.get("/DiemDanh/GetSinhVien", { MaMH: mamh, d1: datec }, function (data) {
-            dt.clear()
-                .draw();
-            console.log(data)
-            $.each(data, function (index, row) {
-                var tt = (row.TrangThai) ? "Có mặt" : "Vắng mặt";
-                var thoigianvao = "Chưa có";
-                var thoigianra = "Chưa có";
-
-                var cophep = "_";
-                var kn = `<span class="btn btn-success btn-icon-split">
-                                <span class="text">Không khiếu nại</span>
-                          </span >`
-
-                if (!row.TrangThai && row.CoPhep) {
-                    cophep = "Có phép"
-                }
-                else {
-                    cophep = "Không phép"
-                }
-
-                if (row.KhieuNai != null) {
-                    kn = `<a href="${window.location.origin}/QuanLyKhieuNai/Details/${row.KhieuNai}" class="btn btn-primary btn-icon-split" style= "width: 139px;">
-                                <span class="text">Có khiếu nại</span>
-                          </a >`
-                }
-                if (row.ThoiGianVao != null) {
-                    var hours = ("0" + row.ThoiGianVao.Hours).slice(-2);
-                    var minutes = ("0" + row.ThoiGianVao.Minutes).slice(-2);
-                    var seconds = ("0" + row.ThoiGianVao.Seconds).slice(-2);
-                    thoigianvao = `${hours}:${minutes}:${seconds}`
-                }
-
-                if (row.ThoiGianRa != null) {
-                    var hours = ("0" + row.ThoiGianRa.Hours).slice(-2);
-                    var minutes = ("0" + row.ThoiGianRa.Minutes).slice(-2);
-                    var seconds = ("0" + row.ThoiGianRa.Seconds).slice(-2);
-                    thoigianra = `${hours}:${minutes}:${seconds}`
-                }
-
-                dt.row.add([
-
-                    row.MaSV,
-                    row.TenSV,
-                    row.TenLop,
-                    thoigianvao,
-                    thoigianra,
-                    tt,
-                    cophep,
-                    kn
-
-                ]).draw(false)
-            })
-        })
-
-
-        $('.date').change(function () {
-            var date = new Date($('#Ngay').val());
-            var day = ("0" + date.getDate()).slice(-2);
-            var month = ("0" + (date.getMonth() + 1)).slice(-2)
-            var year = date.getFullYear();
-            var datec = `${day}/${month}/${year}`
-            var mamh = $("#MaMH").html();
-
-            dt.clear()
-                .draw();
-            $.get("/DiemDanh/GetSinhVien", { MaMH: mamh, d1: datec }, function (data) {
-                dt.clear()
-                    .draw();
-                console.log(data)
-
-                $.each(data, function (index, row) {
-                    var tt = (row.TrangThai) ? "Có mặt" : "Vắng mặt";
-                    var thoigianvao = "Chưa có";
-                    var thoigianra = "Chưa có";
-
-                    var cophep = "_";
-                    var kn = `<span class="btn btn-success btn-icon-split">
-                                <span class="text">Không khiếu nại</span>
-                          </span >`
-                    if (!row.TrangThai && row.CoPhep) {
-                        cophep = "Có phép"
-                    }
-                    else {
-                        cophep = "Không phép"
-                    }
-
-                    if (row.ThoiGianVao != null) {
-                        var hours = ("0" + row.ThoiGianVao.Hours);
-                        var minutes = ("0" + row.ThoiGianVao.Minutes).slice(-2);
-                        var seconds = ("0" + row.ThoiGianVao.Seconds).slice(-2);
-                        thoigianvao = `${hours}:${minutes}:${seconds}`
-                    }
-
-                    if (row.ThoiGianRa != null) {
-                        var hours = ("0" + row.ThoiGianRa.Hours).slice(-2);
-                        var minutes = ("0" + row.ThoiGianRa.Minutes).slice(-2);
-                        var seconds = ("0" + row.ThoiGianRa.Seconds).slice(-2);
-                        thoigianvao = `${hours}:${minutes}:${seconds}`
-                    }
-                    if (row.KhieuNai != null) {
-                        kn = `<a href="${window.location.origin}/QuanLyKhieuNai/Details/${row.KhieuNai}" class="btn btn-primary btn-icon-split" style= "width: 139px;">
-                                <span class="text">Có khiếu nại</span>
-                          </a >`
-                    }
-
-                    dt.row.add([
-
-                        row.MaSV,
-                        row.TenSV,
-                        row.TenLop,
-                        thoigianvao,
-                        thoigianra,
-                        tt,
-                        cophep,
-                        kn
-                    ]).draw(false)
-                })
-            })
-        })
     });
+
 </script>

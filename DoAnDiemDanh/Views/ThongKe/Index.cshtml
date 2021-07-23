@@ -38,31 +38,40 @@
             <div class="h3 mb-2 ml-2 text-gray-800" style="font-size: 20px; font-weight: 600;">Chọn Môn Học</div>
             <div class="col-md-12">
                 <select class="form-control" id="MaMH" name="MaMH" required="">
+                    <option value="">Mời bạn chọn môn học</option>
                     @foreach (var item in MONHOC)
                     {
                         <option value="@item.MaMH">@item.TenMH</option>
                     }
                 </select>
             </div>
+
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-8" style="font-size: 17px; font-weight:bold">Nhóm môn học</label>
+            <div class="col-md-12">
+                <select class="form-control" id="MaNMH" name="MaNMH" required>
+                </select>
+            </div>
         </div>
     </div>
 </div>
 
-<button class="btn btn-success btn-icon-split shadow" style="position: absolute; top: 78px; right: 400px" data-toggle="modal" data-target="#exampleModalLong" id="bieudo">
+<button class="btn btn-success btn-icon-split shadow disabled" style="position: absolute; top: 78px; right: 400px" data-toggle="modal" data-target="#exampleModalLong" id="bieudo">
     <span class="icon text-white-50">
         <i class="fas fa-file-excel"></i>
     </span>
     <span class="text">Biểu đồ thống kê</span>
 </button>
 
-<a class="btn btn-success btn-icon-split shadow" style="position: absolute; top: 78px; right: 614px" id="export1" href="">
+<a class="btn btn-success btn-icon-split shadow disabled" style="position: absolute; top: 78px; right: 614px" id="export1" href="">
     <span class="icon text-white-50">
         <i class="fas fa-file-excel"></i>
     </span>
     <span class="text">Danh Sách Điểm Danh</span>
 </a>
 
-<a class="btn btn-success btn-icon-split shadow" style="position: absolute; top: 130px; right: 614px; padding-right: 23px;" id="export2" href="">
+<a class="btn btn-success btn-icon-split shadow disabled" style="position: absolute; top: 130px; right: 614px; padding-right: 23px;" id="export2" href="">
     <span class="icon text-white-50">
         <i class="fas fa-file-excel"></i>
     </span>
@@ -78,7 +87,7 @@
             <table class="table table-bordered" width="100%" cellspacing="0" id="dataTableMH">
                 <thead>
                     <tr>
-                        <th>Mã Môn Học</th>
+                        <th>Mã Nhóm Môn Học</th>
                         <th>Tên Môn Học</th>
                         <th>Giảng viên dạy</th>
                         <th>Sĩ Số</th>
@@ -191,7 +200,6 @@
                 searchPlaceholder: "Tìm kiếm...",
                 zeroRecords: "Không tìm thấy kết quả",
             }
-
         });
         var dt_mh = $("#dataTableMH").DataTable({
             searching: false, paging: false, info: false
@@ -243,55 +251,37 @@
             dt.draw();
         });
 
-        $('#export1').attr("href", `/ThongKe/XuatBaoCaoDiemDanhFull?MaMH=${$("#MaMH").val()}`)
-        var mamh = $("#MaMH").val()
-        $.get("/ThongKe/GetMonHoc", { MaMH: $("#MaMH").val() }, function (data) {
-            dt.clear();
-            $("#data").empty();
-
-            dt_mh.row.add([
-                data.MaMH,
-                data.TenMH,
-                data.TenGV,
-                data.SiSo,
-                data.SoTC,
-                data.NgayBD,
-                data.NgayKT,
-                data.ThoiGianBD,
-                data.ThoiGianKT
-            ]).draw(false)
-
-        
-
-            $.each(data.DSSV, function (index, row) {
-                
-                $.get("/ThongKe/GetSinhVien", { MaSV: row.MaSV, MaMH: $("#MaMH").val() }, function (data) {
-                    dt.row.add([
-                        index+1,
-                        row.MaSV,
-                        row.TenSV,
-                        data.tenkhoa,
-                        data.tenlop,
-                        `${data.sobuoithamgia}/${data.tongsobuoi}`,
-                        `<a class="btn btn-success btn-icon-split shadow" href="/ThongKe/XuatChiTietDiemDanh?MaMH=${mamh}&MaSV=${row.MaSV}">
-                                <span class="icon text-white-50">
-                                    <i class="fas fa-file-excel"></i>
-                                </span>
-                                <span class="text">Xuất Chi Tiết</span>
-                            </a>`  
-                    ]).draw(false)
+        $("#MaMH").change(function () {
+            $.get("/QuanLyMonHoc/GetNhomMonHoc", { id: $(this).val() }, function (data) {
+                $("#MaNMH").empty()
+                $("#MaNMH").append("<option value=''>Chọn nhóm môn học</option>")
+                $.each(data, function (index, row) {
+                    $("#MaNMH").append("<option value='" + row.MaNMH + "'>Nhóm Môn Học - " + row.MaNMH + "</option>")
                 })
             })
         })
 
-        $("#MaMH").change(function () {
-            $('#export1').attr("href", `/ThongKe/XuatBaoCaoDiemDanhFull?MaMH=${$(this).val()}`)
-            var mamh = $(this).val();
-            $.get("/ThongKe/GetMonHoc", { MaMH: $(this).val() }, function (data) {
+        $("#MaNMH").change(function () {
+            if ($(this).val() != "") {
+                $('#export1').removeClass('disabled')
+                $('#export1').attr("href", `/ThongKe/XuatBaoCaoDiemDanhFull?MaNMH=${$(this).val()}`)
+                $('#export2').removeClass('disabled')
+                $('#export2').attr("href", `/ThongKe/XuatBaoCaoCamThi?MaNMH=${$("#MaNMH").val()}`)
+                $('#bieudo').removeClass('disabled')
+            }
+            else {
+                $('#export1').addClass('disabled')
+                $('#export2').addClass('disabled')
+                $('#bieudo').addClass('disabled')
+            }
+         
+            var manmh = $(this).val();
+            $.get("/ThongKe/GetMonHoc", { MaNMH: $(this).val() }, function (data) {
+                console.log(data)
                 dt.clear();
                 $("#data").empty();
                 var rows = `<tr>
-                                <td>${data.MaMH}</td>
+                                <td>${data.MaNMH}</td>
                                 <td>${data.TenMH}</td>
                                 <td>${data.TenGV}</td>
                                 <td>${data.SiSo}</td>
@@ -304,7 +294,7 @@
                 $("#data").append(rows)
 
                 $.each(data.DSSV, function (index, row) {
-                    $.get("/ThongKe/GetSinhVien", { MaSV: row.MaSV, MaMH: $("#MaMH").val() }, function (data) {
+                    $.get("/ThongKe/GetSinhVien", { MaSV: row.MaSV, MaNMH: $("#MaNMH").val() }, function (data) {
                         
                         $('#dataTable').DataTable().row.add([
                             index + 1,
@@ -313,7 +303,7 @@
                             data.tenkhoa,
                             data.tenlop,
                             `${data.sobuoithamgia}/${data.tongsobuoi}`,
-                            `<a class="btn btn-success btn-icon-split shadow" href="/ThongKe/XuatChiTietDiemDanh?MaMH=${mamh}&MaSV=${row.MaSV}">
+                            `<a class="btn btn-success btn-icon-split shadow" href="/ThongKe/XuatChiTietDiemDanh?MaNMH=${manmh}&MaSV=${row.MaSV}">
                                 <span class="icon text-white-50">
                                     <i class="fas fa-file-excel"></i>
                                 </span>
@@ -332,7 +322,7 @@
         $("#bieudo").click(function () {
             $(".canvas").empty();
             $(".canvas").append(`<canvas id="myChart" width="400" height="400"></canvas>`)
-            $.get("/ThongKe/GetBieuDo", { MaMH: $("#MaMH").val() }, function (data) {
+            $.get("/ThongKe/GetBieuDo", { MaNMH: $("#MaNMH").val() }, function (data) {
                 $('#title_bd').text(`${data.TenMH} | Sĩ số: ${data.SiSo}`)
                 var ctx = document.getElementById('myChart');
                 var datas = {
