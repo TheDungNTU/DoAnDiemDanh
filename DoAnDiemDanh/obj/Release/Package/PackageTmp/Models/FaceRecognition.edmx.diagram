@@ -4,52 +4,54 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="facf31c66ac042828d4ecd37c5bf73ac" Name="Diagram1">
-        <EntityTypeShape EntityType="FACE_RECOGNITION_V2Model.CAMERA" Width="1.5" PointX="3.75" PointY="20.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="FACE_RECOGNITION_V2Model.CTDD" Width="1.5" PointX="12.75" PointY="14.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="FACE_RECOGNITION_V2Model.CTDD_GV" Width="1.5" PointX="5.25" PointY="10.625" IsExpanded="true" />
-        <EntityTypeShape EntityType="FACE_RECOGNITION_V2Model.DIEMDANH" Width="1.5" PointX="10.5" PointY="11.125" IsExpanded="true" />
-        <EntityTypeShape EntityType="FACE_RECOGNITION_V2Model.DIEMDANH_T_GV" Width="1.5" PointX="5.25" PointY="14.625" IsExpanded="true" />
-        <EntityTypeShape EntityType="FACE_RECOGNITION_V2Model.DIEMDANH_T_SV" Width="1.5" PointX="10.5" PointY="18.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="FACE_RECOGNITION_V2Model.GIANGVIEN" Width="1.5" PointX="3" PointY="12.375" IsExpanded="true" />
-        <EntityTypeShape EntityType="FACE_RECOGNITION_V2Model.HINHANH_GV" Width="1.5" PointX="5.25" PointY="17.375" IsExpanded="true" />
-        <EntityTypeShape EntityType="FACE_RECOGNITION_V2Model.HINHANH_SV" Width="1.5" PointX="10.5" PointY="20.875" IsExpanded="true" />
-        <EntityTypeShape EntityType="FACE_RECOGNITION_V2Model.KHIEUNAI" Width="1.5" PointX="10.5" PointY="7.625" IsExpanded="true" />
-        <EntityTypeShape EntityType="FACE_RECOGNITION_V2Model.KHOA" Width="1.5" PointX="0.75" PointY="14.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="FACE_RECOGNITION_V2Model.LICHGIANGDAY" Width="1.5" PointX="10.5" PointY="14" IsExpanded="true" />
-        <EntityTypeShape EntityType="FACE_RECOGNITION_V2Model.LOP" Width="1.5" PointX="3" PointY="16.875" IsExpanded="true" />
-        <EntityTypeShape EntityType="FACE_RECOGNITION_V2Model.MONHOC" Width="1.5" PointX="6" PointY="4.5" IsExpanded="true" />
-        <EntityTypeShape EntityType="FACE_RECOGNITION_V2Model.NGAYLE" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="FACE_RECOGNITION_V2Model.NHOMMONHOC" Width="1.5" PointX="8.25" PointY="12" IsExpanded="true" />
-        <EntityTypeShape EntityType="FACE_RECOGNITION_V2Model.PHONGHOC" Width="1.5" PointX="6" PointY="20.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="FACE_RECOGNITION_V2Model.QUYEN" Width="1.5" PointX="6" PointY="7.875" IsExpanded="true" />
-        <EntityTypeShape EntityType="FACE_RECOGNITION_V2Model.SINHVIEN" Width="1.5" PointX="8.25" PointY="16.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="FACE_RECOGNITION_V2Model.TAIKHOANGIANGVIEN" Width="1.5" PointX="8.25" PointY="8.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="FACE_RECOGNITION_V2Model.TAIKHOANSINHVIEN" Width="1.5" PointX="13.5" PointY="18.5" IsExpanded="true" />
-        <AssociationConnector Association="FACE_RECOGNITION_V2Model.FK_PHONGHOC_CAMERA" ManuallyRouted="false" />
-        <AssociationConnector Association="FACE_RECOGNITION_V2Model.FK__CTDD__MaKN__46E78A0C" ManuallyRouted="false" />
-        <AssociationConnector Association="FACE_RECOGNITION_V2Model.FK_CTDD_DD" ManuallyRouted="false" />
-        <AssociationConnector Association="FACE_RECOGNITION_V2Model.FK_CTDD_SINHVIEN" ManuallyRouted="false" />
-        <AssociationConnector Association="FACE_RECOGNITION_V2Model.FK_CTDD_DD_GV" ManuallyRouted="false" />
-        <AssociationConnector Association="FACE_RECOGNITION_V2Model.FK_CTDD_GIANGVIEN" ManuallyRouted="false" />
-        <AssociationConnector Association="FACE_RECOGNITION_V2Model.FK_DIEMDANH_NHOMMONHOC" ManuallyRouted="false" />
-        <AssociationConnector Association="FACE_RECOGNITION_V2Model.FK__DIEMDANH_T__MaGV__5629CD9C" ManuallyRouted="false" />
-        <AssociationConnector Association="FACE_RECOGNITION_V2Model.FK__DIEMDANH_T__MaSV__5165187F" ManuallyRouted="false" />
-        <AssociationConnector Association="FACE_RECOGNITION_V2Model.FK__TAIKHOANGI__MaGV__1CF15040" ManuallyRouted="false" />
-        <AssociationConnector Association="FACE_RECOGNITION_V2Model.FK_GIANGVIEN_KHOA" ManuallyRouted="false" />
-        <AssociationConnector Association="FACE_RECOGNITION_V2Model.FK_HINHANH_GIANGVIEN" ManuallyRouted="false" />
-        <AssociationConnector Association="FACE_RECOGNITION_V2Model.FK_NHOMMONHOC_GIANGVIEN" ManuallyRouted="false" />
-        <AssociationConnector Association="FACE_RECOGNITION_V2Model.FK_HINHANH_SINHVIEN" ManuallyRouted="false" />
-        <AssociationConnector Association="FACE_RECOGNITION_V2Model.FK_LOP_KHOA" ManuallyRouted="false" />
-        <AssociationConnector Association="FACE_RECOGNITION_V2Model.FK_SINHVIEN_KHOA" ManuallyRouted="false" />
-        <AssociationConnector Association="FACE_RECOGNITION_V2Model.FK_TKB_NMH" ManuallyRouted="false" />
-        <AssociationConnector Association="FACE_RECOGNITION_V2Model.FK_SINHVIEN_LOP" ManuallyRouted="false" />
-        <AssociationConnector Association="FACE_RECOGNITION_V2Model.FK_MH_NMH" ManuallyRouted="false" />
-        <AssociationConnector Association="FACE_RECOGNITION_V2Model.FK_NHOMMONHOC_PHONGHOC" ManuallyRouted="false" />
-        <AssociationConnector Association="FACE_RECOGNITION_V2Model.FK__TAIKHOANG__MaQuy__1DE57479" ManuallyRouted="false" />
-        <AssociationConnector Association="FACE_RECOGNITION_V2Model.FK__TAIKHOANS__MaQuy__5DCAEF64" ManuallyRouted="false" />
-        <AssociationConnector Association="FACE_RECOGNITION_V2Model.FK__TAIKHOANSI__MaSV__5CD6CB2B" ManuallyRouted="false" />
-        <AssociationConnector Association="FACE_RECOGNITION_V2Model.DANGKYMONHOC" ManuallyRouted="false" />
+      <Diagram DiagramId="8e4a4008b0584c549ed5b654ad5a487a" Name="Diagram1">
+        <EntityTypeShape EntityType="FaceRecognition.CAMERA" Width="1.5" PointX="0.75" PointY="4.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="FaceRecognition.CTDD" Width="1.5" PointX="10.5" PointY="12.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="FaceRecognition.CTDD_GV" Width="1.5" PointX="5.25" PointY="13.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="FaceRecognition.DIEMDANH" Width="1.5" PointX="7.5" PointY="7.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="FaceRecognition.DIEMDANH_T_GV" Width="1.5" PointX="8.25" PointY="13.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="FaceRecognition.DIEMDANH_T_SV" Width="1.5" PointX="10.5" PointY="17.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="FaceRecognition.GIANGVIEN" Width="1.5" PointX="3" PointY="12.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="FaceRecognition.HINHANH_GV" Width="1.5" PointX="5.25" PointY="19.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="FaceRecognition.HINHANH_SV" Width="1.5" PointX="10.5" PointY="20.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="FaceRecognition.KHIEUNAI" Width="1.5" PointX="8.25" PointY="21.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="FaceRecognition.KHOA" Width="1.5" PointX="0.75" PointY="14.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="FaceRecognition.LICHGIANGDAY" Width="1.5" PointX="7.5" PointY="3.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="FaceRecognition.LOP" Width="1.5" PointX="3" PointY="16.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="FaceRecognition.MONHOC" Width="1.5" PointX="3" PointY="7.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="FaceRecognition.NGAYLE" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="FaceRecognition.NHOMMONHOC" Width="1.5" PointX="5.25" PointY="8.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="FaceRecognition.PHONGHOC" Width="1.5" PointX="3" PointY="4.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="FaceRecognition.QUYEN" Width="1.5" PointX="3" PointY="20.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="FaceRecognition.SINHVIEN" Width="1.5" PointX="8.25" PointY="16.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="FaceRecognition.TAIKHOANGIANGVIEN" Width="1.5" PointX="5.25" PointY="16.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="FaceRecognition.TAIKHOANSINHVIEN" Width="1.5" PointX="13.5" PointY="17.625" IsExpanded="true" />
+        <AssociationConnector Association="FaceRecognition.FK_PHONGHOC_CAMERA" ManuallyRouted="false" />
+        <AssociationConnector Association="FaceRecognition.FK__CTDD__MaKN__5AEE82B9" ManuallyRouted="false" />
+        <AssociationConnector Association="FaceRecognition.FK_CTDD_DD" ManuallyRouted="false" />
+        <AssociationConnector Association="FaceRecognition.FK_CTDD_SINHVIEN" ManuallyRouted="false" />
+        <AssociationConnector Association="FaceRecognition.FK_CTDD_DD_GV" ManuallyRouted="false" />
+        <AssociationConnector Association="FaceRecognition.FK_CTDD_GIANGVIEN" ManuallyRouted="false" />
+        <AssociationConnector Association="FaceRecognition.FK_DIEMDANH_NHOMMONHOC" ManuallyRouted="false" />
+        <AssociationConnector Association="FaceRecognition.FK__DIEMDANH___MaPho__6E01572D" ManuallyRouted="false" />
+        <AssociationConnector Association="FaceRecognition.FK__DIEMDANH_T__MaGV__6B24EA82" ManuallyRouted="false" />
+        <AssociationConnector Association="FaceRecognition.FK__DIEMDANH___MaPho__68487DD7" ManuallyRouted="false" />
+        <AssociationConnector Association="FaceRecognition.FK__DIEMDANH_T__MaSV__656C112C" ManuallyRouted="false" />
+        <AssociationConnector Association="FaceRecognition.FK__TAIKHOANGI__MaGV__30F848ED" ManuallyRouted="false" />
+        <AssociationConnector Association="FaceRecognition.FK_GIANGVIEN_KHOA" ManuallyRouted="false" />
+        <AssociationConnector Association="FaceRecognition.FK_HINHANH_GIANGVIEN" ManuallyRouted="false" />
+        <AssociationConnector Association="FaceRecognition.FK_NHOMMONHOC_GIANGVIEN" ManuallyRouted="false" />
+        <AssociationConnector Association="FaceRecognition.FK_HINHANH_SINHVIEN" ManuallyRouted="false" />
+        <AssociationConnector Association="FaceRecognition.FK_LOP_KHOA" ManuallyRouted="false" />
+        <AssociationConnector Association="FaceRecognition.FK_SINHVIEN_KHOA" ManuallyRouted="false" />
+        <AssociationConnector Association="FaceRecognition.FK_TKB_NMH" ManuallyRouted="false" />
+        <AssociationConnector Association="FaceRecognition.FK_SINHVIEN_LOP" ManuallyRouted="false" />
+        <AssociationConnector Association="FaceRecognition.FK_MH_NMH" ManuallyRouted="false" />
+        <AssociationConnector Association="FaceRecognition.FK_NHOMMONHOC_PHONGHOC" ManuallyRouted="false" />
+        <AssociationConnector Association="FaceRecognition.FK__TAIKHOANG__MaQuy__31EC6D26" ManuallyRouted="false" />
+        <AssociationConnector Association="FaceRecognition.FK__TAIKHOANS__MaQuy__73BA3083" ManuallyRouted="false" />
+        <AssociationConnector Association="FaceRecognition.FK__TAIKHOANSI__MaSV__72C60C4A" ManuallyRouted="false" />
+        <AssociationConnector Association="FaceRecognition.DANGKYMONHOC" ManuallyRouted="false" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

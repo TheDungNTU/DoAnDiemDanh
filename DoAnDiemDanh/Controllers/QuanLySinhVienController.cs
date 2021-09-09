@@ -20,27 +20,35 @@ namespace DoAnDiemDanh.Controllers
     [Authorize(Roles = "Admin, GiangVien")]
     public class QuanLySinhVienController : Controller
     {
-        private FACE_RECOGNITION_V2Entities db = new FACE_RECOGNITION_V2Entities();
+        private BaseModel db = new BaseModel();
 
 
-        public void SendMail(string email, string subject, string content)
+        public void SendMail(string email, string Subject, string content)
         {
-            using (MailMessage mail = new MailMessage())
-            {
-                mail.From = new MailAddress("tuyetsuong6332@gmail.com");
-                mail.To.Add(email);
-                mail.Subject = subject;
-                mail.Body = content;
-                mail.IsBodyHtml = true;
- 
+            var fromEmail = new MailAddress("noreply@vinaai.com", "VinaAI_Test");
+            var toEmail = new MailAddress(email);
+            var fromEmailPassword = "m%CS99SGvina"; // Replace with actual password
+            string subject = Subject;
 
-                using (SmtpClient smtp = new SmtpClient("smtp.gmail.com", 587))
-                {
-                    smtp.Credentials = new NetworkCredential("tuyetsuong6332@gmail.com", "0987806758");
-                    smtp.EnableSsl = true;
-                    smtp.Send(mail);
-                }
-            }
+            string body = content;
+
+            var smtp = new SmtpClient
+            {
+                Host = "smtp.gmail.com",
+                Port = 587,
+                EnableSsl = true,
+                DeliveryMethod = SmtpDeliveryMethod.Network,
+                UseDefaultCredentials = false,
+                Credentials = new NetworkCredential(fromEmail.Address, fromEmailPassword)
+            };
+
+            using (var message = new MailMessage(fromEmail, toEmail)
+            {
+                Subject = subject,
+                Body = body,
+                IsBodyHtml = true
+            })
+                smtp.Send(message);
 
         }
 
@@ -68,7 +76,7 @@ namespace DoAnDiemDanh.Controllers
                 foreach (DataRow item in dt.Rows)
                 {
                     var email = item["Email"].ToString();
-                    if (db.SINHVIENs.Any(_ => _.Email == email))
+                    if (db.Entity.SINHVIENs.Any(_ => _.Email == email))
                     {
                         return Json(false, JsonRequestBehavior.AllowGet);
                     }
@@ -83,8 +91,8 @@ namespace DoAnDiemDanh.Controllers
                         var diachi = item["Địa chỉ"].ToString();
                         var sdt = item["SĐT"].ToString();
                         var email = item["Email"].ToString();
-                        KHOA Khoa = db.KHOAs.Single(_ => _.TenKhoa.Contains(tenkhoa));
-                        LOP lop = db.LOPs.Single(_ => _.TenLop.Contains(tenlop));
+                        KHOA Khoa = db.Entity.KHOAs.Single(_ => _.TenKhoa.Contains(tenkhoa));
+                        LOP lop = db.Entity.LOPs.Single(_ => _.TenLop.Contains(tenlop));
                         if (Khoa != null && lop != null)
                         {
                             SINHVIEN sv = new SINHVIEN();
@@ -101,16 +109,16 @@ namespace DoAnDiemDanh.Controllers
                             svr.SDT = sdt;
                             sv.Email = email;
                             svr.Email = email;
-                            db.SINHVIENs.Add(sv);
-                            db.SaveChanges();
+                            db.Entity.SINHVIENs.Add(sv);
+                            db.Entity.SaveChanges();
 
                             var tk = new TAIKHOANSINHVIEN();
                             tk.MaQuyen = 3;
                             tk.MatKhau = "sinhvien123";
                             tk.MaSV = sv.MaSV;
                             tk.TaiKhoan = sv.Email;
-                            db.TAIKHOANSINHVIENs.Add(tk);
-                            db.SaveChanges();
+                            db.Entity.TAIKHOANSINHVIENs.Add(tk);
+                            db.Entity.SaveChanges();
 
                            
 
@@ -128,17 +136,22 @@ namespace DoAnDiemDanh.Controllers
         public ActionResult Index()
         {
           
-            var sINHVIENs = db.SINHVIENs.Include(sv => sv.KHOA).Include(sv => sv.LOP);
-            ViewBag.Khoa = db.KHOAs.Where(_ => _.LOPs.Count() > 0);
-            ViewBag.Khoa_Filter = db.KHOAs;
-            ViewBag.Lop_Filter = db.LOPs;
+            var sINHVIENs = db.Entity.SINHVIENs.Include(sv => sv.KHOA).Include(sv => sv.LOP);
+            
+            ViewBag.Khoa = db.Entity.KHOAs.Where(_ => _.LOPs.Count() > 0);
+            ViewBag.Khoa_Filter = db.Entity.KHOAs;
+            ViewBag.Lop_Filter = db.Entity.LOPs;
+            if (db.Entity.PHONGHOCs.Count() > 0)
+            {
+                ViewBag.MaPhongHoc = db.Entity.PHONGHOCs.First().MaPhongHoc;
+            }     
             return View(sINHVIENs.ToList());
         }
 
         public JsonResult GetLopHoc(int id)
         {
-            db.Configuration.ProxyCreationEnabled = false;
-            var LOPHOC = db.LOPs.Where(_ => _.MaKhoa == id).ToList();
+            db.Entity.Configuration.ProxyCreationEnabled = false;
+            var LOPHOC = db.Entity.LOPs.Where(_ => _.MaKhoa == id).ToList();
             return Json(LOPHOC, JsonRequestBehavior.AllowGet);
         }
 
@@ -151,18 +164,18 @@ namespace DoAnDiemDanh.Controllers
         [ValidateAntiForgeryToken]
         public JsonResult Create([Bind(Include = "MaSV,TenSV,Email,DiaChi,SDT,MaKhoa,MaLop")] SINHVIEN sINHVIEN)
         {
-            var Khoa = db.KHOAs.Where(_ => _.MaKhoa == sINHVIEN.MaKhoa).Single();
-            var Lop = db.LOPs.Where(_ => _.MaLop == sINHVIEN.MaLop).Single();
+            var Khoa = db.Entity.KHOAs.Where(_ => _.MaKhoa == sINHVIEN.MaKhoa).Single();
+            var Lop = db.Entity.LOPs.Where(_ => _.MaLop == sINHVIEN.MaLop).Single();
 
-            var check1 = db.GIANGVIENs.Any(_ => _.Email == sINHVIEN.Email);
-            var check2 = db.SINHVIENs.Any(_ => _.Email == sINHVIEN.Email);
+            var check1 = db.Entity.GIANGVIENs.Any(_ => _.Email == sINHVIEN.Email);
+            var check2 = db.Entity.SINHVIENs.Any(_ => _.Email == sINHVIEN.Email);
             if (check1 || check2)
             {
                 return Json(false, JsonRequestBehavior.AllowGet);
             }
 
-            db.SINHVIENs.Add(sINHVIEN);
-            db.SaveChanges();
+            db.Entity.SINHVIENs.Add(sINHVIEN);
+            db.Entity.SaveChanges();
 
             TAIKHOANSINHVIEN tk = new TAIKHOANSINHVIEN();
             tk.MaQuyen = 3;
@@ -170,8 +183,8 @@ namespace DoAnDiemDanh.Controllers
             tk.MaSV = sINHVIEN.MaSV;
             tk.TaiKhoan =sINHVIEN.Email;
 
-            db.TAIKHOANSINHVIENs.Add(tk);
-            db.SaveChanges();
+            db.Entity.TAIKHOANSINHVIENs.Add(tk);
+            db.Entity.SaveChanges();
             SendMail(sINHVIEN.Email, "[MẬT KHẨU ĐĂNG NHẬP WEB ĐIỂM DANH]", "Mật khẩu của bạn là: sinhvien123");
             var data = new
             {
@@ -192,13 +205,13 @@ namespace DoAnDiemDanh.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            SINHVIEN sINHVIEN = db.SINHVIENs.Find(id);
+            SINHVIEN sINHVIEN = db.Entity.SINHVIENs.Find(id);
             if (sINHVIEN == null)
             {
                 return HttpNotFound();
             }
-            ViewBag.MaKhoa = new SelectList(db.KHOAs, "MaKhoa", "TenKhoa", sINHVIEN.MaKhoa);
-            ViewBag.MaLop = new SelectList(db.LOPs, "MaLop", "TenLop", sINHVIEN.MaLop);
+            ViewBag.MaKhoa = new SelectList(db.Entity.KHOAs, "MaKhoa", "TenKhoa", sINHVIEN.MaKhoa);
+            ViewBag.MaLop = new SelectList(db.Entity.LOPs, "MaLop", "TenLop", sINHVIEN.MaLop);
             return View(sINHVIEN);
         }
 
@@ -207,16 +220,16 @@ namespace DoAnDiemDanh.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "MaSV,TenSV,MaKhoa,MaLop")] SINHVIEN sINHVIEN)
+        public ActionResult Edit([Bind(Include = "MaSV,TenSV,MaKhoa,MaLop,Avatar,Email,DiaChi,SDT")] SINHVIEN sINHVIEN)
         {
             if (ModelState.IsValid)
             {
-                db.Entry(sINHVIEN).State = EntityState.Modified;
-                db.SaveChanges();
+                db.Entity.Entry(sINHVIEN).State = EntityState.Modified;
+                db.Entity.SaveChanges();
                 return RedirectToAction("Index");
             }
-            ViewBag.MaKhoa = new SelectList(db.KHOAs, "MaKhoa", "TenKhoa", sINHVIEN.MaKhoa);
-            ViewBag.MaLop = new SelectList(db.LOPs, "MaLop", "TenLop", sINHVIEN.MaLop);
+            ViewBag.MaKhoa = new SelectList(db.Entity.KHOAs, "MaKhoa", "TenKhoa", sINHVIEN.MaKhoa);
+            ViewBag.MaLop = new SelectList(db.Entity.LOPs, "MaLop", "TenLop", sINHVIEN.MaLop);
             return View(sINHVIEN);
         }
 
@@ -227,7 +240,7 @@ namespace DoAnDiemDanh.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            SINHVIEN sINHVIEN = db.SINHVIENs.Find(id);
+            SINHVIEN sINHVIEN = db.Entity.SINHVIENs.Find(id);
             if (sINHVIEN == null)
             {
                 return HttpNotFound();
@@ -239,17 +252,17 @@ namespace DoAnDiemDanh.Controllers
         [HttpPost, ActionName("Delete")]
         public JsonResult DeleteConfirmed(int id)
         {
-            SINHVIEN sINHVIEN = db.SINHVIENs.Find(id);
-            TAIKHOANSINHVIEN tk = db.TAIKHOANSINHVIENs.Single(_ => _.MaSV == sINHVIEN.MaSV);
-            db.TAIKHOANSINHVIENs.Remove(tk);
-            db.SaveChanges();
+            SINHVIEN sINHVIEN = db.Entity.SINHVIENs.Find(id);
+            TAIKHOANSINHVIEN tk = db.Entity.TAIKHOANSINHVIENs.Single(_ => _.MaSV == sINHVIEN.MaSV);
+            db.Entity.TAIKHOANSINHVIENs.Remove(tk);
+            db.Entity.SaveChanges();
             var data = new
             {
                 id = id,
                 TenSV = sINHVIEN.TenSV,
             };
-            db.SINHVIENs.Remove(sINHVIEN);
-            db.SaveChanges();
+            db.Entity.SINHVIENs.Remove(sINHVIEN);
+            db.Entity.SaveChanges();
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
@@ -257,7 +270,7 @@ namespace DoAnDiemDanh.Controllers
         {
             if (disposing)
             {
-                db.Dispose();
+                db.Entity.Dispose();
             }
             base.Dispose(disposing);
         }

@@ -4,6 +4,7 @@
     ViewBag.Title = "Details_SinhVien_HinhAnh";
     Layout = "~/Views/Layout/_LayoutAdmin.cshtml";
     var PHONGHOC = (IEnumerable<PHONGHOC>)ViewBag.PHONGHOC;
+    var urlcapture = "https://1544-112-78-15-3.ngrok.io/capture?rtsp=" + ViewBag.Url;
 }
 
 <nav aria-label="breadcrumb">
@@ -92,13 +93,15 @@
 <div class="form-group camera ">
     <div class="row">
         <div class="col-6">
-            <div id='wowza_player'></div>
-            <script id='player_embed' src='//@ViewBag.Url' type='text/javascript'></script>
+            @{
+                var url = "https://1544-112-78-15-3.ngrok.io/video?rtsp=" + ViewBag.Url;
+                <img src="@url" width="640" height="360" style="border: 1px solid black" id="cameraip" />
+            }
         </div>
         <div class="col-5 ml-4">
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary" id="soluong">0 images</h6>
+                    <h6 class="m-0 font-weight-bold text-primary" id="soluong">Ảnh Đã Chụp</h6>
                 </div>
                 <div class="card-body" style="position: relative; display: block; overflow: scroll; height: 306px; padding: 0px; padding-left: 20px;" id="hinhanh_cam">
                     <canvas id="capture" width="320" height="240" class="d-none"></canvas>
@@ -115,7 +118,7 @@
             <span class="btn btn-success btn-icon-split m-2" id="btn-delete" style="width: 140px;">
                 <span class="text">Xóa Ảnh</span>
             </span>
-            <Button class="btn btn-success btn-icon-split shadow" data-toggle="modal" data-target="#exampleModalLong" id="open" style="width: 140px;">        
+            <Button class="btn btn-success btn-icon-split shadow" data-toggle="modal" data-target="#exampleModalLong" id="open" style="width: 140px;">
                 <span class="text">Upload Ảnh</span>
             </Button>
         </div>
@@ -182,7 +185,6 @@
         })
     }
 
-
     function getAttrFromString(str, node, attr) {
         var regex = new RegExp('<' + node + ' .*?' + attr + '="(.*?)"', "gi"), result, res = [];
         while ((result = regex.exec(str))) {
@@ -190,24 +192,6 @@
         }
         return res;
     }
-
-
-    var capture = document.getElementById("capture");
-    var video = document.getElementById("fcplayer_html5_api")
-    var soluong = 0;
-    var cameraStream = null;
-    var videoId = 'fcplayer_html5_api';
-    var scaleFactor = 0.25;
-
-    setTimeout(() => {
-        var video = document.getElementById(videoId);
-        video.play()
-    }, 300);
-
-
-    $("#open").click(function () {
-
-    });
 
 
     $("#btn-delete").click(function () {
@@ -219,12 +203,7 @@
     $("#btn-capture").click(startMouseCount)
 
     $("#btn-save").click(() => {
-        if (null != cameraStream) {
-            var track = cameraStream.getTracks()[0];
-            track.stop();
-            stream.load();
-            cameraStream = null;
-        }
+
 
         var s = getAttrFromString($('#hinhanh_cam').html(), 'img', 'src');
 
@@ -272,37 +251,25 @@
 
     })
 
-    function capture_camera(video, scaleFactor) {
-        if (scaleFactor == null) {
-            scaleFactor = 1;
-        }
-        var w = 640;
-        var h = 360;
-        var canvas = document.createElement('canvas');
-        canvas.width = w;
-        canvas.height = h;
-        var ctx = canvas.getContext('2d');
-        ctx.drawImage(video, 0, 0, w, h);
-        return canvas;
-    }
 
     function startMouseCount() {
-        var video = document.getElementById(videoId);
+        $.ajax({
+        url: '@urlcapture',
+        type: 'GET',
+        contentType: "image/jpg",
+            success: function (result) {
 
-        var canvas = capture_camera(video, scaleFactor);
+                var img = new Image()
+                img.src = 'data:image/gif;base64,' + result;
+                img.width = 220;
+                img.height = 140;
+                img.style = "margin: 2px; border-radius: 5px; border: 1px black solid;"
+                soluong += 1;
 
-        var img = new Image()
-
-
-        img.src = canvas.toDataURL("image/png");
-
-        img.width = 220;
-        img.height = 140;
-        img.style = "margin: 2px; border-radius: 5px; border: 1px black solid;"
-        soluong += 1;
-        $("#soluong").html(`${soluong} Images`);
-        $("#hinhanh_cam").append(img);
-        $("#hinhanh_cam").scrollTop($("#hinhanh_cam")[0].scrollHeight);
+                $("#hinhanh_cam").append(img);
+                $("#hinhanh_cam").scrollTop($("#hinhanh_cam")[0].scrollHeight);
+            }
+        })
     }
 
 

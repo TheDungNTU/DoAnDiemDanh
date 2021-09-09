@@ -13,13 +13,13 @@ namespace DoAnDiemDanh.Controllers
     [Authorize(Roles = "Admin")]
     public class QuanLyLopController : Controller
     {
-        private FACE_RECOGNITION_V2Entities db = new FACE_RECOGNITION_V2Entities();
+        private BaseModel db = new BaseModel();
 
         // GET: QuanLyLop
         public ActionResult Index()
         {
-            ViewBag.MaKhoa = db.KHOAs;
-            var lOPs = db.LOPs.Include(l => l.KHOA);
+            ViewBag.MaKhoa = db.Entity.KHOAs;
+            var lOPs = db.Entity.LOPs.Include(l => l.KHOA);
             return View(lOPs.ToList());
         }
 
@@ -28,11 +28,11 @@ namespace DoAnDiemDanh.Controllers
         [ValidateAntiForgeryToken]
         public JsonResult Create([Bind(Include = "MaLop,TenLop,MaKhoa")] LOP lOP, string TenKhoa)
         {
-            var Lop = db.LOPs.SingleOrDefault(s => s.TenLop == lOP.TenLop && s.MaKhoa == lOP.MaKhoa);
+            var Lop = db.Entity.LOPs.SingleOrDefault(s => s.TenLop == lOP.TenLop && s.MaKhoa == lOP.MaKhoa);
             if (Lop == null)
             {
-                db.LOPs.Add(lOP);
-                db.SaveChanges();
+                db.Entity.LOPs.Add(lOP);
+                db.Entity.SaveChanges();
 
                 var myData = new
                 {
@@ -54,12 +54,12 @@ namespace DoAnDiemDanh.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            LOP lOP = db.LOPs.Find(id);
+            LOP lOP = db.Entity.LOPs.Find(id);
             if (lOP == null)
             {
                 return HttpNotFound();
             }
-            ViewBag.MaKhoa = new SelectList(db.KHOAs, "MaKhoa", "TenKhoa", lOP.MaKhoa);
+            ViewBag.MaKhoa = new SelectList(db.Entity.KHOAs, "MaKhoa", "TenKhoa", lOP.MaKhoa);
             return View(lOP);
         }
 
@@ -72,11 +72,11 @@ namespace DoAnDiemDanh.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Entry(lOP).State = EntityState.Modified;
-                db.SaveChanges();
+                db.Entity.Entry(lOP).State = EntityState.Modified;
+                db.Entity.SaveChanges();
                 return RedirectToAction("Index");
             }
-            ViewBag.MaKhoa = new SelectList(db.KHOAs, "MaKhoa", "TenKhoa", lOP.MaKhoa);
+            ViewBag.MaKhoa = new SelectList(db.Entity.KHOAs, "MaKhoa", "TenKhoa", lOP.MaKhoa);
             return View(lOP);
         }
 
@@ -85,14 +85,14 @@ namespace DoAnDiemDanh.Controllers
         [HttpPost, ActionName("Delete")]
         public JsonResult DeleteConfirmed(int id)
         {
-            LOP lOP = db.LOPs.Find(id);
+            LOP lOP = db.Entity.LOPs.Find(id);
             var data = new
             {
                 id = id,
                 TenLop = lOP.TenLop
             };
-            db.LOPs.Remove(lOP);
-            db.SaveChanges();
+            db.Entity.LOPs.Remove(lOP);
+            db.Entity.SaveChanges();
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
@@ -100,7 +100,7 @@ namespace DoAnDiemDanh.Controllers
         {
             if (disposing)
             {
-                db.Dispose();
+                db.Entity.Dispose();
             }
             base.Dispose(disposing);
         }

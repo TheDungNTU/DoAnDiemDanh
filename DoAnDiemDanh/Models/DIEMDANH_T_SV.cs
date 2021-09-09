@@ -18,7 +18,9 @@ namespace DoAnDiemDanh.Models
         public Nullable<int> MaSV { get; set; }
         public Nullable<System.DateTime> Ngay { get; set; }
         public Nullable<System.TimeSpan> Gio { get; set; }
+        public Nullable<int> MaPhongHoc { get; set; }
     
+        public virtual PHONGHOC PHONGHOC { get; set; }
         public virtual SINHVIEN SINHVIEN { get; set; }
     }
 }

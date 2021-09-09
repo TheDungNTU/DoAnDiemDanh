@@ -17,6 +17,8 @@ namespace DoAnDiemDanh.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public PHONGHOC()
         {
+            this.DIEMDANH_T_GV = new HashSet<DIEMDANH_T_GV>();
+            this.DIEMDANH_T_SV = new HashSet<DIEMDANH_T_SV>();
             this.NHOMMONHOCs = new HashSet<NHOMMONHOC>();
         }
     
@@ -25,6 +27,10 @@ namespace DoAnDiemDanh.Models
         public Nullable<int> MaCamera { get; set; }
     
         public virtual CAMERA CAMERA { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<DIEMDANH_T_GV> DIEMDANH_T_GV { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<DIEMDANH_T_SV> DIEMDANH_T_SV { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<NHOMMONHOC> NHOMMONHOCs { get; set; }
     }

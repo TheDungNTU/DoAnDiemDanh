@@ -1,0 +1,356 @@
+﻿
+<div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
+     aria-labelledby="userDropdown">
+    <a class="dropdown-item" href="#" data-toggle="modal" data-target="#profile">
+        <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
+        Profile
+    </a>
+    <a class="dropdown-item" href="#" data-toggle="modal" data-target="#password">
+        <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
+        Change Pass
+    </a>
+    @*<a class="dropdown-item" href="#" style="display:none" ;>
+            <i class="fas fa-list fa-sm fa-fw mr-2 text-gray-400"></i>
+            Activity Log
+        </a>*@
+    <div class="dropdown-divider"></div>
+    <button class="dropdown-item" data-toggle="modal" data-target="#logoutModal">
+        <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+        Logout
+    </button>
+</div>
+
+<div class="modal fade" id="password">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="text-center">
+                    <h4 class="modal-title text-primary">Đổi Mật Khẩu</h4>
+                </div>
+                <button type="button" class="close closeform" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form action="/QuanLyTaiKhoan/DoiMatKhau" class="formDoiMatKhau form-horizontal" data-ajax="true" data-ajax-failure="FnFailure_Password" data-ajax-method="POST" data-ajax-success="FnSuccess_Password" method="post" novalidate="novalidate">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="Password1">Mật khẩu hiện tại</label>
+                        <input type="password" class="form-control" id="MatKhau" name="MatKhau" placeholder="nhập mật khẩu hiện tại">
+                    </div>
+                    <div class="form-group">
+                        <label for="Password2">Mật khẩu mới</label>
+                        <input type="password" class="form-control validate-equalTo-blur" id="MatKhauMoi" name="MatKhauMoi" placeholder="nhập mật khẩu mới"><label id="MatKhauMoi-error" class="is-invalid" for="MatKhauMoi" style="display: none;"></label>
+                    </div>
+                    <div class="form-group">
+                        <label for="Password3">Nhập lại mật khẩu mới</label>
+                        <input type="password" class="form-control" id="ReMatKhauMoi" name="ReMatKhauMoi" placeholder="nhập lại mật khẩu"><label id="ReMatKhauMoi-error" class="is-invalid" for="ReMatKhauMoi" style="display: none;"></label>
+                    </div>
+                </div>
+                <div class="modal-footer justify-content-between">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Huỷ</button>
+                    <button class="btn btn-primary" type="submit">Lưu</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="profile">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="text-center">
+                    <h4 class="modal-title text-primary">Edit Profile</h4>
+                </div>
+                <button type="button" class="close closeform" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form action="/QuanLyTaiKhoan/DoiAvatar" class="formDoiAnh" data-ajax="true" data-ajax-failure="FnFailure_DoiAnh" data-ajax-method="POST" data-ajax-success="FnSuccess_DoiAnh" enctype="multipart/form-data" method="post">
+                <div class="modal-body">
+                    <div class="text-center mb-3">
+                        @{ var authCookie = System.Web.HttpContext.Current.Request.Cookies[FormsAuthentication.FormsCookieName];
+                            if (authCookie != null)
+                            {
+                                FormsAuthenticationTicket authTicket = FormsAuthentication.Decrypt(authCookie.Value);
+
+                                string str = authTicket.UserData;
+                                string[] subs = str.Split(',');
+                                string username = subs[1];
+                                DoAnDiemDanh.Models.BaseModel db = new DoAnDiemDanh.Models.BaseModel();
+                                var ava = db.Entity.GIANGVIENs.Where(x => x.TenGV == username).SingleOrDefault()?.Avatar;
+                                var name = db.Entity.GIANGVIENs.Where(x => x.TenGV == username).SingleOrDefault()?.HoTen;
+
+                                string avata = "~/Content/img/avatar/" + ava;
+                                <img class="img-profile rounded-circle"
+                                     src="~/Content/img/avatar/@ava" height="100" width="100" alt="Userprofile" id="user-image1">
+                                <div>Họ và Tên:@name</div>
+
+
+                            }
+
+                        }
+
+
+                    </div>
+
+                    <div class="text-center custom-file">
+                        <div class="form-group">
+                            @{
+                                FormsAuthenticationTicket authTicket2 = FormsAuthentication.Decrypt(authCookie.Value);
+
+                                string str2 = authTicket2.UserData;
+                                string[] subs2 = str2.Split(',');
+                                string username2 = subs2[1];
+                                DoAnDiemDanh.Models.BaseModel db2 = new DoAnDiemDanh.Models.BaseModel();
+                                var name2 = db2.Entity.GIANGVIENs.Where(x => x.TenGV == username2).SingleOrDefault()?.HoTen;
+                                var diachi = db2.Entity.GIANGVIENs.Where(x => x.TenGV == username2).SingleOrDefault()?.DiaChi;
+                                var SDT = db2.Entity.GIANGVIENs.Where(x => x.TenGV == username2).SingleOrDefault()?.SDT;
+
+                                <div class="input-group">
+                                    <div class="custom-file">
+                                        <i class="fas fa-upload"></i>
+                                        <input type="file" class="custom-file-input" id="Avatar1" name="Avatar1" onchange="loadFile1(event)">
+                                        <label class="custom-file-label" for="exampleInputFile">Ảnh Khác</label>
+                                    </div>
+                                </div>
+
+
+                            }
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="form-group">
+                        <label for="Password1">Họ và tên:</label>
+                        <input type="text" class="form-control" id="" name="HoTen" value="@name2">
+                    </div>
+                    <div class="form-group">
+                        <label for="Password1">Địa Chỉ</label>
+                        <input class="form-control" id="" name="DiaChi" value="@diachi">
+                    </div>
+                    <div class="form-group">
+                        <label for="Password1">Số Điện Thoại</label>
+                        <input type="number" class="form-control" id="" name="SDT" value=@SDT>
+                    </div>
+
+                </div>
+                <div class="modal-footer justify-content-between">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Huỷ</button>
+                    <button class="btn btn-primary">Lưu</button>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+</div>
+
+<script>
+
+    var loadFile1 = function (event) {
+        var image = document.getElementById('user-image1');
+        image.src = URL.createObjectURL(event.target.files[0])
+    }
+
+    function FnSuccess_Password(data) {
+        $('.closeform').click()
+        Swal.fire({
+            icon: 'success',
+            title: 'Thành Công',
+            text: `Đổi mật khẩu thành công`,
+            timer: 2000,
+            showConfirmButton: false,
+        })
+    }
+
+    function FnSuccess_DoiAnh(data) {
+        $('.closeform').click()
+        Swal.fire({
+            icon: 'success',
+            title: 'Thành Công',
+            text: `Chỉnh sửa thông tin thành công`,
+            timer: 2000,
+            showConfirmButton: false,
+        })
+        setTimeout(() => { location.reload();}, 1500);
+
+    }
+
+    function FnSuccess_DoiEmail(data) {
+        $('.closeform').click()
+        Swal.fire({
+            icon: 'success',
+            title: 'Thành Công',
+            text: `Đổi email thành công`,
+            timer: 2000,
+            showConfirmButton: false,
+        })
+    }
+
+
+    function FnFailure_Password(data) {
+        $('.closeform').click()
+        Swal.fire({
+            icon: 'error',
+            title: 'Lỗi',
+            text: `Đổi mật khẩu không thành công`,
+            timer: 2000,
+            showConfirmButton: false,
+        })
+    }
+
+    function FnFailure_DoiAnh(data) {
+        $('.closeform').click()
+        Swal.fire({
+            icon: 'error',
+            title: 'Lỗi',
+            text: `Chỉnh sửa thông tin không thành công`,
+            timer: 2000,
+            showConfirmButton: false,
+        })
+    }
+
+    function FnFailure_DoiEmail(data) {
+        $('.closeform').click()
+        Swal.fire({
+            icon: 'error',
+            title: 'Lỗi',
+            text: `Đổi email không thành công`,
+            timer: 2000,
+            showConfirmButton: false,
+        })
+    }
+
+    $(document).ready(function () {
+
+        jQuery.validator.addMethod("NotAllowNumber", function (value, element) {
+            return this.optional(element) || /^([^0-9]*)$/.test(value);
+        }, "Không được phép có chữ số.");
+
+        jQuery.validator.addMethod("NotAllowFirstSpace", function (value, element) {
+            return this.optional(element) || /^\S{1}/.test(value);
+        }, "Kí tự đầu tiên không được có khoảng trắng.");
+
+        jQuery.validator.addMethod("NotAllowSpecial", function (value, element) {
+            return this.optional(element) || /^([^*\u0040.!/'#$%^&(){}[:;<>,.?/~_+-=|]*)$/.test(value);
+        }, "Không được phép có kí tự đặc biệt.");
+
+        var form = $(".formDoiMatKhau").validate({
+            onfocusout: function (element) {
+                $(element).valid();
+            },
+            invalidHandler: function (form, validator) {
+                validator.focusInvalid();
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Xuất hiện lỗi',
+                    text: `Đổi mật khẩu không thành công`,
+                    timer: 2000,
+                    showConfirmButton: false
+                })
+
+            },
+            errorClass: "is-invalid",
+            validClass: "is-valid",
+            rules: {
+                MatKhau: {
+                    required: true,
+                    remote: {
+                        url: "/QuanLyTaiKhoan/CheckMatKhau/",
+                        type: "post",
+                    }
+                },
+                MatKhauMoi: {
+                    required: true,
+                    minlength: 6
+                },
+                ReMatKhauMoi: {
+                    equalTo: '[name="MatKhauMoi"]'
+
+                },
+            },
+            messages: {
+                MatKhau: {
+                    required: "Mật khẩu hiện tại không được bỏ trống",
+                    remote: "Mật khẩu hiện tại không chính xác"
+                },
+                MatKhauMoi: {
+                    required: "Mật khẩu mới không được bỏ trống",
+                    minlength: "Mật khẩu ít nhất 6 kí tự"
+                },
+                ReMatKhauMoi: {
+                    equalTo: "Mật khẩu mới không trùng khớp"
+                },
+
+            }
+        });
+
+        //var form = $(".formDoiEmail").validate({
+        //    onfocusout: function (element) {
+        //        $(element).valid();
+        //    },
+        //    invalidHandler: function (form, validator) {
+        //        validator.focusInvalid();
+        //        Swal.fire({
+        //            icon: 'error',
+        //            title: 'Xuất hiện lỗi',
+        //            text: `Đổi email không thành công`,
+        //            timer: 2000,
+        //            showConfirmButton: false
+        //        })
+
+        //    },
+        //    errorClass: "is-invalid",
+        //    validClass: "is-valid",
+        //    rules: {
+        //        email1: {
+        //            required: true,
+
+        //        },
+        //        email2: {
+        //            required: true,
+        //            remote: {
+        //                url: "/NhanVien/EmailTonTai_DoiEmail/",
+        //                type: "post",
+        //            },
+        //            email: true
+        //        },
+        //        MatKhau1: {
+        //            required: true,
+        //            remote: {
+        //                url: "/NhanVien/CheckMatKhau/",
+        //                type: "post",
+        //            }
+        //        },
+        //    },
+        //    messages: {
+        //        email1: {
+        //            required: "Email hiện tại không được bỏ trống",
+        //        },
+        //        email2: {
+        //            required: "Email mới không được bỏ trống",
+        //            remote: "Email đã được sử dụng",
+        //            email: "Email không hợp lệ"
+        //        },
+        //        MatKhau1: {
+        //            required: "Mật khẩu hiện tại không được bỏ trống",
+        //            remote: "Mật khẩu hiện tại không đúng"
+        //        },
+
+        //    }
+        //});
+
+
+        $(".closeform").click(function () {
+
+            $(':input', '.formDoiMatKhau')
+                .not(':button, :submit, :reset, :hidden')
+                .val('')
+                .prop('checked', false)
+                .prop('selected', false)
+                .removeClass('is-invalid')
+                .removeClass('is-valid')
+            form.resetForm()
+        })
+    })
+</script>

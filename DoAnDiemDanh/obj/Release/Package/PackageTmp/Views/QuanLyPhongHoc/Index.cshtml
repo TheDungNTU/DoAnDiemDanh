@@ -62,6 +62,7 @@
     <div class="card-body">
         <div class="filter">
             <input type="text" class="form-control form-control-sm" id="Filter_QLTenPhong" name="Filter_QLTenLop" placeholder="Nhập tên phòng..." />
+
         </div>
         <div class="table-responsive">
             <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
@@ -84,7 +85,7 @@
                             </td>
                             <td>
                                 @Html.DisplayFor(modelItem => item.CAMERA.TenCamera)
-                            </td>        
+                            </td>
                             <td>
                                 @Html.ActionLink("Chỉnh sửa", "Edit", new { id = item.MaPhongHoc }) |
                                 <a class="delete" data-model-id="@item.MaPhongHoc" onclick="Delete(this)" style="cursor: pointer;">Xóa</a>
@@ -98,6 +99,8 @@
 </div>
 
 <script>
+
+
 
     var dt;
 
@@ -152,7 +155,7 @@
                 data.MaPhongHoc,
                 data.TenPhongHoc,
                 data.TenCamera,
-             
+
                 `<a href='/QuanLyPhongHoc/Edit/${data.MaPhongHoc}'>Chỉnh sửa</a> |<a class="delete" data-model-id="${data.PhongHoc}" onclick="Delete(this)" style="cursor: pointer;">Xóa</a>`
             ]).draw().node();
             $(node).attr('id', `row_${data.MaPhongHoc}`);
@@ -271,18 +274,36 @@
             rules: {
                 TenPhongHoc: {
                     required: true,
+
                     NotAllowFirstSpace: true,
+                    remote: {
+                        url: "/QuanLyPhongHoc/CheckPhong/",
+                        type: "post",
+                    }
                 },
-                MaCamera: "required"
+                MaCamera: {
+                    // "required",//
+
+                    required: true,
+                    remote: {
+                        url: "/QuanLyPhongHoc/CheckCamera/",
+                        type: "post",
+                    }
+                },
             },
             messages: {
                 TenPhongHoc: {
                     required: "Tên phòng học không được để trống.",
+                    remote: "Tên Phòng Đã Tồn Tại, Vui Lòng Nhập Phòng Khác"
                 },
                 MaCamera: {
-                    required: "Bạn chưa chọn Camera, hãy chọn 1.",
-                }
+                    required: "Vui Lòng Chọn Camera .",
+                    remote: "Vui Lòng Chọn Camera Hợp Lệ (Chưa được dùng)"
+                },
             }
         });
+
+
+
     });
 </script>

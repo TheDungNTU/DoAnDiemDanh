@@ -14,35 +14,47 @@ namespace DoAnDiemDanh.Controllers
     [Authorize(Roles = "Admin")]
     public class QuanLyGiangVienController : Controller
     {
-        private FACE_RECOGNITION_V2Entities db = new FACE_RECOGNITION_V2Entities();
+        private BaseModel db = new BaseModel();
 
-        public void SendMail(string email, string subject, string content)
+        public void SendMail(string email, string Subject, string content)
         {
-            using (MailMessage mail = new MailMessage())
+            var fromEmail = new MailAddress("noreply@vinaai.com", "VinaAI_Test");
+            var toEmail = new MailAddress(email);
+            var fromEmailPassword = "m%CS99SGvina"; // Replace with actual password
+            string subject = Subject;
+
+            string body = content;
+
+            var smtp = new SmtpClient
             {
-                mail.From = new MailAddress("tuyetsuong6332@gmail.com");
-                mail.To.Add(email);
-                mail.Subject = subject;
-                mail.Body = content;
-                mail.IsBodyHtml = true;
+                Host = "smtp.gmail.com",
+                Port = 587,
+                EnableSsl = true,
+                DeliveryMethod = SmtpDeliveryMethod.Network,
+                UseDefaultCredentials = false,
+                Credentials = new NetworkCredential(fromEmail.Address, fromEmailPassword)
+            };
 
-
-                using (SmtpClient smtp = new SmtpClient("smtp.gmail.com", 587))
-                {
-                    smtp.Credentials = new NetworkCredential("tuyetsuong6332@gmail.com", "0987806758");
-                    smtp.EnableSsl = true;
-                    smtp.Send(mail);
-                }
-            }
-
+            using (var message = new MailMessage(fromEmail, toEmail)
+            {
+                Subject = subject,
+                Body = body,
+                IsBodyHtml = true
+            })
+                smtp.Send(message);
         }
 
 
         //GET: QuanLyGiangVien
         public ActionResult Index()
         {
-            var gIANGVIENs = db.GIANGVIENs.Include(g => g.KHOA);
-            ViewBag.MaKhoa = db.KHOAs;
+            var gIANGVIENs = db.Entity.GIANGVIENs.Include(g => g.KHOA);
+            ViewBag.MaKhoa = db.Entity.KHOAs;
+            if (db.Entity.PHONGHOCs.Count() > 0)
+            {
+                ViewBag.MaPhongHoc = db.Entity.PHONGHOCs.First().MaPhongHoc;
+            }
+           
             return View(gIANGVIENs.ToList());
         }
 
@@ -50,16 +62,16 @@ namespace DoAnDiemDanh.Controllers
          public JsonResult Create([Bind(Include = "MaGV,TenGV,Email,MaKhoa")] GIANGVIEN gIANGVIEN)
          {
     
-            var Khoa = db.KHOAs.Where(_ => _.MaKhoa == gIANGVIEN.MaKhoa).Single();
+            var Khoa = db.Entity.KHOAs.Where(_ => _.MaKhoa == gIANGVIEN.MaKhoa).Single();
 
-            var check = db.GIANGVIENs.Any(_ => _.Email == gIANGVIEN.Email);
+            var check = db.Entity.GIANGVIENs.Any(_ => _.Email == gIANGVIEN.Email);
             if (check)
             {
                 return Json(false, JsonRequestBehavior.AllowGet);
             }
 
-            db.GIANGVIENs.Add(gIANGVIEN);
-            db.SaveChanges();
+            db.Entity.GIANGVIENs.Add(gIANGVIEN);
+            db.Entity.SaveChanges();
 
             TAIKHOANGIANGVIEN tk = new TAIKHOANGIANGVIEN();
             tk.MaQuyen = 2;
@@ -67,8 +79,8 @@ namespace DoAnDiemDanh.Controllers
             tk.MaGV = gIANGVIEN.MaGV;
             tk.TaiKhoan = gIANGVIEN.Email;
 
-            db.TAIKHOANGIANGVIENs.Add(tk);
-            db.SaveChanges();
+            db.Entity.TAIKHOANGIANGVIENs.Add(tk);
+            db.Entity.SaveChanges();
 
             SendMail(gIANGVIEN.Email, "[MẬT KHẨU ĐĂNG NHẬP WEB ĐIỂM DANH]", "Mật khẩu của bạn là: user123");
 
@@ -90,12 +102,12 @@ namespace DoAnDiemDanh.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            GIANGVIEN gIANGVIEN = db.GIANGVIENs.Find(id);
+            GIANGVIEN gIANGVIEN = db.Entity.GIANGVIENs.Find(id);
             if (gIANGVIEN == null)
             {
                 return HttpNotFound();
             }
-            ViewBag.MaKhoa = new SelectList(db.KHOAs, "MaKhoa", "TenKhoa", gIANGVIEN.MaKhoa);
+            ViewBag.MaKhoa = new SelectList(db.Entity.KHOAs, "MaKhoa", "TenKhoa", gIANGVIEN.MaKhoa);
             return View(gIANGVIEN);
         }
 
@@ -108,11 +120,11 @@ namespace DoAnDiemDanh.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Entry(gIANGVIEN).State = EntityState.Modified;
-                db.SaveChanges();
+                db.Entity.Entry(gIANGVIEN).State = EntityState.Modified;
+                db.Entity.SaveChanges();
                 return RedirectToAction("Index");
             }
-            ViewBag.MaKhoa = new SelectList(db.KHOAs, "MaKhoa", "TenKhoa", gIANGVIEN.MaKhoa);
+            ViewBag.MaKhoa = new SelectList(db.Entity.KHOAs, "MaKhoa", "TenKhoa", gIANGVIEN.MaKhoa);
             return View(gIANGVIEN);
         }
 
@@ -120,22 +132,22 @@ namespace DoAnDiemDanh.Controllers
         //[HttpPost, ActionName("Delete")]
         //public JsonResult DeleteConfirmed(int id)
         //{
-        //    GIANGVIEN gIANGVIEN = db.GIANGVIENs.Find(id);
+        //    GIANGVIEN gIANGVIEN = db.Entity.GIANGVIENs.Find(id);
 
         //    var data = new
         //    {
         //        id = id,
         //        TenGV = gIANGVIEN.TenGV,
         //    };
-        //    var TaiKhoan = db.TAIKHOANGIANGVIENs.SingleOrDefault(s => s.MaGV == id);
-        //    var MonHoc = db.MONHOCs.SingleOrDefault(s => s.MaGV == id);
+        //    var TaiKhoan = db.Entity.TAIKHOANGIANGVIENs.SingleOrDefault(s => s.MaGV == id);
+        //    var MonHoc = db.Entity.MONHOCs.SingleOrDefault(s => s.MaGV == id);
         //    if(MonHoc == null && TaiKhoan.MaQuyen != 1)
         //    {
-        //        db.TAIKHOANGIANGVIENs.Remove(TaiKhoan);
-        //        db.SaveChanges();
+        //        db.Entity.TAIKHOANGIANGVIENs.Remove(TaiKhoan);
+        //        db.Entity.SaveChanges();
         //    }
-        //    db.GIANGVIENs.Remove(gIANGVIEN);
-        //    db.SaveChanges();
+        //    db.Entity.GIANGVIENs.Remove(gIANGVIEN);
+        //    db.Entity.SaveChanges();
 
         //    return Json(data, JsonRequestBehavior.AllowGet);
         //}
@@ -144,7 +156,7 @@ namespace DoAnDiemDanh.Controllers
         {
             if (disposing)
             {
-                db.Dispose();
+                db.Entity.Dispose();
             }
             base.Dispose(disposing);
         }

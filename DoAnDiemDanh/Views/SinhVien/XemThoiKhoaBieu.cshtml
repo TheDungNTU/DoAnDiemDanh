@@ -15,7 +15,7 @@
             <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                 <thead>
                     <tr>
-                        <th style="width: 96.6px">Mã Môn Học</th>
+                        <th style="width: 96.6px">Nhóm Môn Học</th>
                         <th>Tên Môn Học</th>
                         <th style="width: 73.6px">Số tín chỉ</th>
                         <th style="width: 112.8px;">Thứ</th>
@@ -59,10 +59,9 @@
             .draw();
 
         $.get("/SinhVien/ThoiKhoaBieu", function (data) {
-            console.log(data);
             $.each(data, function (index, value) {
                 dt.row.add([
-                    value.MaMH,
+                    value.MaNMH,
                     value.TenMH,
                     value.SoTC,
                     value.Thu,

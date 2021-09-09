@@ -16,13 +16,13 @@ namespace DoAnDiemDanh.Controllers
     [Authorize(Roles = "Admin, GiangVien")]
     public class ThongKeController : Controller
     {
-        private FACE_RECOGNITION_V2Entities db = new FACE_RECOGNITION_V2Entities();
+        private BaseModel db = new BaseModel();
 
         public ActionResult Index()
         {
-            ViewBag.MonHoc = db.MONHOCs;
-            ViewBag.Khoa = db.KHOAs;
-            ViewBag.Lop = db.LOPs;
+            ViewBag.MonHoc = db.Entity.MONHOCs;
+            ViewBag.Khoa = db.Entity.KHOAs;
+            ViewBag.Lop = db.Entity.LOPs;
             return View();
         }
         public IEnumerable<DateTime> EachDay(DateTime d1, DateTime d2)
@@ -41,7 +41,7 @@ namespace DoAnDiemDanh.Controllers
             List<string> colorVangHoc = new List<string>();
             List<string> borderVangHoc = new List<string>();
             IEnumerable<DateTime> listime;
-            var NHOMMONHOC = db.NHOMMONHOCs.SingleOrDefault(_ => _.MaNMH == MaNMH);
+            var NHOMMONHOC = db.Entity.NHOMMONHOCs.SingleOrDefault(_ => _.MaNMH == MaNMH);
           
             if((DateTime)NHOMMONHOC.NgayKT <= DateTime.Now)
             {
@@ -54,8 +54,8 @@ namespace DoAnDiemDanh.Controllers
 
             foreach(var item in listime)
             {
-                var ctdiemdanh = from diemdanh in db.DIEMDANHs
-                            join ctdd in db.CTDDs on diemdanh.MaDD equals ctdd.MaDD
+                var ctdiemdanh = from diemdanh in db.Entity.DIEMDANHs
+                            join ctdd in db.Entity.CTDDs on diemdanh.MaDD equals ctdd.MaDD
                             where diemdanh.MaNMH == MaNMH && diemdanh.NgayDiemDanh == item
                             select ctdd;
                 
@@ -94,14 +94,14 @@ namespace DoAnDiemDanh.Controllers
 
         public string getTenKhoa(int MaKhoa)
         {
-            var Khoa = db.KHOAs.Single(s => s.MaKhoa == MaKhoa);
+            var Khoa = db.Entity.KHOAs.Single(s => s.MaKhoa == MaKhoa);
             return Khoa.TenKhoa;
         }
 
         public void XuatBaoCaoDiemDanhFull(int MaNMH)
         {
-            var nhommonhoc = db.NHOMMONHOCs.Where(s => s.MaNMH == MaNMH).Single();
-            var monhoc = db.MONHOCs.Where(s => s.MaMH == nhommonhoc.MaMH).Single();
+            var nhommonhoc = db.Entity.NHOMMONHOCs.Where(s => s.MaNMH == MaNMH).Single();
+            var monhoc = db.Entity.MONHOCs.Where(s => s.MaMH == nhommonhoc.MaMH).Single();
             var fileName = "ExcelData.xlsx";
             var file = new FileInfo(fileName);
             var package = new ExcelPackage(file);
@@ -153,8 +153,8 @@ namespace DoAnDiemDanh.Controllers
 
             worksheet.Cells["F5"].Value = "Thời khóa biểu";
 
-            var ngayhoc =  from nmh in db.NHOMMONHOCs
-                           join dd in db.DIEMDANHs on nmh.MaNMH equals dd.MaNMH
+            var ngayhoc =  from nmh in db.Entity.NHOMMONHOCs
+                           join dd in db.Entity.DIEMDANHs on nmh.MaNMH equals dd.MaNMH
                            where nmh.MaNMH == MaNMH 
                            select dd;
             var row = 6;
@@ -193,8 +193,8 @@ namespace DoAnDiemDanh.Controllers
 
 
 
-            var data = from dd in db.DIEMDANHs
-                           join ctdd in db.CTDDs on dd.MaDD equals ctdd.MaDD
+            var data = from dd in db.Entity.DIEMDANHs
+                           join ctdd in db.Entity.CTDDs on dd.MaDD equals ctdd.MaDD
                            where dd.MaNMH == MaNMH && dd.NgayDiemDanh <= DateTime.Now
                            group ctdd by ctdd.MaSV into ctdd_sv
                            select ctdd_sv;
@@ -203,9 +203,9 @@ namespace DoAnDiemDanh.Controllers
             var row1 = 7;
             foreach(var item in data)
             {
-                var data1 =    from sv in db.SINHVIENs
-                               join k in db.KHOAs on sv.MaKhoa equals k.MaKhoa
-                               join l in db.LOPs on sv.MaLop equals l.MaLop
+                var data1 =    from sv in db.Entity.SINHVIENs
+                               join k in db.Entity.KHOAs on sv.MaKhoa equals k.MaKhoa
+                               join l in db.Entity.LOPs on sv.MaLop equals l.MaLop
                                where sv.MaSV == item.Key
                                select new { sinhvien = sv, tenkhoa = k.TenKhoa, tenlop = l.TenLop};
 
@@ -268,8 +268,8 @@ namespace DoAnDiemDanh.Controllers
 
         public void XuatBaoCaoCamThi(int MaNMH)
         {
-            var nhommonhoc = db.NHOMMONHOCs.Where(s => s.MaNMH == MaNMH).Single();
-            var monhoc = db.MONHOCs.Where(s => s.MaMH == nhommonhoc.MaNMH).Single();
+            var nhommonhoc = db.Entity.NHOMMONHOCs.Where(s => s.MaNMH == MaNMH).Single();
+            var monhoc = db.Entity.MONHOCs.Where(s => s.MaMH == nhommonhoc.MaNMH).Single();
             var fileName = "ExcelData.xlsx";
             var file = new FileInfo(fileName);
             var package = new ExcelPackage(file);
@@ -321,8 +321,8 @@ namespace DoAnDiemDanh.Controllers
 
             worksheet.Cells["F5"].Value = "Thời khóa biểu";
 
-            var ngayhoc = from nmh in db.NHOMMONHOCs
-                          join dd in db.DIEMDANHs on nmh.MaNMH equals dd.MaNMH
+            var ngayhoc = from nmh in db.Entity.NHOMMONHOCs
+                          join dd in db.Entity.DIEMDANHs on nmh.MaNMH equals dd.MaNMH
                           where nmh.MaNMH == MaNMH
                           select dd;
             var row = 6;
@@ -356,8 +356,8 @@ namespace DoAnDiemDanh.Controllers
             worksheet.Cells[6, col + 2].Value = "Không phép";
             worksheet.Column(col + 2).Width = 15;
 
-            var data = from dd in db.DIEMDANHs
-                       join ctdd in db.CTDDs on dd.MaDD equals ctdd.MaDD
+            var data = from dd in db.Entity.DIEMDANHs
+                       join ctdd in db.Entity.CTDDs on dd.MaDD equals ctdd.MaDD
                        where dd.MaNMH == MaNMH && dd.NgayDiemDanh < DateTime.Now
                        group ctdd by ctdd.MaSV into ctdd_sv
                        select ctdd_sv;
@@ -367,9 +367,9 @@ namespace DoAnDiemDanh.Controllers
             var row1 = 7;
             foreach (var item in data)
             {
-                var data1 = from sv in db.SINHVIENs
-                            join k in db.KHOAs on sv.MaKhoa equals k.MaKhoa
-                            join l in db.LOPs on sv.MaLop equals l.MaLop
+                var data1 = from sv in db.Entity.SINHVIENs
+                            join k in db.Entity.KHOAs on sv.MaKhoa equals k.MaKhoa
+                            join l in db.Entity.LOPs on sv.MaLop equals l.MaLop
                             where sv.MaSV == item.Key
                             select new { sinhvien = sv, tenkhoa = k.TenKhoa, tenlop = l.TenLop };
 
@@ -473,37 +473,37 @@ namespace DoAnDiemDanh.Controllers
 
         //public void XuatChiTietDiemDanh(int MaMH, int MaSV)
         //{
-        //    var monhoc = db.MONHOCs.Where(s => s.MaMH == MaMH).Single();
+        //    var monhoc = db.Entity.MONHOCs.Where(s => s.MaMH == MaMH).Single();
         //    var fileName = "ExcelData.xlsx";
         //    var file = new FileInfo(fileName);
         //    var package = new ExcelPackage(file);
 
         //    var worksheet = package.Workbook.Worksheets.Add("Sheet1");
 
-        //    var thongtinsv = (from sv in db.SINHVIENs
+        //    var thongtinsv = (from sv in db.Entity.SINHVIENs
         //                      where sv.MaSV == MaSV
         //                      select new { masv = sv.MaSV, tensv = sv.TenSV }).Single();
 
-        //    var thongtinmh = (from mh in db.MONHOCs
+        //    var thongtinmh = (from mh in db.Entity.MONHOCs
         //                      where mh.MaMH == MaMH
         //                      select new { mamh = mh.MaMH, tenmh = mh.TenMH, sotc = mh.SoTC }).Single();
 
-        //    var thongtindd1 = (from dd in db.DIEMDANHs
+        //    var thongtindd1 = (from dd in db.Entity.DIEMDANHs
         //                      where dd.MaMH == MaMH
         //                      select dd).ToList();
 
-        //    var thongtindd2 = (from dd in db.DIEMDANHs
+        //    var thongtindd2 = (from dd in db.Entity.DIEMDANHs
         //                      where dd.MaMH == MaMH && dd.NgayDiemDanh < DateTime.Now
         //                      select dd).ToList();
 
-        //    var diemdanh = (from dd in db.DIEMDANHs
-        //                     join ctdd in db.CTDDs on dd.MaDD equals ctdd.MaDD
+        //    var diemdanh = (from dd in db.Entity.DIEMDANHs
+        //                     join ctdd in db.Entity.CTDDs on dd.MaDD equals ctdd.MaDD
         //                     where dd.MaMH == MaMH && dd.NgayDiemDanh < DateTime.Now && ctdd.MaSV == MaSV && ctdd.TTDD == true
         //                     select ctdd).ToList();
 
-        //    var diemdanhct = (from dd in db.DIEMDANHs
-        //                      join ctdd in db.CTDDs on dd.MaDD equals ctdd.MaDD
-        //                      join mh in db.MONHOCs on dd.MaMH equals mh.MaMH
+        //    var diemdanhct = (from dd in db.Entity.DIEMDANHs
+        //                      join ctdd in db.Entity.CTDDs on dd.MaDD equals ctdd.MaDD
+        //                      join mh in db.Entity.MONHOCs on dd.MaMH equals mh.MaMH
         //                      where dd.MaMH == MaMH && dd.NgayDiemDanh < DateTime.Now && ctdd.MaSV == MaSV
         //                      select new {ngaydd = dd.NgayDiemDanh, daugio = mh.ThoiGianBDGD, cuoigio = mh.ThoiGianKTGD, tgdddg = ctdd.ThoiGianVao, tgddcg = ctdd.ThoiGianRa, tinhtrang = ctdd.TTDD, }).ToList();
 
@@ -748,14 +748,14 @@ namespace DoAnDiemDanh.Controllers
         [HttpGet]
         public JsonResult GetMonHoc(int MaNMH)
         {
-            db.Configuration.ProxyCreationEnabled = false;
+            db.Entity.Configuration.ProxyCreationEnabled = false;
 
-            var NHOMMONHOC = db.NHOMMONHOCs.Single(s => s.MaNMH == MaNMH);
+            var NHOMMONHOC = db.Entity.NHOMMONHOCs.Single(s => s.MaNMH == MaNMH);
 
-            var data = (from nmh in db.NHOMMONHOCs
+            var data = (from nmh in db.Entity.NHOMMONHOCs
                         where nmh.MaNMH == MaNMH
-                        join mh in db.MONHOCs on nmh.MaMH equals mh.MaMH 
-                        join gv in db.GIANGVIENs on nmh.MaGV equals gv.MaGV
+                        join mh in db.Entity.MONHOCs on nmh.MaMH equals mh.MaMH 
+                        join gv in db.Entity.GIANGVIENs on nmh.MaGV equals gv.MaGV
                         select new {MaNMH = nmh.MaNMH ,MaMH = mh.MaMH, TenMH = mh.TenMH, SoTC = mh.SoTC, NgayBD = nmh.NgayBD, NgayKT = nmh.NgayKT,ThoiGianBD = nmh.ThoiGianBD, ThoiGianKT = nmh.ThoiGianKT ,SiSo = nmh.SINHVIENs.Count(), TenGV = gv.TenGV, DSSV = nmh.SINHVIENs.ToList() }).Single();
 
             TimeSpan t1 = (TimeSpan)data.ThoiGianBD;
@@ -784,20 +784,20 @@ namespace DoAnDiemDanh.Controllers
         [HttpGet]
         public JsonResult GetSinhVien(int MaSV, int MaNMH)
         {
-            db.Configuration.ProxyCreationEnabled = false;
+            db.Entity.Configuration.ProxyCreationEnabled = false;
 
-            var tongsobuoi = db.DIEMDANHs.Where(_ => _.MaNMH == MaNMH).Count();
+            var tongsobuoi = db.Entity.DIEMDANHs.Where(_ => _.MaNMH == MaNMH).Count();
 
-            var data1 =  (from sv in db.SINHVIENs
-                         join ctdd in db.CTDDs on sv.MaSV equals ctdd.MaSV
-                         join dd in db.DIEMDANHs on ctdd.MaDD equals dd.MaDD
+            var data1 =  (from sv in db.Entity.SINHVIENs
+                         join ctdd in db.Entity.CTDDs on sv.MaSV equals ctdd.MaSV
+                         join dd in db.Entity.DIEMDANHs on ctdd.MaDD equals dd.MaDD
                          where sv.MaSV == MaSV && dd.MaNMH == MaNMH && ctdd.TTDD == true
                          select ctdd).ToList();
             
 
-            var data2 = (from sv in db.SINHVIENs
-                       join k in db.KHOAs on sv.MaKhoa equals k.MaKhoa
-                       join l in db.LOPs on sv.MaLop equals l.MaLop
+            var data2 = (from sv in db.Entity.SINHVIENs
+                       join k in db.Entity.KHOAs on sv.MaKhoa equals k.MaKhoa
+                       join l in db.Entity.LOPs on sv.MaLop equals l.MaLop
                        where sv.MaSV == MaSV
                        select new { tenlop = l.TenLop, tenkhoa = k.TenKhoa }).Single();
 

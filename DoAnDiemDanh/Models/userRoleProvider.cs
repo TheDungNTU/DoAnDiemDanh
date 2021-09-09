@@ -14,7 +14,7 @@ namespace DoAnDiemDanh.Models
         {
             throw new NotImplementedException();
         }
-
+      
         public override void CreateRole(string roleName)
         {
             throw new NotImplementedException();
@@ -37,26 +37,27 @@ namespace DoAnDiemDanh.Models
 
         public override string[] GetRolesForUser(string username)
         {
-            FACE_RECOGNITION_V2Entities db = new FACE_RECOGNITION_V2Entities();
-            var tkgv = db.TAIKHOANGIANGVIENs.Where(s => s.TaiKhoan == username).SingleOrDefault();
-            var tksv = db.TAIKHOANSINHVIENs.Where(s => s.TaiKhoan == username).SingleOrDefault();
+            BaseModel db = new BaseModel();
+
+            var tkgv = db.Entity.TAIKHOANGIANGVIENs.Where(s => s.TaiKhoan == username).SingleOrDefault();
+            var tksv = db.Entity.TAIKHOANSINHVIENs.Where(s => s.TaiKhoan == username).SingleOrDefault();
             string[] role = null;
             if(tksv != null)
             {
-                role = (from tk in db.TAIKHOANSINHVIENs
+                role = (from tk in db.Entity.TAIKHOANSINHVIENs
                             where tk.TaiKhoan == username
-                            join quyen in db.QUYENs on tk.MaQuyen equals quyen.MaQuyen
+                            join quyen in db.Entity.QUYENs on tk.MaQuyen equals quyen.MaQuyen
                             select quyen.TenQuyen).ToArray();
             }
 
             if (tkgv != null)
             {
-                role = (from tk in db.TAIKHOANGIANGVIENs
+                role = (from tk in db.Entity.TAIKHOANGIANGVIENs
                             where tk.TaiKhoan == username
-                            join quyen in db.QUYENs on tk.MaQuyen equals quyen.MaQuyen
+                            join quyen in db.Entity.QUYENs on tk.MaQuyen equals quyen.MaQuyen
                             select quyen.TenQuyen).ToArray();
             }
-
+            if (role == null) role = new string[] { "SinhVien" };
             return role;
         }
 

@@ -13,12 +13,12 @@ namespace DoAnDiemDanh.Controllers
 {
     public class QuanLyKhieuNaiController : Controller
     {
-        private FACE_RECOGNITION_V2Entities db = new FACE_RECOGNITION_V2Entities();
+        private BaseModel db = new BaseModel();
 
         
         public ActionResult AlertPartial()
         {
-            var lstKhieuNai = db.KHIEUNAIs.Where(s => s.DaXem == false);
+            var lstKhieuNai = db.Entity.KHIEUNAIs.Where(s => s.DaXem == false);
             return PartialView(lstKhieuNai);
         }
 
@@ -26,13 +26,13 @@ namespace DoAnDiemDanh.Controllers
         //{
         //    ViewBag.id = id;
 
-        //    var diemdanh = (from ctdd in db.CTDDs
+        //    var diemdanh = (from ctdd in db.Entity.CTDDs
         //               where ctdd.MaKN == id
-        //               join dd in db.DIEMDANHs on ctdd.MaDD equals dd.MaDD
+        //               join dd in db.Entity.DIEMDANHs on ctdd.MaDD equals dd.MaDD
         //               select dd).SingleOrDefault();
         
 
-        //    ViewBag.MONHOC = db.MONHOCs.Where(s => s.MaMH == diemdanh.MaMH);
+        //    ViewBag.MONHOC = db.Entity.MONHOCs.Where(s => s.MaMH == diemdanh.MaMH);
 
 
 
@@ -41,7 +41,7 @@ namespace DoAnDiemDanh.Controllers
 
         public ActionResult SubmitKhieuNai(int MaDD, int MaSV,int MaMH ,int TrangThaiVang)
         {
-            var ctdd = db.CTDDs.SingleOrDefault(s => s.MaDD == MaDD && s.MaSV == MaSV);
+            var ctdd = db.Entity.CTDDs.SingleOrDefault(s => s.MaDD == MaDD && s.MaSV == MaSV);
             if(TrangThaiVang == 0)
             {
                 ctdd.VangCoPhep = false;
@@ -51,8 +51,8 @@ namespace DoAnDiemDanh.Controllers
                 ctdd.VangCoPhep = true;
             }
            
-            db.Entry(ctdd).State = EntityState.Modified;
-            db.SaveChanges();
+            db.Entity.Entry(ctdd).State = EntityState.Modified;
+            db.Entity.SaveChanges();
             return RedirectToAction("XemDiemDanh","DiemDanh", new {MaMH = MaMH});
         }
 
@@ -60,12 +60,12 @@ namespace DoAnDiemDanh.Controllers
         //public JsonResult GetDetails(int? id)
         //{
         //    int MaKN = (int)id;
-        //    var KhieuNai = db.KHIEUNAIs.SingleOrDefault(_ => _.MaKN == id);
+        //    var KhieuNai = db.Entity.KHIEUNAIs.SingleOrDefault(_ => _.MaKN == id);
         //    CultureInfo vn = new CultureInfo("vi-VN");
-        //    var tt = (from ctdd in db.CTDDs
+        //    var tt = (from ctdd in db.Entity.CTDDs
         //              where ctdd.MaKN == KhieuNai.MaKN
-        //              join dd in db.DIEMDANHs on ctdd.MaDD equals dd.MaDD
-        //              join sv in db.SINHVIENs on ctdd.MaSV equals sv.MaSV
+        //              join dd in db.Entity.DIEMDANHs on ctdd.MaDD equals dd.MaDD
+        //              join sv in db.Entity.SINHVIENs on ctdd.MaSV equals sv.MaSV
                      
         //              select new
         //              {

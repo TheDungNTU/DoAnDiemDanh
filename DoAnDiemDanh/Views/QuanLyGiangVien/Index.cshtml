@@ -14,11 +14,16 @@
 
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="@Url.Action("Index","DiemDanh")">Trang chủ</a></li>   
+        <li class="breadcrumb-item"><a href="@Url.Action("Index","DiemDanh")">Trang chủ</a></li>
         <li class="breadcrumb-item active" aria-current="page">Quản lý giảng viên</li>
     </ol>
 </nav>
-
+<button class="btn btn-success btn-icon-split shadow" style="position: absolute; top: 5px; right: 38px" id="train_model">
+    <span class="icon text-white-50">
+        <i class="fas fa-cloud-upload-alt"></i>
+    </span>
+    <span class="text">Huấn luyện ảnh</span>
+</button>
 @using (Ajax.BeginForm("Create", "QuanLyGiangVien", new AjaxOptions { HttpMethod = "POST", OnSuccess = "FnSuccess" }, new { @class = "formGiangVien" }))
 {
     @Html.AntiForgeryToken()
@@ -85,40 +90,40 @@
                 <tbody id="data_table">
                     @foreach (var item in Model)
                     {
-                    <tr id="row_@item.MaGV">
-                        <td>
-                            @Html.DisplayFor(modelItem => item.MaGV)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.TenGV)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Email)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.KHOA.TenKhoa)
-                        </td>
-                        <td>
-                            <span class="btn btn-primary btn-icon-split">
-                                <span class="icon text-white-50">
-                                   @item.NHOMMONHOCs.Count()
+                        <tr id="row_@item.MaGV">
+                            <td>
+                                @Html.DisplayFor(modelItem => item.MaGV)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.TenGV)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Email)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.KHOA.TenKhoa)
+                            </td>
+                            <td>
+                                <span class="btn btn-primary btn-icon-split">
+                                    <span class="icon text-white-50">
+                                        @item.NHOMMONHOCs.Count()
+                                    </span>
+                                    <span class="text">Môn Học</span>
                                 </span>
-                                <span class="text">Môn Học</span>
-                            </span>
-                        </td>
-                        <td>
-                            <a href="@Url.Action("Details_GiangVien_HinhAnh","QuanLyHinhAnh", new{id = item.MaGV, MaPhongHoc = 1})" class="btn btn-primary btn-icon-split">
-                                <span class="icon text-white-50">
-                                    @item.HINHANH_GV.Count()
-                                </span>
-                                <span class="text">Hình ảnh</span>
-                            </a>
-                        </td>
-                        <td>
-                            <a href='/QuanLyGiangVien/Edit/@item.MaGV'>Chỉnh sửa</a> |
-                            <a class="delete" data-model-id="@item.MaGV" onclick="Delete(this)" style="cursor: pointer;">Xóa</a>
-                        </td>
-                    </tr>
+                            </td>
+                            <td>
+                                <a href="@Url.Action("Details_GiangVien_HinhAnh","QuanLyHinhAnh", new{id = item.MaGV, MaPhongHoc = @ViewBag.MaPhongHoc})" class="btn btn-primary btn-icon-split">
+                                    <span class="icon text-white-50">
+                                        @item.HINHANH_GV.Count()
+                                    </span>
+                                    <span class="text">Hình ảnh</span>
+                                </a>
+                            </td>
+                            <td>
+                                <a href='/QuanLyGiangVien/Edit/@item.MaGV'>Chỉnh sửa</a> |
+                                <a class="delete" data-model-id="@item.MaGV" onclick="Delete(this)" style="cursor: pointer;">Xóa</a>
+                            </td>
+                        </tr>
                     }
                 </tbody>
             </table>
@@ -176,6 +181,33 @@
         });
     }
 
+    $('#train_model').click(function () {
+        $.post("https://1544-112-78-15-3.ngrok.io/stop")
+            .done(function (data) {
+                $.post("https://1544-112-78-15-3.ngrok.io/train", function (data) {
+                    $(".close").click();
+                    $('#hinhanh_cam').empty();
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Thành Công',
+                        text: `Update Data`,
+                        timer: 2000,
+                        showConfirmButton: false
+
+                    })
+                })
+            })
+            .fail((data) => {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Thất bại',
+                    text: `Server hiện đang tắt, vui lòng bật lại`,
+                    timer: 2000,
+                    showConfirmButton: false
+
+                })
+            })
+    })
     function FnSuccess(data) {
         if (data != false) {
             var node = dt.row.add([
@@ -188,7 +220,7 @@
                                 0
                             </span>
                             <span class="text">Môn Học</span>`,
-                `<a href="/QuanLyHinhAnh/Details_GiangVien_HinhAnh/${data.MaGV}?MaPhongHoc=1" class="btn btn-primary btn-icon-split">
+                `<a href="/QuanLyHinhAnh/Details_GiangVien_HinhAnh/${data.MaGV}?MaPhongHoc=@ViewBag.MaPhongHoc" class="btn btn-primary btn-icon-split">
                             <span class="icon text-white-50">
                                 0
                             </span>
@@ -269,14 +301,14 @@
 
     $(document).ready(function () {
         loadDataTable();
-       
-            if ($(window).width() < 380) {
-      
-                dt.column(0).visible(false, false);
-                dt.column(2).visible(false, false);
-                dt.column(3).visible(false, false);
-                dt.columns.adjust().draw(false)
-            }
+
+        if ($(window).width() < 380) {
+
+            dt.column(0).visible(false, false);
+            dt.column(2).visible(false, false);
+            dt.column(3).visible(false, false);
+            dt.columns.adjust().draw(false)
+        }
 
 
 
@@ -323,7 +355,7 @@
                 Email: {
                     required: true,
                     email: true,
-                    
+
                 },
                 MaKhoa: {
                     required: true,

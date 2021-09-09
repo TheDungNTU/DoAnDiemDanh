@@ -1,0 +1,32 @@
+﻿@model IEnumerable<DoAnDiemDanh.Models.CAMERA>
+
+@{
+    ViewBag.Title = "XemCamera";
+    Layout = "~/Views/Layout/_LayoutAdmin.cshtml";
+}
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="@Url.Action("Index","DiemDanh")">Trang chủ</a></li>
+        <li class="breadcrumb-item " aria-current="page">Xem Camera</li>
+    </ol>
+</nav>
+
+<div class="row">
+    @foreach (var item in Model)
+    {
+        <div class="col-5 ml-3">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary" id="soluong">@item.TenCamera</h6>
+                </div>
+                <div class="card-body" style="position: relative; display: block; height: 287px; padding: 0px; padding-left: 20px;" id="hinhanh_cam">
+                    @{
+                        var url = "https://1544-112-78-15-3.ngrok.io/video?rtsp=" + item.URL;
+                        <img src="@url"  style="border-radius: 5px; width: 456px; margin-top: 12px; margin-left: -3px;" id="cameraip" />
+                    }
+                </div>
+            </div>
+        </div>
+    }
+</div>

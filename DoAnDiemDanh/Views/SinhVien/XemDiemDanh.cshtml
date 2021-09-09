@@ -3,11 +3,11 @@
 @{
     ViewBag.Title = "XemDiemDanh";
     Layout = "~/Views/Layout/_LayoutAdmin.cshtml";
-    IEnumerable<MONHOC> MONHOC = (IEnumerable<MONHOC>)ViewBag.MonHoc;
+    IEnumerable<NHOMMONHOC> NHOMMONHOC = (IEnumerable<NHOMMONHOC>)ViewBag.NHOMMONHOC;
 }
 
 <div class="row">
-    @foreach (var item in MONHOC)
+    @foreach (var item in NHOMMONHOC)
     {
         <div class="col-lg-5">
             <!-- Basic Card Example -->
@@ -17,12 +17,12 @@
                         <div class="course-info">
                             <div class="progress-container">
                                 <span class="progress-text">
-                                    From: @item.ThoiGianBDGD - To: @item.ThoiGianKTGD
+                                    From: @item.ThoiGianBD - To: @item.ThoiGianKT
                                 </span>
                             </div>
                             <h6>GV: @item.GIANGVIEN.TenGV</h6>
-                            <h2>@item.TenMH</h2>
-                            <a class="btn1" href="@Url.Action("KetQua", "SinhVien", new { @MaMH = item.MaMH })">Xem Kết Quả</a>
+                            <h2>@item.MONHOC.TenMH - Nhóm @item.MaNMH</h2>
+                            <a class="btn1" href="@Url.Action("KetQua", "SinhVien", new { MaNMH = item.MaNMH })">Xem Kết Quả</a>
                         </div>
                     </div>
                 </div>

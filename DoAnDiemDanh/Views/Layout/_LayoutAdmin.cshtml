@@ -34,8 +34,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ekko-lightbox/5.3.0/ekko-lightbox.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.11/dist/sweetalert2.all.min.js"></script>
-
-
 </head>
 
 <body id="page-top">
@@ -104,15 +102,16 @@
                                     <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
                                         <div class="bg-white py-2 collapse-inner rounded">
                                             <a class="collapse-item" href="@Url.Action("Index", "QuanLyKhoa")">Quản Lý Khoa</a>
-                                            <a class="collapse-item" href="@Url.Action("Index", "QuanLyLop")">Quản Lý Lớp Học<a>
-                                            <a class="collapse-item" href="@Url.Action("Index", "QuanLyGiangVien")">Quản Lý Giảng Viên</a>
-                                            <a class="collapse-item" href="@Url.Action("Index", "QuanLySinhVien")">Quản Lý Sinh Viên</a>
-                                            <a class="collapse-item" href="@Url.Action("Index", "QuanLyMonHoc")">Quản Lý Môn Học</a>
+                                            <a class="collapse-item" href="@Url.Action("Index", "QuanLyLop")">
+                                                Quản Lý Lớp Học<a>
+                                                    <a class="collapse-item" href="@Url.Action("Index", "QuanLyGiangVien")">Quản Lý Giảng Viên</a>
+                                                    <a class="collapse-item" href="@Url.Action("Index", "QuanLySinhVien")">Quản Lý Sinh Viên</a>
+                                                    <a class="collapse-item" href="@Url.Action("Index", "QuanLyMonHoc")">Quản Lý Môn Học</a>
                                         </div>
                                     </div>
                                 </li>
 
-                                 <li class="nav-item">
+                                <li class="nav-item">
                                     <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseThree"
                                        aria-expanded="true" aria-controls="collapseThree">
                                         <i class="fas fa-fw fa-cog"></i>
@@ -121,6 +120,7 @@
                                     <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordionSidebar">
                                         <div class="bg-white py-2 collapse-inner rounded">
                                             <a class="collapse-item" href="@Url.Action("Index", "QuanLyCamera")">Quản Lý Camera</a>
+                                            <a class="collapse-item" href="@Url.Action("XemCamera", "QuanLyCamera")">Xem Camera</a>
                                             <a class="collapse-item" href="@Url.Action("Index", "QuanLyPhongHoc")">Quản Lý Phòng học</a>
                                         </div>
                                     </div>
@@ -169,7 +169,7 @@
                                 </li>
 
                                 <!-- Nav Item - Charts -->
-                              
+
 
                             }
 
@@ -212,7 +212,7 @@
                                 </li>
 
                                 <!-- Nav Item - Charts -->
-                               
+
                                 <!-- Nav Item - Tables -->
                                 <!-- Divider -->
                             }
@@ -300,77 +300,85 @@
 
                                             <!-- Nav Item - Alerts -->
 
-                                                Html.RenderAction("AlertPartial", "QuanLyKhieuNai");
+                                            Html.RenderAction("AlertPartial", "QuanLyKhieuNai");
 
-                                            }
                                         }
                                     }
                                 }
-                                            <!-- Nav Item - Messages -->
+                            }
+                            <!-- Nav Item - Messages -->
 
 
-                                            <div class="topbar-divider d-none d-sm-block"></div>
+                            <div class="topbar-divider d-none d-sm-block"></div>
 
-                                            <!-- Nav Item - User Information -->
-                                            <li class="nav-item dropdown no-arrow">
-                                                <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
-                                                   data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                    <span class="mr-2 d-none d-lg-inline text-gray-600 small">
-                                                        @{
+                            <!-- Nav Item - User Information -->
+                            <li class="nav-item dropdown no-arrow">
+                                <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
+                                   data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <span class="mr-2 d-none d-lg-inline text-gray-600 small">
+                                        @{
 
-                                                            if (authCookie != null)
-                                                            {
-                                                                if (!string.IsNullOrEmpty(authCookie.Value))
-                                                                {
-                                                                    FormsAuthenticationTicket authTicket = FormsAuthentication.Decrypt(authCookie.Value);
+                                            if (authCookie != null)
+                                            {
+                                                if (!string.IsNullOrEmpty(authCookie.Value))
+                                                {
+                                                    FormsAuthenticationTicket authTicket = FormsAuthentication.Decrypt(authCookie.Value);
 
-                                                                    string str = authTicket.UserData;
-                                                                    string[] subs = str.Split(',');
-                                                                    if (subs[2] == "Admin")
-                                                                    {
-                                                                        <span>Admin: @subs[1]</span>
-                                                                    }
-                                                                    else if (subs[2] == "GV")
-                                                                    {
-                                                                        <span>GV: @subs[1]</span>
-                                                                    }
-                                                                    else
-                                                                    {
-                                                                        <span>SV: @subs[1]</span>
-                                                                    }
-                                                                }
+                                                    string str = authTicket.UserData;
+                                                    string[] subs = str.Split(',');
+                                                    string username = subs[1];
+                                                    DoAnDiemDanh.Models.BaseModel db = new DoAnDiemDanh.Models.BaseModel();
+                                                    var name = db.Entity.GIANGVIENs.Where(x => x.TenGV == username).SingleOrDefault()?.HoTen;
+                                                    if (subs[2] == "Admin")
+                                                    {
 
-                                                            }
+                                                        <span>Admin: @name</span>
 
-                                                        }
-                                                    </span>
-                                                    <img class="img-profile rounded-circle"
-                                                         src="~/Content/img/undraw_profile.svg">
-                                                </a>
-                                                <!-- Dropdown - User Information -->
-                                                <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
-                                                     aria-labelledby="userDropdown">
-                                                    <a class="dropdown-item" href="#">
-                                                        <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
-                                                        Profile
-                                                    </a>
-                                                    <a class="dropdown-item" href="#">
-                                                        <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
-                                                        Settings
-                                                    </a>
-                                                    <a class="dropdown-item" href="#">
-                                                        <i class="fas fa-list fa-sm fa-fw mr-2 text-gray-400"></i>
-                                                        Activity Log
-                                                    </a>
-                                                    <div class="dropdown-divider"></div>
-                                                    <button class="dropdown-item" data-toggle="modal" data-target="#logoutModal">
-                                                        <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
-                                                        Logout
-                                                    </button>
-                                                </div>
-                                            </li>
+                                                    }
+                                                    else if (subs[2] == "GV")
+                                                    {
+                                                        <span>GV: @name</span>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span>SV: @name</span>
+                                                    }
+                                                }
 
-                                        </ul>
+                                            }
+
+                                        }
+                                    </span>
+
+                                    @{
+                                        if (authCookie != null)
+                                        {
+                                            FormsAuthenticationTicket authTicket = FormsAuthentication.Decrypt(authCookie.Value);
+
+                                            string str = authTicket.UserData;
+                                            string[] subs = str.Split(',');
+                                            string username = subs[1];
+                                            DoAnDiemDanh.Models.BaseModel db = new DoAnDiemDanh.Models.BaseModel();
+                                            var ava = db.Entity.GIANGVIENs.Where(x => x.TenGV == username).SingleOrDefault()?.Avatar;
+                                            
+
+                                            string avata = "~/Content/img/avatar/" + ava;
+                                            <img class="img-profile rounded-circle"
+                                                 src="~/Content/img/avatar/@ava">
+
+                                        }
+
+                                    }
+
+
+                                </a>
+                                <!-- Dropdown - User Information -->
+                                @{
+                                    Html.RenderAction("RenderUserInfo", "Layout");
+                                }
+                            </li>
+
+                        </ul>
 
                     </nav>
                     <!-- End of Topbar -->
@@ -389,7 +397,7 @@
                 <footer class="sticky-footer bg-white">
                     <div class="container my-auto">
                         <div class="copyright text-center my-auto">
-                            <span>Copyright &copy; Lê Thế Dũng - 2021</span>
+                            <span>Copyright &copy; VinaAI - 2021</span>
                         </div>
                     </div>
                 </footer>
@@ -458,11 +466,11 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.12/jquery.validate.unobtrusive.min.js"></script>
 
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-        
-        
-    </div>
-        <!-- Page Wrapper -->
 
-    </body>
+
+    </div>
+    <!-- Page Wrapper -->
+
+</body>
 
 </html>

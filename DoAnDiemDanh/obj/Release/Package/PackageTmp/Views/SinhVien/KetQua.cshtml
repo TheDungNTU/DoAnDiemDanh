@@ -2,7 +2,7 @@
 @{
     ViewBag.Title = "KetQua";
     Layout = "~/Views/Layout/_LayoutAdmin.cshtml";
-    IEnumerable<MONHOC> MONHOC = (IEnumerable<MONHOC>)ViewBag.MonHoc;
+    IEnumerable<NHOMMONHOC> NHOMMONHOC = (IEnumerable<NHOMMONHOC>)ViewBag.NHOMMONHOC;
 }
 
 <nav aria-label="breadcrumb">
@@ -27,18 +27,18 @@
                     </tr>
                 </thead>
                 <tbody id="data_table">
-                    @foreach (var item in MONHOC)
+                    @foreach (var item in NHOMMONHOC)
                     {
                         <tr>
 
                             <td>
-                                <span style="display: none;" id="MaMH">
-                                    @Html.DisplayFor(modelItem => item.MaMH)
+                                <span style="display: none;" id="MaNMH">
+                                    @Html.DisplayFor(modelItem => item.MaNMH)
                                 </span>
-                                @Html.DisplayFor(modelItem => item.TenMH)
+                                @Html.DisplayFor(modelItem => item.MONHOC.TenMH)
                             </td>
                             <td>
-                                @Html.DisplayFor(modelItem => item.SoTC)
+                                @Html.DisplayFor(modelItem => item.MONHOC.SoTC)
                             </td>
                             <td>
                                 @Convert.ToDateTime(item.NgayBD).ToString("dd/MM/yyyy")
@@ -48,7 +48,7 @@
                             </td>
                             <td>
                                 @{
-                                    TimeSpan a = (TimeSpan)item.ThoiGianKTGD - (TimeSpan)@item.ThoiGianBDGD;
+                                    TimeSpan a = (TimeSpan)item.ThoiGianKT - (TimeSpan)@item.ThoiGianBD;
                                     var s = a.Hours + " Giờ " + a.Minutes + " Phút";
                                 }
                                 @s
@@ -117,12 +117,12 @@
         if ($(window).width() < 380) {
             dt.columns.adjust().draw(false)
         }
-        var mamh = parseInt($("#MaMH").html());
+        var manmh = parseInt($("#MaNMH").html());
 
         dt.clear()
             .draw();
 
-        $.get("/SinhVien/getDiemDanh", { MaMH: mamh }, function (data) {
+        $.get("/SinhVien/getDiemDanh", { MaNMH: manmh }, function (data) {
            
             $.each(data, function (index, value) {
                 var kn = "";
@@ -133,7 +133,7 @@
                 }
 
                 else {
-                    kn = `<a href="/SinhVien/GuiKhieuNai?MaDD=${value.MaDD}&MaSV=${value.MaSV}&MaMH=@ViewBag.MaMH" class="btn btn-primary btn-icon-split">    
+                    kn = `<a href="/SinhVien/GuiKhieuNai?MaDD=${value.MaDD}&MaSV=${value.MaSV}&MaNMH=@ViewBag.MaNMH" class="btn btn-primary btn-icon-split">    
                                 <span class="text">Gửi Khiếu Nại</span>
                           </a >`
                 }

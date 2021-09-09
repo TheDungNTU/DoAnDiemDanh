@@ -10,22 +10,27 @@ using Microsoft.Owin.Security;
 using Microsoft.AspNet.Identity;
 using System.Security.Claims;
 using System.Web.Security;
+using System.Xml;
 
 namespace DoAnDiemDanh.Controllers
 {
+
     [Authorize]
     public class AccountController : Controller
     {
-        private FACE_RECOGNITION_V2Entities db = new FACE_RECOGNITION_V2Entities();
 
-        [AllowAnonymous]
+        private BaseModel db = new BaseModel();
+
+        [AllowAnonymous]    
         public ActionResult Login(string returnUrl)
         {
+         
             if (User.Identity.IsAuthenticated)
             {
                 return RedirectToAction("HTTP404", "Account");
             }
-            ViewBag.returnUrl = returnUrl;
+
+            ViewBag.returnUrl = returnUrl;  
             return View();
         }
 
@@ -40,20 +45,20 @@ namespace DoAnDiemDanh.Controllers
         public JsonResult Login(LoginViewModel model, string returnUrl)
         {
             ViewBag.returnUrl = returnUrl;
+            var pass = Crypto.Hash(model.Password);
+            var tkgv = db.Entity.TAIKHOANGIANGVIENs.Where(s => s.TaiKhoan == model.UserName && s.MatKhau == pass).SingleOrDefault();
+            var tksv = db.Entity.TAIKHOANSINHVIENs.Where(s => s.TaiKhoan == model.UserName && s.MatKhau == pass).SingleOrDefault();
             
-            var tkgv = db.TAIKHOANGIANGVIENs.Where(s => s.TaiKhoan == model.UserName && s.MatKhau == model.Password).SingleOrDefault();
-            var tksv = db.TAIKHOANSINHVIENs.Where(s => s.TaiKhoan == model.UserName && s.MatKhau == model.Password).SingleOrDefault();
-
             if(tkgv == null && tksv == null)
             {
-                var tkgv1 = db.TAIKHOANGIANGVIENs.Where(s => s.TaiKhoan == model.UserName && s.MatKhau == model.Password).Single();
-                var tksv1 = db.TAIKHOANSINHVIENs.Where(s => s.TaiKhoan == model.UserName && s.MatKhau == model.Password).Single();
+                var tkgv1 = db.Entity.TAIKHOANGIANGVIENs.Where(s => s.TaiKhoan == model.UserName && s.MatKhau == pass).Single();
+                var tksv1 = db.Entity.TAIKHOANSINHVIENs.Where(s => s.TaiKhoan == model.UserName && s.MatKhau == pass).Single();
             }
 
             else if (tkgv != null)
             {
-                var gv = db.GIANGVIENs.Where(s => s.Email == model.UserName).SingleOrDefault();
-                var tk = db.TAIKHOANGIANGVIENs.Where(s => s.TaiKhoan == model.UserName).SingleOrDefault();
+                var gv = db.Entity.GIANGVIENs.Where(s => s.Email == model.UserName).SingleOrDefault();
+                var tk = db.Entity.TAIKHOANGIANGVIENs.Where(s => s.TaiKhoan == model.UserName).SingleOrDefault();
                 var str = "";
                 if(tk.QUYEN.MaQuyen == 1)
                 {
@@ -66,17 +71,15 @@ namespace DoAnDiemDanh.Controllers
                 
                 if (model.RememberMe)
                 {
-                    
-                    var authTicket = new FormsAuthenticationTicket(2, model.UserName, DateTime.Now, DateTime.Now.AddMinutes(30),
-                    false, str);
 
-                    var authCookie = new HttpCookie(FormsAuthentication.FormsCookieName,FormsAuthentication.Encrypt(authTicket))
-                    {
-                        HttpOnly = true,
-                        Expires = authTicket.Expiration
-                    };
+                    var authTicket = new FormsAuthenticationTicket(2, model.UserName, DateTime.Now, DateTime.Now.AddMinutes(525600), false, str);
+                    string encrypted = FormsAuthentication.Encrypt(authTicket);
+                    var authCookie = new HttpCookie(FormsAuthentication.FormsCookieName, encrypted);
+                    authCookie.HttpOnly = true;
+                    authCookie.Expires = authTicket.Expiration;
+                    Response.Cookies.Add(authCookie);
 
-                    Response.AppendCookie(authCookie);
+               
                 }
                 else
                 {
@@ -99,18 +102,20 @@ namespace DoAnDiemDanh.Controllers
                 }
                 else
                 {
+                    // set connect string bằng username = 
                     return Json(Url.Action("index","DiemDanh"), JsonRequestBehavior.AllowGet);
                 }
             }
             else if(tksv != null)
             {
-                var sv = db.SINHVIENs.Where(s => s.Email == model.UserName).SingleOrDefault();
+                var sv = db.Entity.SINHVIENs.Where(s => s.Email == model.UserName).SingleOrDefault();
                 var str = $"{sv.MaSV},{sv.TenSV},{"SV"}";
                 if (model.RememberMe)
                 {
 
+
                     var authTicket = new FormsAuthenticationTicket(2, model.UserName, DateTime.Now, DateTime.Now.AddMinutes(30),
-                    false, str);
+                false, str);
 
                     var authCookie = new HttpCookie(FormsAuthentication.FormsCookieName, FormsAuthentication.Encrypt(authTicket))
                     {
@@ -152,8 +157,17 @@ namespace DoAnDiemDanh.Controllers
 
         public ActionResult SignOut()
         {
-            FormsAuthentication.SignOut();
-            return RedirectToAction("Login", "Account"); ;
+            HttpCookie myCookie1 = new HttpCookie(FormsAuthentication.FormsCookieName);
+            myCookie1.Expires = DateTime.Now.AddDays(-1d);
+            // myCookie1.Domain = "hieungoi.diemdanhvinaai.local"; // !!!!
+            Response.Cookies.Add(myCookie1);
+
+            HttpCookie myCookie = new HttpCookie(FormsAuthentication.FormsCookieName);
+            myCookie.Expires = DateTime.Now.AddDays(-1d);
+            myCookie.Domain = "vinaai.vn"; // !!!!
+            Response.Cookies.Add(myCookie);
+            //FormsAuthentication.SignOut();
+            return RedirectToAction("Login", "Account");
         }
     }
 }

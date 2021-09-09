@@ -13,11 +13,11 @@ namespace DoAnDiemDanh.Controllers
     [Authorize(Roles = "Admin")]
     public class QuanLyKhoaController : Controller
     {
-        private FACE_RECOGNITION_V2Entities db = new FACE_RECOGNITION_V2Entities();
+        private BaseModel db = new BaseModel();
 
         public ActionResult Index()
         {
-            return View(db.KHOAs.ToList());
+            return View(db.Entity.KHOAs.ToList());
         }
 
         [HttpPost]
@@ -25,11 +25,11 @@ namespace DoAnDiemDanh.Controllers
         public JsonResult Create([Bind(Include = "MaKhoa,TenKhoa")] KHOA kHOA)
         {
 
-            var Khoa = db.KHOAs.SingleOrDefault(s => s.TenKhoa == kHOA.TenKhoa);
+            var Khoa = db.Entity.KHOAs.SingleOrDefault(s => s.TenKhoa == kHOA.TenKhoa);
             if(Khoa == null)
             {
-                db.KHOAs.Add(kHOA);
-                db.SaveChanges();
+                db.Entity.KHOAs.Add(kHOA);
+                db.Entity.SaveChanges();
                 return Json(kHOA, JsonRequestBehavior.AllowGet);
             }
             return Json(false,JsonRequestBehavior.AllowGet);
@@ -41,7 +41,7 @@ namespace DoAnDiemDanh.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            KHOA kHOA = db.KHOAs.Find(id);
+            KHOA kHOA = db.Entity.KHOAs.Find(id);
             if (kHOA == null)
             {
                 return HttpNotFound();
@@ -55,8 +55,8 @@ namespace DoAnDiemDanh.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Entry(kHOA).State = EntityState.Modified;
-                db.SaveChanges();
+                db.Entity.Entry(kHOA).State = EntityState.Modified;
+                db.Entity.SaveChanges();
                 return RedirectToAction("Index");
             }
             return View(kHOA);
@@ -66,14 +66,14 @@ namespace DoAnDiemDanh.Controllers
         [HttpPost, ActionName("Delete")]
         public JsonResult DeleteConfirmed(int id)
         {
-            KHOA kHOA = db.KHOAs.Find(id);
+            KHOA kHOA = db.Entity.KHOAs.Find(id);
             var data = new
             {
                 id = id,
                 TenKhoa = kHOA.TenKhoa,
             };
-            db.KHOAs.Remove(kHOA);
-            db.SaveChanges();
+            db.Entity.KHOAs.Remove(kHOA);
+            db.Entity.SaveChanges();
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
@@ -81,7 +81,7 @@ namespace DoAnDiemDanh.Controllers
         {
             if (disposing)
             {
-                db.Dispose();
+                db.Entity.Dispose();
             }
             base.Dispose(disposing);
         }

@@ -12,7 +12,7 @@ namespace DoAnDiemDanh.Controllers
 {
     public class QuanLyNhomMonHocController : Controller
     {
-        private FACE_RECOGNITION_V2Entities db = new FACE_RECOGNITION_V2Entities();
+        private BaseModel db = new BaseModel();
 
         public IEnumerable<DateTime> EachDay(DateTime d1, DateTime d2)
         {
@@ -24,10 +24,10 @@ namespace DoAnDiemDanh.Controllers
         // GET: QuanLyNhomMonHoc
         public ActionResult Index(int MaMH)
         {
-            ViewBag.MonHoc = db.MONHOCs.Where(s => s.MaMH == MaMH);
-            ViewBag.GiangVien = db.GIANGVIENs;
-            ViewBag.PhongHoc = db.PHONGHOCs;
-            var nHOMMONHOCs = db.NHOMMONHOCs.Where(s => s.MaMH == MaMH);
+            ViewBag.MonHoc = db.Entity.MONHOCs.Where(s => s.MaMH == MaMH);
+            ViewBag.GiangVien = db.Entity.GIANGVIENs;
+            ViewBag.PhongHoc = db.Entity.PHONGHOCs;
+            var nHOMMONHOCs = db.Entity.NHOMMONHOCs.Where(s => s.MaMH == MaMH);
             return View(nHOMMONHOCs.ToList());
         }
 
@@ -38,7 +38,7 @@ namespace DoAnDiemDanh.Controllers
         {
             if (ModelState.IsValid)
             {
-                var MH = db.MONHOCs.Single(s => s.MaMH == nHOMMONHOC.MaMH);
+                var MH = db.Entity.MONHOCs.Single(s => s.MaMH == nHOMMONHOC.MaMH);
                 int i = 0;
                 var day = (DateTime)nHOMMONHOC.NgayBD;
                 List<DateTime> listdate = new List<DateTime>();
@@ -55,8 +55,8 @@ namespace DoAnDiemDanh.Controllers
                 }
 
                 nHOMMONHOC.NgayKT = day.AddDays(-1);
-                db.NHOMMONHOCs.Add(nHOMMONHOC);
-                db.SaveChanges();
+                db.Entity.NHOMMONHOCs.Add(nHOMMONHOC);
+                db.Entity.SaveChanges();
 
                 LICHGIANGDAY tkb = new LICHGIANGDAY();
                 tkb.MaNMH = nHOMMONHOC.MaNMH;
@@ -84,31 +84,31 @@ namespace DoAnDiemDanh.Controllers
                 if (tkb.ThuSau == null) tkb.ThuSau = false;
                 if (tkb.ThuBay == null) tkb.ThuBay = false;
 
-                db.LICHGIANGDAYs.Add(tkb);
-                db.SaveChanges();
+                db.Entity.LICHGIANGDAYs.Add(tkb);
+                db.Entity.SaveChanges();
 
                 foreach (var item in listdate)
                 {
                     var DiemDanh = new DIEMDANH();
                     DiemDanh.MaNMH = nHOMMONHOC.MaNMH;
                     DiemDanh.NgayDiemDanh = item;
-                    db.DIEMDANHs.Add(DiemDanh);
-                    db.SaveChanges();
+                    db.Entity.DIEMDANHs.Add(DiemDanh);
+                    db.Entity.SaveChanges();
 
                     var CTDD_GV = new CTDD_GV();
                     CTDD_GV.MaDD = DiemDanh.MaDD;
                     CTDD_GV.MaGV = (int)nHOMMONHOC.MaGV;
                     CTDD_GV.TTDD = false;
-                    db.CTDD_GV.Add(CTDD_GV);
-                    db.SaveChanges();
+                    db.Entity.CTDD_GV.Add(CTDD_GV);
+                    db.Entity.SaveChanges();
                 }
 
 
 
 
                 TimeSpan time = (TimeSpan)nHOMMONHOC.ThoiGianKT - (TimeSpan)nHOMMONHOC.ThoiGianBD;
-                var GV = db.GIANGVIENs.Single(s => s.MaGV == nHOMMONHOC.MaGV);
-                var PHONG = db.PHONGHOCs.Single(s => s.MaPhongHoc == nHOMMONHOC.MaPhongHoc);
+                var GV = db.Entity.GIANGVIENs.Single(s => s.MaGV == nHOMMONHOC.MaGV);
+                var PHONG = db.Entity.PHONGHOCs.Single(s => s.MaPhongHoc == nHOMMONHOC.MaPhongHoc);
                 var myData = new
                 {
                     MaNMH = nHOMMONHOC.MaNMH,
@@ -131,14 +131,14 @@ namespace DoAnDiemDanh.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            NHOMMONHOC nHOMMONHOC = db.NHOMMONHOCs.Find(id);
+            NHOMMONHOC nHOMMONHOC = db.Entity.NHOMMONHOCs.Find(id);
             if (nHOMMONHOC == null)
             {
                 return HttpNotFound();
             }
-            ViewBag.MaNMH = new SelectList(db.LICHGIANGDAYs, "MaNMH", "MaNMH", nHOMMONHOC.MaNMH);
-            ViewBag.MaMH = new SelectList(db.MONHOCs, "MaMH", "TenMH", nHOMMONHOC.MaMH);
-            ViewBag.MaPhongHoc = new SelectList(db.PHONGHOCs, "MaPhongHoc", "TenPhongHoc", nHOMMONHOC.MaPhongHoc);
+            ViewBag.MaNMH = new SelectList(db.Entity.LICHGIANGDAYs, "MaNMH", "MaNMH", nHOMMONHOC.MaNMH);
+            ViewBag.MaMH = new SelectList(db.Entity.MONHOCs, "MaMH", "TenMH", nHOMMONHOC.MaMH);
+            ViewBag.MaPhongHoc = new SelectList(db.Entity.PHONGHOCs, "MaPhongHoc", "TenPhongHoc", nHOMMONHOC.MaPhongHoc);
             return View(nHOMMONHOC);
         }
 
@@ -151,13 +151,13 @@ namespace DoAnDiemDanh.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Entry(nHOMMONHOC).State = EntityState.Modified;
-                db.SaveChanges();
+                db.Entity.Entry(nHOMMONHOC).State = EntityState.Modified;
+                db.Entity.SaveChanges();
                 return RedirectToAction("Index");
             }
-            ViewBag.MaNMH = new SelectList(db.LICHGIANGDAYs, "MaNMH", "MaNMH", nHOMMONHOC.MaNMH);
-            ViewBag.MaMH = new SelectList(db.MONHOCs, "MaMH", "TenMH", nHOMMONHOC.MaMH);
-            ViewBag.MaPhongHoc = new SelectList(db.PHONGHOCs, "MaPhongHoc", "TenPhongHoc", nHOMMONHOC.MaPhongHoc);
+            ViewBag.MaNMH = new SelectList(db.Entity.LICHGIANGDAYs, "MaNMH", "MaNMH", nHOMMONHOC.MaNMH);
+            ViewBag.MaMH = new SelectList(db.Entity.MONHOCs, "MaMH", "TenMH", nHOMMONHOC.MaMH);
+            ViewBag.MaPhongHoc = new SelectList(db.Entity.PHONGHOCs, "MaPhongHoc", "TenPhongHoc", nHOMMONHOC.MaPhongHoc);
             return View(nHOMMONHOC);
         }
 
@@ -167,7 +167,7 @@ namespace DoAnDiemDanh.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            NHOMMONHOC nHOMMONHOC = db.NHOMMONHOCs.Find(id);
+            NHOMMONHOC nHOMMONHOC = db.Entity.NHOMMONHOCs.Find(id);
             if (nHOMMONHOC == null)
             {
                 return HttpNotFound();
@@ -180,9 +180,9 @@ namespace DoAnDiemDanh.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            NHOMMONHOC nHOMMONHOC = db.NHOMMONHOCs.Find(id);
-            db.NHOMMONHOCs.Remove(nHOMMONHOC);
-            db.SaveChanges();
+            NHOMMONHOC nHOMMONHOC = db.Entity.NHOMMONHOCs.Find(id);
+            db.Entity.NHOMMONHOCs.Remove(nHOMMONHOC);
+            db.Entity.SaveChanges();
             return RedirectToAction("Index");
         }
 
@@ -190,7 +190,7 @@ namespace DoAnDiemDanh.Controllers
         {
             if (disposing)
             {
-                db.Dispose();
+                db.Entity.Dispose();
             }
             base.Dispose(disposing);
         }

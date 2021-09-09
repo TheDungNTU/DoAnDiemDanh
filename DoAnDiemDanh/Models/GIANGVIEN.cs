@@ -26,6 +26,10 @@ namespace DoAnDiemDanh.Models
     
         public int MaGV { get; set; }
         public string TenGV { get; set; }
+        public string DiaChi { get; set; }
+        public string SDT { get; set; }
+        public string Avatar { get; set; }
+        public string HoTen { get; set; }
         public string Email { get; set; }
         public Nullable<int> MaKhoa { get; set; }
     

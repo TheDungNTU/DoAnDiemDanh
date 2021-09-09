@@ -16,8 +16,8 @@ namespace DoAnDiemDanh.Controllers
     
     public class QuanLyMonHocController : Controller
     {
-        
-        private FACE_RECOGNITION_V2Entities db = new FACE_RECOGNITION_V2Entities();
+
+        private BaseModel db = new BaseModel();
         // GET: QuanLyMonHoc
 
         [Authorize(Roles = "Admin, GiangVien")]
@@ -30,7 +30,7 @@ namespace DoAnDiemDanh.Controllers
         [Authorize(Roles = "Admin")]
         public ActionResult Index()
         {
-            var mONHOCs = db.MONHOCs;
+            var mONHOCs = db.Entity.MONHOCs;
             return View(mONHOCs.ToList());
         }
 
@@ -40,11 +40,11 @@ namespace DoAnDiemDanh.Controllers
         public JsonResult Create([Bind(Include = "MaMH,TenMH,SoTC,SoNgayVang")] MONHOC mONHOC)
         {
 
-            var Khoa = db.MONHOCs.SingleOrDefault(s => s.TenMH == mONHOC.TenMH);
+            var Khoa = db.Entity.MONHOCs.SingleOrDefault(s => s.TenMH == mONHOC.TenMH);
             if (Khoa == null)
             {
-                db.MONHOCs.Add(mONHOC);
-                db.SaveChanges();
+                db.Entity.MONHOCs.Add(mONHOC);
+                db.Entity.SaveChanges();
                 return Json(mONHOC, JsonRequestBehavior.AllowGet);
             }
             return Json(false, JsonRequestBehavior.AllowGet);
@@ -58,7 +58,7 @@ namespace DoAnDiemDanh.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            MONHOC mONHOC = db.MONHOCs.Find(id);
+            MONHOC mONHOC = db.Entity.MONHOCs.Find(id);
             if (mONHOC == null)
             {
                 return HttpNotFound();
@@ -69,9 +69,9 @@ namespace DoAnDiemDanh.Controllers
         [Authorize(Roles = "Admin, GiangVien")]
         public ActionResult DangKyMonHoc()
         {
-            ViewBag.MaMH = db.MONHOCs;
-            ViewBag.Khoa_Filter = db.KHOAs;
-            ViewBag.Lop_Filter = db.LOPs;
+            ViewBag.MaMH = db.Entity.MONHOCs;
+            ViewBag.Khoa_Filter = db.Entity.KHOAs;
+            ViewBag.Lop_Filter = db.Entity.LOPs;
             return View();
         }
 
@@ -80,13 +80,13 @@ namespace DoAnDiemDanh.Controllers
         public JsonResult GetThongTinMonHoc(int MaMH, int MaNMH)
         {
 
-            var MonHoc = db.MONHOCs.SingleOrDefault(_ => _.MaMH == MaMH);
-            var NhomMonHoc = db.NHOMMONHOCs.SingleOrDefault(_ => _.MaNMH == MaNMH);
-            var SinhVienDK = from sv in db.SINHVIENs
+            var MonHoc = db.Entity.MONHOCs.SingleOrDefault(_ => _.MaMH == MaMH);
+            var NhomMonHoc = db.Entity.NHOMMONHOCs.SingleOrDefault(_ => _.MaNMH == MaNMH);
+            var SinhVienDK = from sv in db.Entity.SINHVIENs
                              where sv.NHOMMONHOCs.Any(mh => mh.MaNMH == MaNMH)
                              select sv.MaSV;
 
-            var SinhVien = from sv in db.SINHVIENs
+            var SinhVien = from sv in db.Entity.SINHVIENs
                            where !SinhVienDK.Contains(sv.MaSV)
                            select new { MaSV = sv.MaSV, TenSV = sv.TenSV, TenKhoa = sv.KHOA.TenKhoa, TenLop = sv.LOP.TenLop };
 
@@ -105,8 +105,8 @@ namespace DoAnDiemDanh.Controllers
 
         public JsonResult GetNhomMonHoc(int id)
         {
-            db.Configuration.ProxyCreationEnabled = false;
-            var NHOMMONHOC = db.NHOMMONHOCs.Where(_ => _.MaMH == id).ToList();
+            db.Entity.Configuration.ProxyCreationEnabled = false;
+            var NHOMMONHOC = db.Entity.NHOMMONHOCs.Where(_ => _.MaMH == id).ToList();
             return Json(NHOMMONHOC, JsonRequestBehavior.AllowGet);
         }
 
@@ -125,7 +125,7 @@ namespace DoAnDiemDanh.Controllers
                 int manmh = Int32.Parse(MaNMH);
                 int masv = Int32.Parse(item);
 
-                var DiemDanh = db.DIEMDANHs.Where(_ => _.MaNMH == manmh).ToList();
+                var DiemDanh = db.Entity.DIEMDANHs.Where(_ => _.MaNMH == manmh).ToList();
                 var CTDD = new CTDD();
                 foreach (var item1 in DiemDanh)
                 {
@@ -146,12 +146,12 @@ namespace DoAnDiemDanh.Controllers
         //    {
         //        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
         //    }
-        //    MONHOC mONHOC = db.MONHOCs.Find(id);
+        //    MONHOC mONHOC = db.Entity.MONHOCs.Find(id);
         //    if (mONHOC == null)
         //    {
         //        return HttpNotFound();
         //    }
-        //    ViewBag.MaGV = new SelectList(db.GIANGVIENs, "MaGV", "TenGV", mONHOC.MaGV);
+        //    ViewBag.MaGV = new SelectList(db.Entity.GIANGVIENs, "MaGV", "TenGV", mONHOC.MaGV);
         //    return View(mONHOC);
         //}
 
@@ -166,11 +166,11 @@ namespace DoAnDiemDanh.Controllers
         //{
         //    if (ModelState.IsValid)
         //    {
-        //        db.Entry(mONHOC).State = EntityState.Modified;
-        //        db.SaveChanges();
+        //        db.Entity.Entry(mONHOC).State = EntityState.Modified;
+        //        db.Entity.SaveChanges();
         //        return RedirectToAction("Index");
         //    }
-        //    ViewBag.MaGV = new SelectList(db.GIANGVIENs, "MaGV", "TenGV", mONHOC.MaGV);
+        //    ViewBag.MaGV = new SelectList(db.Entity.GIANGVIENs, "MaGV", "TenGV", mONHOC.MaGV);
         //    return View(mONHOC);
         //}
 
@@ -179,14 +179,14 @@ namespace DoAnDiemDanh.Controllers
         [HttpPost, ActionName("Delete")]
         public JsonResult DeleteConfirmed(int id)
         {
-            MONHOC mONHOC = db.MONHOCs.Find(id);
+            MONHOC mONHOC = db.Entity.MONHOCs.Find(id);
             var data = new
             {
                 id = id,
                 TenMH = mONHOC.TenMH
             };
-            db.MONHOCs.Remove(mONHOC);
-            db.SaveChanges();
+            db.Entity.MONHOCs.Remove(mONHOC);
+            db.Entity.SaveChanges();
             return Json(data,JsonRequestBehavior.AllowGet);
         }
 
@@ -194,7 +194,7 @@ namespace DoAnDiemDanh.Controllers
         {
             if (disposing)
             {
-                db.Dispose();
+                db.Entity.Dispose();
             }
             base.Dispose(disposing);
         }

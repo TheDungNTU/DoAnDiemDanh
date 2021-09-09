@@ -18,8 +18,9 @@ namespace DoAnDiemDanh.Controllers
     [Authorize(Roles = "Admin, GiangVien")]
     public class QuanLyHinhAnhController : Controller
     {
-        private FACE_RECOGNITION_V2Entities db = new FACE_RECOGNITION_V2Entities();
+        private BaseModel db = new BaseModel();
 
+       
         public static string RandomString(int length)
         {
             StringBuilder str_build = new StringBuilder();
@@ -57,8 +58,8 @@ namespace DoAnDiemDanh.Controllers
                         hinhanh.MaSV = id;
                         hinhanh.TenHA = postedFileName;
                         hinhanh.BASE64 = item;
-                        db.HINHANH_SV.Add(hinhanh);
-                        db.SaveChanges();
+                        db.Entity.HINHANH_SV.Add(hinhanh);
+                        db.Entity.SaveChanges();
 
                         var hinhcam = new HinhCam();
                         hinhcam.tenanh = postedFileName;
@@ -91,8 +92,8 @@ namespace DoAnDiemDanh.Controllers
                         hinhanh.MaGV = id;
                         hinhanh.TenHA = postedFileName;
                         hinhanh.BASE64 = item;
-                        db.HINHANH_GV.Add(hinhanh);
-                        db.SaveChanges();
+                        db.Entity.HINHANH_GV.Add(hinhanh);
+                        db.Entity.SaveChanges();
 
                         var hinhcam = new HinhCam();
                         hinhcam.tenanh = postedFileName;
@@ -107,10 +108,10 @@ namespace DoAnDiemDanh.Controllers
         //Hiển thị thông tin hình ảnh của sinh viên
         public ActionResult Details_SinhVien_HinhAnh(int? id, int MaPhongHoc)
         {
-            var HinhAnhs = db.HINHANH_SV.Where(s => s.MaSV == id);
-            var PHONGHOC = db.PHONGHOCs.Single(s => s.MaPhongHoc == MaPhongHoc);
-            ViewBag.PHONGHOC = db.PHONGHOCs.Where(s => s.MaPhongHoc != MaPhongHoc).ToList();
-            ViewBag.TenSV = db.SINHVIENs.SingleOrDefault(s => s.MaSV == id).TenSV;
+            var HinhAnhs = db.Entity.HINHANH_SV.Where(s => s.MaSV == id);
+            var PHONGHOC = db.Entity.PHONGHOCs.Single(s => s.MaPhongHoc == MaPhongHoc);
+            ViewBag.PHONGHOC = db.Entity.PHONGHOCs.Where(s => s.MaPhongHoc != MaPhongHoc).ToList();
+            ViewBag.TenSV = db.Entity.SINHVIENs.SingleOrDefault(s => s.MaSV == id).TenSV;
             ViewBag.MaSV = id;
             ViewBag.Url = PHONGHOC.CAMERA.URL;
             ViewBag.MaPhongHoc = MaPhongHoc;
@@ -120,10 +121,10 @@ namespace DoAnDiemDanh.Controllers
 
         public ActionResult Details_GiangVien_HinhAnh(int? id, int MaPhongHoc)
         {
-            var PHONGHOC = db.PHONGHOCs.Single(s => s.MaPhongHoc == MaPhongHoc);
-            var HinhAnhs = db.HINHANH_GV.Where(s => s.MaGV == id);
-            ViewBag.PHONGHOC = db.PHONGHOCs.Where(s => s.MaPhongHoc != MaPhongHoc).ToList();
-            ViewBag.TenGV = db.GIANGVIENs.SingleOrDefault(s => s.MaGV == id).TenGV;
+            var PHONGHOC = db.Entity.PHONGHOCs.Single(s => s.MaPhongHoc == MaPhongHoc);
+            var HinhAnhs = db.Entity.HINHANH_GV.Where(s => s.MaGV == id);
+            ViewBag.PHONGHOC = db.Entity.PHONGHOCs.Where(s => s.MaPhongHoc != MaPhongHoc).ToList();
+            ViewBag.TenGV = db.Entity.GIANGVIENs.SingleOrDefault(s => s.MaGV == id).TenGV;
             ViewBag.MaGV = id;
             ViewBag.Url = PHONGHOC.CAMERA.URL;
             ViewBag.MaPhongHoc = MaPhongHoc;
@@ -151,8 +152,8 @@ namespace DoAnDiemDanh.Controllers
             HinhAnh.TenHA = postedFileName;
             HinhAnh.BASE64 = base64ImageRepresentation;
 
-            db.HINHANH_SV.Add(HinhAnh);
-            db.SaveChanges();
+            db.Entity.HINHANH_SV.Add(HinhAnh);
+            db.Entity.SaveChanges();
             return Json(HinhAnh, JsonRequestBehavior.AllowGet);
       
        }
@@ -177,8 +178,8 @@ namespace DoAnDiemDanh.Controllers
             HinhAnh.TenHA = postedFileName;
             HinhAnh.BASE64 = base64ImageRepresentation;
 
-            db.HINHANH_GV.Add(HinhAnh);
-            db.SaveChanges();
+            db.Entity.HINHANH_GV.Add(HinhAnh);
+            db.Entity.SaveChanges();
             return Json(HinhAnh, JsonRequestBehavior.AllowGet);
         }
  
@@ -187,18 +188,18 @@ namespace DoAnDiemDanh.Controllers
 
         public JsonResult DeleteConfirmed(int id)
         {
-            HINHANH_SV hINHANH = db.HINHANH_SV.Find(id);
-            db.HINHANH_SV.Remove(hINHANH);
-            db.SaveChanges();
+            HINHANH_SV hINHANH = db.Entity.HINHANH_SV.Find(id);
+            db.Entity.HINHANH_SV.Remove(hINHANH);
+            db.Entity.SaveChanges();
             return Json(id,JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
         public JsonResult Delete_HinhAnh_GV(int id)
         {
-            HINHANH_GV hINHANH = db.HINHANH_GV.Find(id);
-            db.HINHANH_GV.Remove(hINHANH);
-            db.SaveChanges();
+            HINHANH_GV hINHANH = db.Entity.HINHANH_GV.Find(id);
+            db.Entity.HINHANH_GV.Remove(hINHANH);
+            db.Entity.SaveChanges();
             return Json(id, JsonRequestBehavior.AllowGet);
         }
 
@@ -206,7 +207,7 @@ namespace DoAnDiemDanh.Controllers
         {
             if (disposing)
             {
-                db.Dispose();
+                db.Entity.Dispose();
             }
             base.Dispose(disposing);
         }

@@ -19,7 +19,10 @@ namespace DoAnDiemDanh.Models
             : base("name=FACE_RECOGNITION_V2Entities")
         {
         }
-    
+        public FACE_RECOGNITION_V2Entities(string conn)
+: base(conn)
+        {
+        }
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             throw new UnintentionalCodeFirstException();

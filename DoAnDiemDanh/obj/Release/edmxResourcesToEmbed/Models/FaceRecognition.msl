@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
-  <EntityContainerMapping StorageEntityContainer="FACE_RECOGNITION_V2ModelStoreContainer" CdmEntityContainer="FACE_RECOGNITION_V2Entities">
+  <EntityContainerMapping StorageEntityContainer="FaceRecognitionStoreContainer" CdmEntityContainer="FACE_RECOGNITION_V2Entities">
     <EntitySetMapping Name="CAMERAs">
-      <EntityTypeMapping TypeName="FACE_RECOGNITION_V2Model.CAMERA">
+      <EntityTypeMapping TypeName="FaceRecognition.CAMERA">
         <MappingFragment StoreEntitySet="CAMERA">
           <ScalarProperty Name="MaCamera" ColumnName="MaCamera" />
           <ScalarProperty Name="TenCamera" ColumnName="TenCamera" />
@@ -12,7 +12,7 @@
       </EntityTypeMapping>
     </EntitySetMapping>
     <EntitySetMapping Name="CTDDs">
-      <EntityTypeMapping TypeName="FACE_RECOGNITION_V2Model.CTDD">
+      <EntityTypeMapping TypeName="FaceRecognition.CTDD">
         <MappingFragment StoreEntitySet="CTDD">
           <ScalarProperty Name="MaDD" ColumnName="MaDD" />
           <ScalarProperty Name="MaSV" ColumnName="MaSV" />
@@ -25,7 +25,7 @@
       </EntityTypeMapping>
     </EntitySetMapping>
     <EntitySetMapping Name="CTDD_GV">
-      <EntityTypeMapping TypeName="FACE_RECOGNITION_V2Model.CTDD_GV">
+      <EntityTypeMapping TypeName="FaceRecognition.CTDD_GV">
         <MappingFragment StoreEntitySet="CTDD_GV">
           <ScalarProperty Name="MaDD" ColumnName="MaDD" />
           <ScalarProperty Name="MaGV" ColumnName="MaGV" />
@@ -36,7 +36,7 @@
       </EntityTypeMapping>
     </EntitySetMapping>
     <EntitySetMapping Name="DIEMDANHs">
-      <EntityTypeMapping TypeName="FACE_RECOGNITION_V2Model.DIEMDANH">
+      <EntityTypeMapping TypeName="FaceRecognition.DIEMDANH">
         <MappingFragment StoreEntitySet="DIEMDANH">
           <ScalarProperty Name="MaDD" ColumnName="MaDD" />
           <ScalarProperty Name="MaNMH" ColumnName="MaNMH" />
@@ -45,37 +45,43 @@
       </EntityTypeMapping>
     </EntitySetMapping>
     <EntitySetMapping Name="DIEMDANH_T_GV">
-      <EntityTypeMapping TypeName="FACE_RECOGNITION_V2Model.DIEMDANH_T_GV">
+      <EntityTypeMapping TypeName="FaceRecognition.DIEMDANH_T_GV">
         <MappingFragment StoreEntitySet="DIEMDANH_T_GV">
           <ScalarProperty Name="MaDD" ColumnName="MaDD" />
           <ScalarProperty Name="MaGV" ColumnName="MaGV" />
           <ScalarProperty Name="Ngay" ColumnName="Ngay" />
           <ScalarProperty Name="Gio" ColumnName="Gio" />
+          <ScalarProperty Name="MaPhongHoc" ColumnName="MaPhongHoc" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
     <EntitySetMapping Name="DIEMDANH_T_SV">
-      <EntityTypeMapping TypeName="FACE_RECOGNITION_V2Model.DIEMDANH_T_SV">
+      <EntityTypeMapping TypeName="FaceRecognition.DIEMDANH_T_SV">
         <MappingFragment StoreEntitySet="DIEMDANH_T_SV">
           <ScalarProperty Name="MaDD" ColumnName="MaDD" />
           <ScalarProperty Name="MaSV" ColumnName="MaSV" />
           <ScalarProperty Name="Ngay" ColumnName="Ngay" />
           <ScalarProperty Name="Gio" ColumnName="Gio" />
+          <ScalarProperty Name="MaPhongHoc" ColumnName="MaPhongHoc" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
     <EntitySetMapping Name="GIANGVIENs">
-      <EntityTypeMapping TypeName="FACE_RECOGNITION_V2Model.GIANGVIEN">
+      <EntityTypeMapping TypeName="FaceRecognition.GIANGVIEN">
         <MappingFragment StoreEntitySet="GIANGVIEN">
           <ScalarProperty Name="MaGV" ColumnName="MaGV" />
           <ScalarProperty Name="TenGV" ColumnName="TenGV" />
+          <ScalarProperty Name="DiaChi" ColumnName="DiaChi" />
+          <ScalarProperty Name="SDT" ColumnName="SDT" />
+          <ScalarProperty Name="Avatar" ColumnName="Avatar" />
+          <ScalarProperty Name="HoTen" ColumnName="HoTen" />
           <ScalarProperty Name="Email" ColumnName="Email" />
           <ScalarProperty Name="MaKhoa" ColumnName="MaKhoa" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
     <EntitySetMapping Name="HINHANH_GV">
-      <EntityTypeMapping TypeName="FACE_RECOGNITION_V2Model.HINHANH_GV">
+      <EntityTypeMapping TypeName="FaceRecognition.HINHANH_GV">
         <MappingFragment StoreEntitySet="HINHANH_GV">
           <ScalarProperty Name="MaHA" ColumnName="MaHA" />
           <ScalarProperty Name="TenHA" ColumnName="TenHA" />
@@ -85,7 +91,7 @@
       </EntityTypeMapping>
     </EntitySetMapping>
     <EntitySetMapping Name="HINHANH_SV">
-      <EntityTypeMapping TypeName="FACE_RECOGNITION_V2Model.HINHANH_SV">
+      <EntityTypeMapping TypeName="FaceRecognition.HINHANH_SV">
         <MappingFragment StoreEntitySet="HINHANH_SV">
           <ScalarProperty Name="MaHA" ColumnName="MaHA" />
           <ScalarProperty Name="TenHA" ColumnName="TenHA" />
@@ -95,7 +101,7 @@
       </EntityTypeMapping>
     </EntitySetMapping>
     <EntitySetMapping Name="KHIEUNAIs">
-      <EntityTypeMapping TypeName="FACE_RECOGNITION_V2Model.KHIEUNAI">
+      <EntityTypeMapping TypeName="FaceRecognition.KHIEUNAI">
         <MappingFragment StoreEntitySet="KHIEUNAI">
           <ScalarProperty Name="MaKN" ColumnName="MaKN" />
           <ScalarProperty Name="TenHA" ColumnName="TenHA" />
@@ -107,7 +113,7 @@
       </EntityTypeMapping>
     </EntitySetMapping>
     <EntitySetMapping Name="KHOAs">
-      <EntityTypeMapping TypeName="FACE_RECOGNITION_V2Model.KHOA">
+      <EntityTypeMapping TypeName="FaceRecognition.KHOA">
         <MappingFragment StoreEntitySet="KHOA">
           <ScalarProperty Name="MaKhoa" ColumnName="MaKhoa" />
           <ScalarProperty Name="TenKhoa" ColumnName="TenKhoa" />
@@ -115,7 +121,7 @@
       </EntityTypeMapping>
     </EntitySetMapping>
     <EntitySetMapping Name="LICHGIANGDAYs">
-      <EntityTypeMapping TypeName="FACE_RECOGNITION_V2Model.LICHGIANGDAY">
+      <EntityTypeMapping TypeName="FaceRecognition.LICHGIANGDAY">
         <MappingFragment StoreEntitySet="LICHGIANGDAY">
           <ScalarProperty Name="MaNMH" ColumnName="MaNMH" />
           <ScalarProperty Name="ThuHai" ColumnName="ThuHai" />
@@ -128,7 +134,7 @@
       </EntityTypeMapping>
     </EntitySetMapping>
     <EntitySetMapping Name="LOPs">
-      <EntityTypeMapping TypeName="FACE_RECOGNITION_V2Model.LOP">
+      <EntityTypeMapping TypeName="FaceRecognition.LOP">
         <MappingFragment StoreEntitySet="LOP">
           <ScalarProperty Name="MaLop" ColumnName="MaLop" />
           <ScalarProperty Name="TenLop" ColumnName="TenLop" />
@@ -137,7 +143,7 @@
       </EntityTypeMapping>
     </EntitySetMapping>
     <EntitySetMapping Name="MONHOCs">
-      <EntityTypeMapping TypeName="FACE_RECOGNITION_V2Model.MONHOC">
+      <EntityTypeMapping TypeName="FaceRecognition.MONHOC">
         <MappingFragment StoreEntitySet="MONHOC">
           <ScalarProperty Name="MaMH" ColumnName="MaMH" />
           <ScalarProperty Name="TenMH" ColumnName="TenMH" />
@@ -147,7 +153,7 @@
       </EntityTypeMapping>
     </EntitySetMapping>
     <EntitySetMapping Name="NGAYLEs">
-      <EntityTypeMapping TypeName="FACE_RECOGNITION_V2Model.NGAYLE">
+      <EntityTypeMapping TypeName="FaceRecognition.NGAYLE">
         <MappingFragment StoreEntitySet="NGAYLE">
           <ScalarProperty Name="MaNL" ColumnName="MaNL" />
           <ScalarProperty Name="TenNL" ColumnName="TenNL" />
@@ -157,7 +163,7 @@
       </EntityTypeMapping>
     </EntitySetMapping>
     <EntitySetMapping Name="NHOMMONHOCs">
-      <EntityTypeMapping TypeName="FACE_RECOGNITION_V2Model.NHOMMONHOC">
+      <EntityTypeMapping TypeName="FaceRecognition.NHOMMONHOC">
         <MappingFragment StoreEntitySet="NHOMMONHOC">
           <ScalarProperty Name="MaNMH" ColumnName="MaNMH" />
           <ScalarProperty Name="MaMH" ColumnName="MaMH" />
@@ -171,7 +177,7 @@
       </EntityTypeMapping>
     </EntitySetMapping>
     <EntitySetMapping Name="PHONGHOCs">
-      <EntityTypeMapping TypeName="FACE_RECOGNITION_V2Model.PHONGHOC">
+      <EntityTypeMapping TypeName="FaceRecognition.PHONGHOC">
         <MappingFragment StoreEntitySet="PHONGHOC">
           <ScalarProperty Name="MaPhongHoc" ColumnName="MaPhongHoc" />
           <ScalarProperty Name="TenPhongHoc" ColumnName="TenPhongHoc" />
@@ -180,7 +186,7 @@
       </EntityTypeMapping>
     </EntitySetMapping>
     <EntitySetMapping Name="QUYENs">
-      <EntityTypeMapping TypeName="FACE_RECOGNITION_V2Model.QUYEN">
+      <EntityTypeMapping TypeName="FaceRecognition.QUYEN">
         <MappingFragment StoreEntitySet="QUYEN">
           <ScalarProperty Name="MaQuyen" ColumnName="MaQuyen" />
           <ScalarProperty Name="TenQuyen" ColumnName="TenQuyen" />
@@ -189,10 +195,11 @@
       </EntityTypeMapping>
     </EntitySetMapping>
     <EntitySetMapping Name="SINHVIENs">
-      <EntityTypeMapping TypeName="FACE_RECOGNITION_V2Model.SINHVIEN">
+      <EntityTypeMapping TypeName="FaceRecognition.SINHVIEN">
         <MappingFragment StoreEntitySet="SINHVIEN">
           <ScalarProperty Name="MaSV" ColumnName="MaSV" />
           <ScalarProperty Name="TenSV" ColumnName="TenSV" />
+          <ScalarProperty Name="Avatar" ColumnName="Avatar" />
           <ScalarProperty Name="Email" ColumnName="Email" />
           <ScalarProperty Name="DiaChi" ColumnName="DiaChi" />
           <ScalarProperty Name="SDT" ColumnName="SDT" />
@@ -202,7 +209,7 @@
       </EntityTypeMapping>
     </EntitySetMapping>
     <EntitySetMapping Name="TAIKHOANGIANGVIENs">
-      <EntityTypeMapping TypeName="FACE_RECOGNITION_V2Model.TAIKHOANGIANGVIEN">
+      <EntityTypeMapping TypeName="FaceRecognition.TAIKHOANGIANGVIEN">
         <MappingFragment StoreEntitySet="TAIKHOANGIANGVIEN">
           <ScalarProperty Name="TaiKhoan" ColumnName="TaiKhoan" />
           <ScalarProperty Name="MatKhau" ColumnName="MatKhau" />
@@ -212,7 +219,7 @@
       </EntityTypeMapping>
     </EntitySetMapping>
     <EntitySetMapping Name="TAIKHOANSINHVIENs">
-      <EntityTypeMapping TypeName="FACE_RECOGNITION_V2Model.TAIKHOANSINHVIEN">
+      <EntityTypeMapping TypeName="FaceRecognition.TAIKHOANSINHVIEN">
         <MappingFragment StoreEntitySet="TAIKHOANSINHVIEN">
           <ScalarProperty Name="TaiKhoan" ColumnName="TaiKhoan" />
           <ScalarProperty Name="MatKhau" ColumnName="MatKhau" />
@@ -221,7 +228,7 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
-    <AssociationSetMapping Name="DANGKYMONHOC" TypeName="FACE_RECOGNITION_V2Model.DANGKYMONHOC" StoreEntitySet="DANGKYMONHOC">
+    <AssociationSetMapping Name="DANGKYMONHOC" TypeName="FaceRecognition.DANGKYMONHOC" StoreEntitySet="DANGKYMONHOC">
       <EndProperty Name="SINHVIEN">
         <ScalarProperty Name="MaSV" ColumnName="MaSV" />
       </EndProperty>

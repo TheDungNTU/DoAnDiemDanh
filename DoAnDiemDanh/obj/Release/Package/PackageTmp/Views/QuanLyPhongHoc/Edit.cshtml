@@ -1,46 +1,143 @@
 ﻿@model DoAnDiemDanh.Models.PHONGHOC
 
 @{
-    ViewBag.Title = "Edit";
+    ViewBag.Title = "Chỉnh Sửa";
     Layout = "~/Views/Layout/_LayoutAdmin.cshtml";
 }
 
-<h2>Edit</h2>
+<h2>Chỉnh sửa</h2>
 
-@using (Html.BeginForm())
+@*//@using (Html.BeginForm())*@
+@using (Html.BeginForm("Edit", "QuanLyPhongHoc", FormMethod.Post, new { @class = "formPhongHoc" }))
 {
     @Html.AntiForgeryToken()
-    
+
     <div class="form-horizontal">
-        <h4>PHONGHOC</h4>
+        <h4>Danh Sách Phòng</h4>
         <hr />
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
         @Html.HiddenFor(model => model.MaPhongHoc)
 
         <div class="form-group">
-            @Html.LabelFor(model => model.TenPhongHoc, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="control-label col-md-2">Tên phòng học</div>
             <div class="col-md-10">
-                @Html.EditorFor(model => model.TenPhongHoc, new { htmlAttributes = new { @class = "form-control" } })
+
+                @Html.EditorFor(model => model.TenPhongHoc, new { htmlAttributes = new { @class = "form-control TenPhongHoc" } })
                 @Html.ValidationMessageFor(model => model.TenPhongHoc, "", new { @class = "text-danger" })
             </div>
         </div>
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.MaCamera, "MaCamera", htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.DropDownList("MaCamera", null, htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.MaCamera, "", new { @class = "text-danger" })
+        @{ DoAnDiemDanh.Models.BaseModel db = new DoAnDiemDanh.Models.BaseModel();
+            var Camera = db.Entity.CAMERAs;
+
+            <div class="form-group">
+                <div class="control-label col-md-2">Tên Camera</div>
+                <div class="col-md-10">
+                    <select class="form-control" id="MaCamera" name="MaCamera" required>
+                        @*<option value="">Mời bạn chọn Camera</option>*@
+                        @foreach (var item in Camera)
+                        {
+                            if (item.MaCamera == ViewBag.MaCam)
+                            {
+                                <option value="@item.MaCamera" selected>@item.TenCamera</option>
+                            }
+
+                            else
+                            {
+                                <option value="@item.MaCamera">@item.TenCamera</option>
+                            }
+                        }
+                    </select>
+                </div>
             </div>
-        </div>
+            <div class="form-group">
+                <input class="form-control text-box single-line" id="TenPhongHocEdit" name="TenPhongHocEdit" type="hidden" value="@ViewBag.TenPhong">
+            </div>
+            <div class="form-group">
+                <input class="form-control text-box single-line" id="MaCamEdit" name="MaCamEdit" type="hidden" value="@ViewBag.MaCam">
+            </div>
+        }
+
 
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Save" class="btn btn-default" />
+                <input type="submit" value="Lưu" class="btn btn-success btn-icon-split p-2 border">
             </div>
         </div>
     </div>
 }
 
 <div>
-    @Html.ActionLink("Back to List", "Index")
+    @Html.ActionLink("Quay Lại", "Index")
 </div>
+<script>
+
+    $(document).ready(function (ob) {
+
+
+        //jQuery.validator.addMethod("NotAllowNumber", function (value, element) {
+        //    return this.optional(element) || /^([^0-9]*)$/.test(value);
+        //}, "Không được phép có chữ số.");
+
+        jQuery.validator.addMethod("NotAllowFirstSpace", function (value, element) {
+            return this.optional(element) || /^\S{1}/.test(value);
+        }, "Kí tự đầu tiên không được có khoảng trắng.");
+
+        //jQuery.validator.addMethod("NotAllowSpecial", function (value, element) {
+        //    return this.optional(element) || /^([^*\u0040.!/'#$%^&(){}[:;<>,.?/~_+-=|]*)$/.test(value);
+        //}, "Không được phép có kí tự đặc biệt.");
+
+        //var ele = $(ob);
+        //var tenphong = ViewBag.TenPhongEdit;
+        //var tenphongedit = ViewBag.TenPhongEdit;
+        var form = $(".formPhongHoc").validate({
+            onfocusout: function (element) {
+
+                $(element).valid();
+            },
+
+            errorClass: "is-invalid",
+            validClass: "is-valid",
+
+            rules: {
+                TenPhongHoc: {
+                    required: true,
+                    // NotAllowNumber: true,
+                    // NotAllowSpecial: true,
+                    NotAllowFirstSpace: true,
+                    remote: {
+                        url: "/QuanLyPhongHoc/CheckPhongHocEdit/",
+                        data: { TenPhongHoc: function () { return $('#TenPhongHoc').val(); }, TenPhongHocEdit: function () { return $('#TenPhongHocEdit').val(); } },
+                        type: "post",
+                    }
+                },
+
+
+                MaCamera: {
+                    // "required",//
+
+                    required: true,
+                    remote: {
+                        url: "/QuanLyPhongHoc/CheckCameraEdit/",
+                        data: { MaCamera: function () { return $('#MaCamera').val(); }, MaCamEdit: function () { return $('#MaCamEdit').val(); } },
+                        type: "post",
+                    }
+                },
+            },
+            messages: {
+                TenPhongHoc: {
+                    required: "Tên Phòng không được để trống.",
+                    remote: "Tên Phòng đã tồn tại!! Vui lòng Nhập Lại!"
+
+                },
+
+                MaCamera: {
+                    required: "Vui Lòng Chọn Camera .",
+                    remote: "Vui Lòng Chọn Camera Hợp Lệ (Chưa được dùng)"
+                },
+
+
+            }
+        });
+    });
+</script>
