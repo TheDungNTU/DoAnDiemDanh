@@ -295,7 +295,7 @@
                     last: "Cuối",
                     next: "Trang sau",
                     previous: "Trang trước",
-                    
+
                 },
                 searchPlaceholder: "Tìm kiếm...",
                 zeroRecords: "Không tìm thấy kết quả",
@@ -355,7 +355,7 @@
                 showConfirmButton: false
 
             })
-        } 
+        }
     }
 
     function Delete(obj) {
@@ -419,7 +419,7 @@
                     value.SDT,
                     value.TenKhoa,
                     value.TenLop,
-                    `<a href="/QuanLyHinhAnh/Details_SinhVien_HinhAnh/${value.MaSV}" class="btn btn-primary btn-icon-split">
+                    `<a href="/QuanLyHinhAnh/Details_SinhVien_HinhAnh/${value.MaSV}?MaPhongHoc=@ViewBag.MaPhongHoc" class="btn btn-primary btn-icon-split">
                                         <span class="icon text-white-50">
                                             0
                                         </span>
@@ -451,7 +451,7 @@
     }
 
     function FnCompleteImport() {
-        
+
     }
 
     $('#train_model').click(function () {
@@ -481,7 +481,7 @@
                 })
             })
         })
-  
+
 
     $(document).ready(function () {
         loadDataTable();
@@ -497,11 +497,11 @@
             $("#Filter_TenKhoa").addClass("d-none")
 
 
- 
+
 
             dt.column(2).visible(false, false);
             dt.column(3).visible(false, false);
-           
+
             dt.columns.adjust().draw(false);
 
         }

@@ -4,7 +4,7 @@
     ViewBag.Title = "Details_SinhVien_HinhAnh";
     Layout = "~/Views/Layout/_LayoutAdmin.cshtml";
     var PHONGHOC = (IEnumerable<PHONGHOC>)ViewBag.PHONGHOC;
-    var urlcapture = "https://1544-112-78-15-3.ngrok.io/capture?rtsp=" + ViewBag.Url;
+    var urlcapture = "https://camera.vinaai.vn/capture?rtsp=" + ViewBag.Url;
 }
 
 <nav aria-label="breadcrumb">
@@ -94,7 +94,7 @@
     <div class="row">
         <div class="col-6">
             @{
-                var url = "https://1544-112-78-15-3.ngrok.io/video?rtsp=" + ViewBag.Url;
+                var url = "https://camera.vinaai.vn/video?rtsp=" + ViewBag.Url;
                 <img src="@url" width="640" height="360" style="border: 1px solid black" id="cameraip" />
             }
         </div>
