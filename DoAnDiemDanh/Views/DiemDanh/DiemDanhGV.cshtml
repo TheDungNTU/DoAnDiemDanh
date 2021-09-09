@@ -21,7 +21,7 @@
                         <div class="course-info">
                             <div class="progress-container">
                                 <span class="progress-text">
-                                   
+
                                 </span>
                             </div>
                             <h6></h6>
@@ -35,3 +35,17 @@
     }
 </div>
 
+
+@if (MONHOC.Count() == 0)
+{
+    <script>
+        Swal.fire({
+            icon: 'warning',
+            title: 'Cảnh báo',
+            text: `Chưa có thông tin điểm danh giảng viên`,
+            timer: 2000,
+            showConfirmButton: false
+
+        })
+    </script>
+}

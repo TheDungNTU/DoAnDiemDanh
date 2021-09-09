@@ -119,9 +119,6 @@ namespace DoAnDiemDanh.Controllers
                             tk.TaiKhoan = sv.Email;
                             db.Entity.TAIKHOANSINHVIENs.Add(tk);
                             db.Entity.SaveChanges();
-
-                           
-
                             svr.MaSV = sv.MaSV;
                             listSV.Add(svr);
                         }
