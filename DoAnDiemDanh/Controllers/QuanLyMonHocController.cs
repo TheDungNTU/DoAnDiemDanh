@@ -159,20 +159,20 @@ namespace DoAnDiemDanh.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
 
-        //[Authorize(Roles = "Admin")]
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public ActionResult Edit([Bind(Include = "MaMH,TenMH,SoTC,NgayBD,NgayKT,ThoiGianBDGD,ThoiGianKTGD,MaGV")] MONHOC mONHOC)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        db.Entity.Entry(mONHOC).State = EntityState.Modified;
-        //        db.Entity.SaveChanges();
-        //        return RedirectToAction("Index");
-        //    }
-        //    ViewBag.MaGV = new SelectList(db.Entity.GIANGVIENs, "MaGV", "TenGV", mONHOC.MaGV);
-        //    return View(mONHOC);
-        //}
+        [Authorize(Roles = "Admin")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Edit([Bind(Include = "MaMH,TenMH,SoTC,SoNgayVang")] MONHOC mONHOC)
+        {
+           
+            if (ModelState.IsValid)
+            {
+                db.Entity.Entry(mONHOC).State = EntityState.Modified;
+                db.Entity.SaveChanges();
+                return RedirectToAction("Index");
+            }    
+            return View(mONHOC);
+        }
 
         [Authorize(Roles = "Admin")]
         // POST: QuanLyMonHoc/Delete/5

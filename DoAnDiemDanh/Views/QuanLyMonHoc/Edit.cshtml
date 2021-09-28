@@ -44,42 +44,10 @@
         </div>
 
         <div class="form-group">
-            <label class="control-label col-md-2" for="TenSV" style="font-size: 17px; font-weight:bold">Ngày Bắt Đầu</label>
+            <label class="control-label col-md-2" for="TenSV" style="font-size: 17px; font-weight:bold">Số Ngày Vắng</label>
             <div class="col-md-10">
-                @Html.EditorFor(model => model.NgayBD, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.NgayBD, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            <label class="control-label col-md-2" for="TenSV" style="font-size: 17px; font-weight:bold">Ngày kết thúc</label>
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.NgayKT, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.NgayKT, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            <label class="control-label col-md-2" for="TenSV" style="font-size: 17px; font-weight:bold">Thời gian bắt đầu</label>
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.ThoiGianBDGD, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.ThoiGianBDGD, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            <label class="control-label col-md-2" for="TenSV" style="font-size: 17px; font-weight:bold">Thời gian kết thúc</label>
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.ThoiGianKTGD, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.ThoiGianKTGD, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            <label class="control-label col-md-2" for="TenSV" style="font-size: 17px; font-weight:bold">Giảng viên giảng dạy</label>
-            <div class="col-md-10">
-                @Html.DropDownList("MaGV", null, htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.MaGV, "", new { @class = "text-danger" })
+                @Html.EditorFor(model => model.SoNgayVang, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.SoNgayVang, "", new { @class = "text-danger" })
             </div>
         </div>
 
